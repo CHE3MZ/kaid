@@ -21,7 +21,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@alibaba-group/open-code-review"><img alt="npm" src="https://img.shields.io/npm/v/@alibaba-group/open-code-review?style=flat-square" /></a>
   <a href="https://github.com/alibaba/open-code-review/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/alibaba/open-code-review/release.yml?style=flat-square" /></a>
-  <a href="https://github.com/alibaba/open-code-review/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/alibaba/open-code-review?style=flat-square" /></a>
+  <a href="https://github.com/CHE3MZ/kaid/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/CHE3MZ/kaid?style=flat-square" /></a>
   <a href="https://deepwiki.com/alibaba/open-code-review"><img alt="Ask DeepWiki" src="https://img.shields.io/badge/Ask-DeepWiki-blue?style=flat-square" /></a>
   <a href="https://www.bestpractices.dev/projects/13328"><img alt="OpenSSF Best Practices" src="https://img.shields.io/badge/OpenSSF-Gold-D4AF37?style=flat-square" /></a>
 </p>
@@ -203,4 +203,4 @@ This project exists thanks to all the people who contribute. See [CONTRIBUTING.m
 
 ## License
 
-[Apache-2.0](LICENSE) — Copyright 2026 Alibaba
+[Apache-2.0](LICENSE) — Copyright 2026 alibaba/open-code-review Contributors. kaid modifications Copyright 2026 CHE3MZ. See [NOTICE](NOTICE).

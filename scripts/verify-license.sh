@@ -11,7 +11,7 @@ cd "$REPO_ROOT"
 CURRENT_YEAR=$(date +%Y)
 MIN_YEAR=2026
 SPDX_REGEX="SPDX-License-Identifier: Apache-2.0"
-COPYRIGHT_REGEX="Copyright [0-9]{4} alibaba/open-code-review Contributors"
+COPYRIGHT_REGEX="Copyright [0-9]{4} (alibaba/open-code-review Contributors|CHE3MZ)"
 YEAR_REGEX="Copyright ([0-9]{4})"
 
 # Keep in step with LICENSE_EXTS in add-license.sh, which also records why each

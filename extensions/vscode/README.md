@@ -157,4 +157,4 @@ used by the IntelliJ IDEA plugin).
 
 ## License
 
-Apache-2.0
+Apache-2.0. See the repository [NOTICE](../../NOTICE) for upstream attribution and kaid modification notices.

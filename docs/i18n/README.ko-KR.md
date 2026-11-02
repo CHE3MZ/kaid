@@ -203,4 +203,4 @@ ocr delegate rule src/main.go src/handler.go
 
 ## License
 
-[Apache-2.0](../../LICENSE) Copyright 2026 Alibaba
+[Apache-2.0](../../LICENSE) — Copyright 2026 alibaba/open-code-review Contributors. kaid 수정 부분은 Copyright 2026 CHE3MZ. 자세한 내용은 [NOTICE](../../NOTICE)를 참고하세요.

@@ -10,20 +10,20 @@ cd "$REPO_ROOT"
 
 MIN_YEAR=2026
 SPDX_REGEX="SPDX-License-Identifier: Apache-2.0"
-COPYRIGHT_REGEX="Copyright [0-9]{4} alibaba/open-code-review Contributors"
+COPYRIGHT_REGEX="Copyright [0-9]{4} (alibaba/open-code-review Contributors|CHE3MZ)"
 
 SLASH_HEADER='// SPDX-License-Identifier: Apache-2.0
-// Copyright 2026 alibaba/open-code-review Contributors'
+// Copyright 2026 CHE3MZ (kaid)'
 
 HASH_HEADER='# SPDX-License-Identifier: Apache-2.0
-# Copyright 2026 alibaba/open-code-review Contributors'
+# Copyright 2026 CHE3MZ (kaid)'
 
 # CSS has no // line comment — that is SCSS — so a block is the only option. The
 # lines inside carry no prefix, matching the {{/* */}} header already in
 # internal/viewer/templates/app-header.html.
 BLOCK_HEADER='/*
 SPDX-License-Identifier: Apache-2.0
-Copyright 2026 alibaba/open-code-review Contributors
+Copyright 2026 CHE3MZ (kaid)
 */'
 
 # Grouped by the comment syntax add_header gives each below: // for Go, the
