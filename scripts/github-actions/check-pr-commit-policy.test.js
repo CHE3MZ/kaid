@@ -238,7 +238,7 @@ test("checks earlier commits even when the head is clean", async () => {
   await run({ github: client([page([commit(1, "chore: format [skip ci]"), commit(2)])]), context: contextWithHead(commit(2).oid), core });
   assert.deepStrictEqual(core.messages.errors, [`Commit ${commit(1).oid} contains [skip ci].`]);
   assert.strictEqual(core.messages.failures.length, 1);
-  assert.ok(core.messages.failures[0].includes("CONTRIBUTING.md#commit-messages"));
+  assert.ok(core.messages.failures[0].includes("AGENTS.md#git-commit-notes"));
 });
 
 test("ignores description, author, and draft state", async () => {
@@ -367,6 +367,8 @@ test("rejects cursor loops", async () => {
 for (const initialState of ["fresh", "cleaned sparse"]) {
   test(`policy checkout preserves source for later jobs in a ${initialState} workspace`, () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), "ocr-pr-policy-checkout-"));
+    const emptyGitConfig = path.join(directory, ".gitconfig");
+    fs.writeFileSync(emptyGitConfig, "");
     const git = (args, allowedStatuses = [0]) => {
       const result = spawnSync("git", args, {
         cwd: directory,
@@ -377,7 +379,7 @@ for (const initialState of ["fresh", "cleaned sparse"]) {
           HOME: directory,
           LC_ALL: "C",
           GIT_CONFIG_NOSYSTEM: "1",
-          GIT_CONFIG_GLOBAL: os.devNull,
+          GIT_CONFIG_GLOBAL: emptyGitConfig,
         },
       });
       assert.ifError(result.error);
@@ -460,10 +462,6 @@ test("workflow preserves trust boundaries and runs the exported policy", async (
     client([page([commit(1)])]), CONTEXT, core
   );
   assert.strictEqual(core.messages.info.length, 1);
-  const contract = fs.readFileSync(path.join(ROOT, ".github/workflows/action-contract.yml"), "utf8");
-  assert.strictEqual((contract.match(/'\.github\/workflows\/pr-commit-policy.yml'/g) || []).length, 2);
-  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
-  assert.ok(manifest.scripts["test:github-actions"].includes("node scripts/github-actions/check-pr-commit-policy.test.js"));
 });
 
 async function main() {

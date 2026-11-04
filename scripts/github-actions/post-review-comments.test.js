@@ -8,7 +8,6 @@
 // Unit tests for scripts/github-actions/post-review-comments.js.
 //
 // Run via: node scripts/github-actions/post-review-comments.test.js
-// (also wired as `npm run test:github-actions`).
 //
 // These tests drive runPostReviewComments directly with an injected mock
 // github/core/fs, replacing the previous approach of regex-extracting the

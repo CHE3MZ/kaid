@@ -8,7 +8,6 @@
 // Unit tests for scripts/github-actions/check-translation-sync.js.
 //
 // Run via: node scripts/github-actions/check-translation-sync.test.js
-// (also wired as `npm run test:github-actions`).
 //
 // Plain Node + assert, no external deps and no `node --test`, mirroring
 // post-review-comments.test.js so both run on node >= 14.

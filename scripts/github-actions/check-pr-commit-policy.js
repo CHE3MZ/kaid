@@ -161,7 +161,7 @@ async function run({ github, context, core }) {
       `Found CI skip directives in ${violations.length} PR title/commit message(s). ` +
       "Remove them from the title and rewrite affected commit messages; " +
       "adding a clean commit does not remove earlier violations. " +
-      "See CONTRIBUTING.md#commit-messages. At most 20 violations are shown."
+      "See AGENTS.md#git-commit-notes. At most 20 violations are shown."
     );
   } else {
     core.info(`PR title and all ${pullRequest.commits.length} commit messages contain no CI skip directives.`);
