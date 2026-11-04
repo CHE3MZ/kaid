@@ -92,12 +92,7 @@ func newDelegateRepo(t *testing.T) delegateRepo {
 
 func delegateExamples(t *testing.T) []string {
 	t.Helper()
-	docs := []string{
-		"skills/open-code-review-delegate/SKILL.md",
-		"plugins/open-code-review/skills/open-code-review-delegate/SKILL.md",
-		"plugins/open-code-review/claude-code/commands/delegate-review.md",
-		"plugins/open-code-review/kimi-code/commands/delegate-review.md",
-	}
+	var docs []string
 	for _, locale := range []string{"en", "zh", "ja", "ko", "ru"} {
 		docs = append(docs, "pages/src/content/docs/"+locale+"/integrations/delegate.md")
 	}
@@ -215,6 +210,9 @@ func TestDelegateDiffExamples(t *testing.T) {
 				bash, err := exec.LookPath("bash")
 				if err != nil {
 					t.Skip("shell execution requires Bash; path quotation was checked")
+				}
+				if runtime.GOOS == "windows" {
+					t.Skip("Bash positional arguments are not forwarded by WSL; path quotation was checked")
 				}
 				name := "untracked sample file.txt"
 				if err := os.WriteFile(filepath.Join(r.dir, name), []byte("untracked\n"), 0o644); err != nil {
