@@ -1,0 +1,63 @@
+version: 2
+
+project_name: opencodereview
+
+builds:
+  - id: opencodereview
+    main: ./cmd/opencodereview
+    binary: opencodereview
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.Version={{ .Tag }}
+      - -X main.GitCommit={{ .ShortCommit }}
+      - -X main.BuildDate={{ .Date }}
+
+archives:
+  - id: binaries
+    formats:
+      - binary
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+
+checksum:
+  name_template: sha256sum.txt
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - '^Merge pull request'
+      - '^Merge branch'
+  groups:
+    - title: Features
+      regexp: '^feat'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^fix'
+      order: 1
+    - title: Refactoring
+      regexp: '^refactor'
+      order: 2
+    - title: Documentation
+      regexp: '^docs'
+      order: 3
+    - title: Other Changes
+      order: 999
+
+release:
+  github:
+    owner: CHE3MZ
+    name: kaid
+  mode: replace
+  extra_files:
+    - glob: LICENSE
+    - glob: NOTICE

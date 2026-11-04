@@ -7,10 +7,10 @@
 # action (action.yml) and by this repository's own workflows is pinned to a
 # full 40-hex commit SHA with a trailing "# vX.Y.Z" version comment. A
 # floating tag inside action.yml silently undermines consumers who SHA-pin
-# alibaba/open-code-review itself: the outer pin freezes this repository,
+# kaid itself: the outer pin freezes this repository,
 # but a moved inner tag still changes what actually runs (see issue #816).
 # Workflows are held to the same rule because several carry credentials —
-# release.yml alone holds the npm token and the attestation id-token, so a
+# release.yml alone holds the attestation id-token, so a
 # moved upstream tag there has credential blast radius (see issue #841).
 set -euo pipefail
 

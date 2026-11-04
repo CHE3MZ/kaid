@@ -1,19 +1,19 @@
 #!/bin/sh
 
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2026 alibaba/open-code-review Contributors
+# Copyright 2026 CHE3MZ (kaid)
 
 # Install the ocr (Open Code Review) CLI from GitHub releases.
-#   curl -fsSL https://open-codereview.ai/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
 # Prefer to inspect first:
-#   curl -fsSL https://open-codereview.ai/install.sh -o install.sh
+#   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh -o install.sh
 #   less install.sh && sh install.sh
 # Env: OCR_INSTALL_DIR (default /usr/local/bin), OCR_VERSION (default latest),
 # OCR_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
 set -eu
 
 main() {
-  REPO="alibaba/open-code-review"
+  REPO="CHE3MZ/kaid"
   BIN="ocr"
   ASSET_PREFIX="opencodereview"
   INSTALL_DIR="${OCR_INSTALL_DIR:-/usr/local/bin}"
@@ -24,7 +24,7 @@ main() {
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   case "$os" in
     darwin|linux) ;;
-    *) err "unsupported OS: $os (on Windows use: irm https://open-codereview.ai/install.ps1 | iex)" ;;
+    *) err "unsupported OS: $os (on Windows use: irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 | iex)" ;;
   esac
 
   arch="$(uname -m)"
@@ -34,13 +34,17 @@ main() {
     *) err "unsupported architecture: $arch" ;;
   esac
 
-  if [ -z "$VERSION" ]; then
+  if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
     release_json="$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest")" ||
       err "failed to fetch latest release info from github api"
     VERSION="$(printf '%s' "$release_json" |
       sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
     [ -n "$VERSION" ] || err "could not resolve latest release tag"
   fi
+  case "$VERSION" in
+    v*) ;;
+    *) VERSION="v$VERSION" ;;
+  esac
 
   asset="${ASSET_PREFIX}-${os}-${arch}"
   prefix="$(printf '%s' "${OCR_GITHUB_MIRROR:-}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"

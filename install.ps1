@@ -1,7 +1,7 @@
 # Install the ocr (Open Code Review) CLI from GitHub releases on Windows.
-#   irm https://open-codereview.ai/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 | iex
 # Prefer to inspect first:
-#   irm https://open-codereview.ai/install.ps1 -OutFile install.ps1
+#   irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 -OutFile install.ps1
 #   notepad install.ps1   # review, then: .\install.ps1
 # Env: OCR_INSTALL_DIR (default $env:LOCALAPPDATA\Programs\ocr), OCR_VERSION (default latest),
 # OCR_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
@@ -30,7 +30,13 @@ function Get-OcrArch {
 function Resolve-OcrVersion([string]$Repo) {
     $version = $env:OCR_VERSION
     if (-not [string]::IsNullOrWhiteSpace($version)) {
-        return $version.Trim()
+        $version = $version.Trim()
+        if ($version -ne 'latest') {
+            if ($version -notmatch '^v') {
+                return "v$version"
+            }
+            return $version
+        }
     }
     try {
         $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -UseBasicParsing
@@ -91,7 +97,7 @@ try {
     # Ignore if the runtime already negotiates modern TLS.
 }
 
-$Repo = 'alibaba/open-code-review'
+$Repo = 'CHE3MZ/kaid'
 $Bin = 'ocr.exe'
 $AssetPrefix = 'opencodereview'
 $DefaultInstallDir = Join-Path $env:LOCALAPPDATA 'Programs\ocr'
