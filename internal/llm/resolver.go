@@ -30,7 +30,7 @@ type ResolvedEndpoint struct {
 	ExtraHeaders map[string]string // extra HTTP headers for the LLM request
 	// Timeout is the per-request HTTP timeout; 0 means use the client default (5 min).
 	// Only config file (llm/provider sections) and OCR_LLM_TIMEOUT env var can set this.
-	// tryCCEnv and tryShellRC always leave it at 0 since those sources have no timeout
+	// tryAnthropicEnv and tryShellRC always leave it at 0 since those sources have no timeout
 	// knob; users can still override via OCR_LLM_TIMEOUT.
 	Timeout               time.Duration
 	RetryCodes            []int // additional HTTP status codes that trigger exponential-backoff retry
@@ -67,12 +67,12 @@ const (
 	// ResolveEndpointWithOptions and applied by finalizeResolvedEndpoint to
 	// whichever strategy resolves, rather than inside tryOCREnv like other
 	// OCR_LLM_* vars. This lets it override timeout for all resolution paths
-	// (OCR env, config file, provider config, Claude Code env, shell RC).
+	// (OCR env, config file, provider config, Anthropic env, shell RC).
 	envOCRLLMTimeout   = "OCR_LLM_TIMEOUT"
 	envOCRUseAnthropic = "OCR_USE_ANTHROPIC"
 )
 
-// Environment variable names from Claude Code configuration.
+// Environment variable names from Anthropic configuration.
 const (
 	envCCBaseURL = "ANTHROPIC_BASE_URL"
 	envCCToken   = "ANTHROPIC_AUTH_TOKEN"
@@ -136,7 +136,7 @@ func ResolveEndpointWithOptions(configPath string, opts ResolveOptions) (Resolve
 	}{
 		{"OCR config file", func() (ResolvedEndpoint, bool, error) { return tryOCRConfig(configPath, opts) }},
 		{"OCR environment", func() (ResolvedEndpoint, bool, error) { return tryOCREnv(opts.Model) }},
-		{"Claude Code environment", func() (ResolvedEndpoint, bool, error) { return tryCCEnv(opts.Model) }},
+		{"Anthropic environment", func() (ResolvedEndpoint, bool, error) { return tryAnthropicEnv(opts.Model) }},
 		{"Shell rc file", func() (ResolvedEndpoint, bool, error) { return tryShellRC(opts.Model) }},
 	}
 
@@ -731,8 +731,8 @@ func tryLegacyLlmConfig(cfg configFile, modelOverride string) (ResolvedEndpoint,
 	}, true, nil
 }
 
-// tryCCEnv reads Claude Code environment variables.
-func tryCCEnv(modelOverride string) (ResolvedEndpoint, bool, error) {
+// tryAnthropicEnv reads Anthropic environment variables.
+func tryAnthropicEnv(modelOverride string) (ResolvedEndpoint, bool, error) {
 	// Trim here rather than in finalizeResolvedEndpoint: ensureMessagesSuffix
 	// below appends "/v1/messages", which would bury a trailing "\r" in the
 	// middle of the URL where a later TrimSpace can no longer reach it.
@@ -751,8 +751,8 @@ func tryCCEnv(modelOverride string) (ResolvedEndpoint, bool, error) {
 
 	url := ensureMessagesSuffix(baseURL)
 
-	// Claude Code environment tokens are OAuth/Bearer-style credentials.
-	return ResolvedEndpoint{URL: url, Token: token, Model: model, Protocol: ProtocolAnthropic, AuthHeader: "authorization", Source: "Claude Code environment"}, true, nil
+	// Anthropic environment tokens are OAuth/Bearer-style credentials.
+	return ResolvedEndpoint{URL: url, Token: token, Model: model, Protocol: ProtocolAnthropic, AuthHeader: "authorization", Source: "Anthropic environment"}, true, nil
 }
 
 // tryShellRC parses ~/.zshrc and ~/.bashrc for ANTHROPIC_* exports.
@@ -837,7 +837,7 @@ func parseShellRC(path, modelOverride string) (ResolvedEndpoint, bool, error) {
 
 	url := ensureMessagesSuffix(baseURL)
 
-	// Claude Code shell rc tokens are OAuth/Bearer-style credentials.
+	// Anthropic shell rc tokens are OAuth/Bearer-style credentials.
 	return ResolvedEndpoint{URL: url, Token: token, Model: model, Protocol: ProtocolAnthropic, AuthHeader: "authorization", Source: "Shell rc file"}, true, nil
 }
 

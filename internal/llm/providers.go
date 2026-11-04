@@ -503,10 +503,10 @@ var registry = []Provider{
 		Protocol:    ProtocolOpenAIChatCompletions,
 		BaseURL:     "https://api.mistral.ai/v1",
 		EnvVar:      "MISTRAL_API_KEY",
-		// Deliberately minimal list to keep this preset low-maintenance for
-		// alibaba/open-code-review maintainers. Users can point to any other
-		// Mistral model via `ocr config set model <name>`; the preset only
-		// seeds the picker UI. See https://docs.mistral.ai/getting-started/models/models_overview/
+		// Deliberately minimal list to keep this preset low-maintenance.
+		// Users can point to any other Mistral model via
+		// `ocr config set model <name>`; the preset only seeds the picker UI.
+		// See https://docs.mistral.ai/getting-started/models/models_overview/
 		Models: []string{
 			"codestral-latest",
 			"mistral-large-latest",

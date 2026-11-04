@@ -41,7 +41,7 @@ func TestStripModelSuffix(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_CCEnvStripsModelSuffix(t *testing.T) {
+func TestResolveEndpoint_AnthropicEnvStripsModelSuffix(t *testing.T) {
 	t.Setenv("OCR_LLM_URL", "")
 	t.Setenv("OCR_LLM_TOKEN", "")
 	t.Setenv("OCR_LLM_MODEL", "")
@@ -56,12 +56,12 @@ func TestResolveEndpoint_CCEnvStripsModelSuffix(t *testing.T) {
 	if ep.Model != "claude-opus-4-7" {
 		t.Errorf("expected model %q, got %q", "claude-opus-4-7", ep.Model)
 	}
-	if ep.Source != "Claude Code environment" {
-		t.Errorf("expected source %q, got %q", "Claude Code environment", ep.Source)
+	if ep.Source != "Anthropic environment" {
+		t.Errorf("expected source %q, got %q", "Anthropic environment", ep.Source)
 	}
 }
 
-func TestResolveEndpoint_CCEnvCleanModelUnchanged(t *testing.T) {
+func TestResolveEndpoint_AnthropicEnvCleanModelUnchanged(t *testing.T) {
 	t.Setenv("OCR_LLM_URL", "")
 	t.Setenv("OCR_LLM_TOKEN", "")
 	t.Setenv("OCR_LLM_MODEL", "")
@@ -2774,7 +2774,7 @@ func TestResolveEndpoint_EnvValuesAreTrimmed(t *testing.T) {
 		}
 	})
 
-	t.Run("Claude Code environment", func(t *testing.T) {
+	t.Run("Anthropic environment", func(t *testing.T) {
 		clearAllEnv(t)
 		t.Setenv("ANTHROPIC_BASE_URL", "https://api.example.com"+cr)
 		t.Setenv("ANTHROPIC_AUTH_TOKEN", "cc-token"+cr)
@@ -2784,8 +2784,8 @@ func TestResolveEndpoint_EnvValuesAreTrimmed(t *testing.T) {
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		if ep.Source != "Claude Code environment" {
-			t.Fatalf("Source = %q, want %q", ep.Source, "Claude Code environment")
+		if ep.Source != "Anthropic environment" {
+			t.Fatalf("Source = %q, want %q", ep.Source, "Anthropic environment")
 		}
 		// ensureMessagesSuffix appends "/v1/messages" to the value as read, so a
 		// CR that survives the read lands in the middle of the URL — a
@@ -2863,13 +2863,13 @@ func TestResolveEndpoint_InvalidEnvURLNamesSourceAndVariable(t *testing.T) {
 			wantVar:    envOCRLLMURL,
 		},
 		{
-			name: "Claude Code environment",
+			name: "Anthropic environment",
 			configure: func(t *testing.T) {
 				t.Setenv(envCCBaseURL, "https://api.example.com/\rbad")
 				t.Setenv(envCCToken, "cc-token")
 				t.Setenv(envCCModel, "test-model")
 			},
-			wantSource: "Claude Code environment",
+			wantSource: "Anthropic environment",
 			wantVar:    envCCBaseURL,
 		},
 	}

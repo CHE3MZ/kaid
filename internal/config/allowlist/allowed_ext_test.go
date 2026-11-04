@@ -565,8 +565,8 @@ func TestIsExcludedPath(t *testing.T) {
 		{"min in a filename is not minified", "src/minified.ts", false},
 		{"lockfile lookalike", "src/package-lock-utils.ts", false},
 		// #1494 leaves these two out on purpose: plenty of projects keep
-		// hand-written sources in them, including this repository's bin/ocr.js.
-		{"bin is reviewed", "bin/ocr.js", false},
+		// hand-written sources in them, such as build scripts.
+		{"bin is reviewed", "bin/deploy.js", false},
 		{"build is reviewed", "build/index.js", false},
 
 		// Case insensitive

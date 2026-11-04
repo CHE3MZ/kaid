@@ -26,8 +26,8 @@
 // Symbols are deliberately left alone: box drawing, arrows, emoji and maths
 // (─ → ≥ ≈ ×) are not letters and appear throughout the TUI output on purpose.
 //
-// Markdown is not scanned: the translated READMEs, CONTRIBUTING files and doc
-// pages are legitimately non-English.
+// Markdown is not scanned: the translated READMEs and doc pages are
+// legitimately non-English.
 //
 // Run it directly (the build tag keeps it out of ./... so it does not affect
 // go vet, go build or the coverage threshold):

@@ -368,7 +368,7 @@ func TestResolveEndpoint_LegacyAuthTokenCmd(t *testing.T) {
 }
 
 // (e3) legacy path: an otherwise-complete llm block whose auth_token_cmd fails is
-// a hard error. The Claude Code env vars are set to prove it does not fall through
+// a hard error. The Anthropic env vars are set to prove it does not fall through
 // to that strategy -- a failing credential command must not be papered over by a
 // lower-priority source.
 func TestResolveEndpoint_LegacyAuthTokenCmdFailsHard(t *testing.T) {

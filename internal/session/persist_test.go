@@ -134,7 +134,7 @@ func TestSessionRecordsIncludeLLMSource(t *testing.T) {
 	repoDir := t.TempDir()
 	sh := New(repoDir, "main", "test-model", SessionOptions{
 		ReviewMode: ReviewModeWorkspace,
-		LLMSource:  "Claude Code environment",
+		LLMSource:  "Anthropic environment",
 	})
 	fs := sh.GetOrCreateFileSession("foo.go")
 	fs.AppendTaskRecord(MainTask, nil).SetError(fmt.Errorf("boom"), time.Second)
@@ -150,8 +150,8 @@ func TestSessionRecordsIncludeLLMSource(t *testing.T) {
 			continue
 		}
 		found[typeName] = true
-		if got := record["llmSource"]; got != "Claude Code environment" {
-			t.Errorf("%s llmSource = %v, want Claude Code environment", typeName, got)
+		if got := record["llmSource"]; got != "Anthropic environment" {
+			t.Errorf("%s llmSource = %v, want Anthropic environment", typeName, got)
 		}
 	}
 	for _, typeName := range []string{"session_start", "llm_error"} {

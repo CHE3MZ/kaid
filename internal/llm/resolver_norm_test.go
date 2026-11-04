@@ -37,17 +37,17 @@ func TestNormalizeAuthHeader(t *testing.T) {
 	}
 }
 
-// TestTryCCEnv covers tryCCEnv: the model-override branch, a successful resolve
+// TestTryAnthropicEnv covers tryAnthropicEnv: the model-override branch, a successful resolve
 // from the ANTHROPIC_* environment, and the incomplete-environment miss.
-func TestTryCCEnv(t *testing.T) {
+func TestTryAnthropicEnv(t *testing.T) {
 	t.Run("model override wins over env model", func(t *testing.T) {
 		t.Setenv(envCCBaseURL, "https://cc.example")
 		t.Setenv(envCCToken, "tok")
 		t.Setenv(envCCModel, "env-model")
 
-		ep, ok, err := tryCCEnv("override-model")
+		ep, ok, err := tryAnthropicEnv("override-model")
 		if err != nil || !ok {
-			t.Fatalf("tryCCEnv: ok=%v err=%v", ok, err)
+			t.Fatalf("tryAnthropicEnv: ok=%v err=%v", ok, err)
 		}
 		if ep.Model != "override-model" {
 			t.Errorf("model = %q, want override-model", ep.Model)
@@ -62,9 +62,9 @@ func TestTryCCEnv(t *testing.T) {
 		t.Setenv(envCCToken, "")
 		t.Setenv(envCCModel, "m")
 
-		_, ok, err := tryCCEnv("")
+		_, ok, err := tryAnthropicEnv("")
 		if err != nil || ok {
-			t.Fatalf("tryCCEnv should miss on empty token: ok=%v err=%v", ok, err)
+			t.Fatalf("tryAnthropicEnv should miss on empty token: ok=%v err=%v", ok, err)
 		}
 	})
 }
