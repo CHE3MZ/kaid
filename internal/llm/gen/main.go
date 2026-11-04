@@ -11,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alibaba/open-code-review/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/llm"
 )
 
 // preset contains only built-in metadata, never resolved user configuration or

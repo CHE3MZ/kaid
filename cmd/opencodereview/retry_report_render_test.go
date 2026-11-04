@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 // retryReportFixture is the report used by most rendering assertions: one

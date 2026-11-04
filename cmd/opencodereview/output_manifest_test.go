@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/agent"
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/agent"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 // TestWarningsForOutput covers warningsForOutput: the early pass-through when

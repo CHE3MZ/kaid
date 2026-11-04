@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/config/rules"
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/config/rules"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // emptySHA256 is the canonical digest of an empty input, which hashFields must

@@ -11,6 +11,6 @@
 //
 // There is no Go code of ours under pages/. If that ever changes, this file
 // becomes a real module and should be treated as one.
-module github.com/alibaba/open-code-review/pages
+module github.com/CHE3MZ/kaid/pages
 
 go 1.26.10

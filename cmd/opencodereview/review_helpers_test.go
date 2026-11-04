@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/model"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/model"
+	"github.com/CHE3MZ/kaid/internal/tool"
 )
 
 func runPreview(cc *commonContext, opts reviewOptions, out io.Writer) error {

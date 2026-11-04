@@ -14,8 +14,8 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 
-	"github.com/alibaba/open-code-review/internal/gitcmd"
-	"github.com/alibaba/open-code-review/internal/pathutil"
+	"github.com/CHE3MZ/kaid/internal/gitcmd"
+	"github.com/CHE3MZ/kaid/internal/pathutil"
 )
 
 // Resolver resolves a review rule for a file path.

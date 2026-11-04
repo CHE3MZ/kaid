@@ -6,7 +6,7 @@ package diff
 import (
 	"strings"
 
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // ResolveLineNumbers populates StartLine/EndLine on each comment by matching

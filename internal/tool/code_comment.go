@@ -10,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 const (

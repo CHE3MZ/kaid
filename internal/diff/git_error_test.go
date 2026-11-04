@@ -15,7 +15,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/alibaba/open-code-review/internal/gitcmd"
+	"github.com/CHE3MZ/kaid/internal/gitcmd"
 )
 
 func TestGitFailure(t *testing.T) {

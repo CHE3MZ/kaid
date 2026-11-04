@@ -13,7 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 func seedRmSession(t *testing.T, _ /*home*/, repoDir, sessionID string) string {

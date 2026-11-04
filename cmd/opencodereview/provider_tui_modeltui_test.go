@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/alibaba/open-code-review/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/llm"
 )
 
 // newCustomModelTUI builds a modelTUIModel backed by a custom provider with a

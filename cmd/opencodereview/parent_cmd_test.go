@@ -12,8 +12,6 @@ import (
 // previously silently printed help and exited 0 now return a non-zero exit
 // code with a clear "unknown command" error when given an unrecognized
 // subcommand. This is consistent with the root command and leaf commands.
-//
-// See: https://github.com/alibaba/open-code-review/issues/641
 func TestParentCommands_UnknownSubcommand(t *testing.T) {
 	tests := []struct {
 		name string

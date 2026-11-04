@@ -10,8 +10,8 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/config/testconnection"
-	"github.com/alibaba/open-code-review/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/config/testconnection"
+	"github.com/CHE3MZ/kaid/internal/llm"
 	"github.com/spf13/cobra"
 )
 

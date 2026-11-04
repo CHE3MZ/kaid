@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alibaba/open-code-review/internal/pathutil"
+	"github.com/CHE3MZ/kaid/internal/pathutil"
 )
 
 const maxUntrackedFileSize = 64 << 20

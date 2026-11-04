@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 func TestValidateReviewRefsRejectsOptionLikeCommit(t *testing.T) {

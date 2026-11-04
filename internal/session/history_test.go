@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/llm"
 	anthropic "github.com/anthropics/anthropic-sdk-go"
 )
 

@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/config/template"
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/model"
-	"github.com/alibaba/open-code-review/internal/session"
-	"github.com/alibaba/open-code-review/internal/stdout"
-	"github.com/alibaba/open-code-review/internal/telemetry"
+	"github.com/CHE3MZ/kaid/internal/config/template"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/model"
+	"github.com/CHE3MZ/kaid/internal/session"
+	"github.com/CHE3MZ/kaid/internal/stdout"
+	"github.com/CHE3MZ/kaid/internal/telemetry"
 )
 
 const maxFilesPerGroup = 10

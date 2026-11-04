@@ -13,8 +13,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // TaskType identifies the kind of LLM request within a file subtask.

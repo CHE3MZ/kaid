@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/alibaba/open-code-review/internal/model"
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/model"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 func handleRepos(w http.ResponseWriter, r *http.Request, root string) {

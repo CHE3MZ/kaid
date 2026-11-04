@@ -10,8 +10,8 @@ import (
 
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/config/template"
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/config/template"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 func TestLoadScanResumeState(t *testing.T) {

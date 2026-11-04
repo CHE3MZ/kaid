@@ -1,4 +1,4 @@
-module github.com/alibaba/open-code-review
+module github.com/CHE3MZ/kaid
 
 go 1.26.10
 

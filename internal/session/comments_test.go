@@ -6,7 +6,7 @@ package session
 import (
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 func TestLoadComments_ReturnsCommentsInOrder(t *testing.T) {

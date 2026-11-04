@@ -6,7 +6,7 @@
 package delegate
 
 import (
-	"github.com/alibaba/open-code-review/internal/config/rules"
+	"github.com/CHE3MZ/kaid/internal/config/rules"
 )
 
 // RuleGroup clusters files that share the same resolved rule text.

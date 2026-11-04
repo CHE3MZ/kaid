@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 func cmt(path, content string) model.LlmComment {

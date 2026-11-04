@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // cmt builds a finding compactly: path, start line, category, snippet, content.

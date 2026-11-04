@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/delegate"
+	"github.com/CHE3MZ/kaid/internal/delegate"
 )
 
 func captureDelegateStdout(t *testing.T, fn func()) []byte {

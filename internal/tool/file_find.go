@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/diff"
+	"github.com/CHE3MZ/kaid/internal/diff"
 )
 
 const (

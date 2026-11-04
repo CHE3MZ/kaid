@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/chatgptauth"
+	"github.com/CHE3MZ/kaid/internal/chatgptauth"
 )
 
 var chatGPTCredentials = func(ctx context.Context, account string) (*chatgptauth.Auth, error) {

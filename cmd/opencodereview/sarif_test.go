@@ -13,9 +13,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alibaba/open-code-review/internal/agent"
-	"github.com/alibaba/open-code-review/internal/model"
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/agent"
+	"github.com/CHE3MZ/kaid/internal/model"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 // mustUnmarshal is a test helper that unmarshals SARIF output and fails the

@@ -17,8 +17,8 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 
-	"github.com/alibaba/open-code-review/internal/gitcmd"
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/gitcmd"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // DiffContextLines defines the number of context lines around each changed hunk.

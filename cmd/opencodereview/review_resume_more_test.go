@@ -12,11 +12,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/agent"
-	"github.com/alibaba/open-code-review/internal/config/template"
-	"github.com/alibaba/open-code-review/internal/diff"
-	"github.com/alibaba/open-code-review/internal/session"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/agent"
+	"github.com/CHE3MZ/kaid/internal/config/template"
+	"github.com/CHE3MZ/kaid/internal/diff"
+	"github.com/CHE3MZ/kaid/internal/session"
+	"github.com/CHE3MZ/kaid/internal/tool"
 )
 
 // writeRangeResumeSession persists a range-mode session with the given completed

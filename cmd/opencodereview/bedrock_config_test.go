@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/llm"
 )
 
 // TestConfigRoundTripKeepsAWSSettings is the regression test for a silent loss:

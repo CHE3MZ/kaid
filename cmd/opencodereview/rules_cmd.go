@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alibaba/open-code-review/internal/config/rules"
+	"github.com/CHE3MZ/kaid/internal/config/rules"
 	"github.com/spf13/cobra"
 )
 

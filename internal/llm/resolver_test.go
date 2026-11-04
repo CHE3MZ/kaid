@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/chatgptauth"
+	"github.com/CHE3MZ/kaid/internal/chatgptauth"
 )
 
 func TestStripModelSuffix(t *testing.T) {

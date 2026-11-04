@@ -7,8 +7,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/session"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/session"
+	"github.com/CHE3MZ/kaid/internal/tool"
 )
 
 // TestBudgetExceededFlag pins BudgetExceeded() to the actual state of the

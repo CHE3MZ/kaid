@@ -3,6 +3,6 @@
 
 package agent
 
-import "github.com/alibaba/open-code-review/internal/session"
+import "github.com/CHE3MZ/kaid/internal/session"
 
 func init() { session.UseTestSessions() }

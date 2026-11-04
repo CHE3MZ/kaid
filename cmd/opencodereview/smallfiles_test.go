@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/viewer"
+	"github.com/CHE3MZ/kaid/internal/viewer"
 )
 
 func TestPrintVersion_Dev(t *testing.T) {

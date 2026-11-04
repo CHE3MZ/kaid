@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // CompareResult groups two sessions' findings into four disjoint buckets.

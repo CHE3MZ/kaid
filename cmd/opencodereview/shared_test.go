@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/config/rules"
-	"github.com/alibaba/open-code-review/internal/stdout"
+	"github.com/CHE3MZ/kaid/internal/config/rules"
+	"github.com/CHE3MZ/kaid/internal/stdout"
 )
 
 func TestResolveMaxTokensPrecedence(t *testing.T) {

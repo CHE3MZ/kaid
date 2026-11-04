@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/gitcmd"
-	"github.com/alibaba/open-code-review/internal/model"
+	"github.com/CHE3MZ/kaid/internal/gitcmd"
+	"github.com/CHE3MZ/kaid/internal/model"
 )
 
 // runGitTest runs a git command in dir and fails the test on error.

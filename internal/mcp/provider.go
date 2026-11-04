@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/tool"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/mcp"
+	"github.com/CHE3MZ/kaid/internal/mcp"
 )
 
 func TestReviewOutputCommittedBeforeMCPShutdown(t *testing.T) {

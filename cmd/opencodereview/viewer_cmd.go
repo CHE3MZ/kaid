@@ -4,7 +4,7 @@
 package main
 
 import (
-	"github.com/alibaba/open-code-review/internal/viewer"
+	"github.com/CHE3MZ/kaid/internal/viewer"
 	"github.com/spf13/cobra"
 )
 

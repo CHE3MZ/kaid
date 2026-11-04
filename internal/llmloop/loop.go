@@ -12,14 +12,14 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/config/template"
-	"github.com/alibaba/open-code-review/internal/diff"
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/model"
-	"github.com/alibaba/open-code-review/internal/session"
-	"github.com/alibaba/open-code-review/internal/stdout"
-	"github.com/alibaba/open-code-review/internal/telemetry"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/config/template"
+	"github.com/CHE3MZ/kaid/internal/diff"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/model"
+	"github.com/CHE3MZ/kaid/internal/session"
+	"github.com/CHE3MZ/kaid/internal/stdout"
+	"github.com/CHE3MZ/kaid/internal/telemetry"
+	"github.com/CHE3MZ/kaid/internal/tool"
 	"github.com/google/uuid"
 )
 

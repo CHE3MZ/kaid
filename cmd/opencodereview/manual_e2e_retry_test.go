@@ -20,10 +20,10 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/agent"
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/session"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/agent"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/session"
+	"github.com/CHE3MZ/kaid/internal/tool"
 )
 
 // The fake Anthropic server, the fixture repo and the OCR_LLM_* wiring live in

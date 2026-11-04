@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alibaba/open-code-review/internal/agent"
-	"github.com/alibaba/open-code-review/internal/config/rules"
-	"github.com/alibaba/open-code-review/internal/delegate"
-	"github.com/alibaba/open-code-review/internal/diff"
-	"github.com/alibaba/open-code-review/internal/tool"
+	"github.com/CHE3MZ/kaid/internal/agent"
+	"github.com/CHE3MZ/kaid/internal/config/rules"
+	"github.com/CHE3MZ/kaid/internal/delegate"
+	"github.com/CHE3MZ/kaid/internal/diff"
+	"github.com/CHE3MZ/kaid/internal/tool"
 	"github.com/spf13/cobra"
 )
 

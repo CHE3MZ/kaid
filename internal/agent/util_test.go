@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/llm"
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/llm"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 func TestStripEmptyPlanBlock(t *testing.T) {

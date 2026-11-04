@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/internal/config/toolsconfig"
+	"github.com/CHE3MZ/kaid/internal/config/toolsconfig"
 )
 
 // These fixtures are the observed shape of the failure: `comments` arrives as a

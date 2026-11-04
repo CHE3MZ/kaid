@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/internal/agent"
-	"github.com/alibaba/open-code-review/internal/llmloop"
-	"github.com/alibaba/open-code-review/internal/model"
-	"github.com/alibaba/open-code-review/internal/session"
+	"github.com/CHE3MZ/kaid/internal/agent"
+	"github.com/CHE3MZ/kaid/internal/llmloop"
+	"github.com/CHE3MZ/kaid/internal/model"
+	"github.com/CHE3MZ/kaid/internal/session"
 )
 
 // TestEmitRunResult_JSONBudgetStopIsPartial pins the unified terminal-state
