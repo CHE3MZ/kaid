@@ -1,4 +1,4 @@
-module github.com/alibaba/open-code-review/acp
+module github.com/CHE3MZ/kaid/acp
 
 go 1.26.10
 

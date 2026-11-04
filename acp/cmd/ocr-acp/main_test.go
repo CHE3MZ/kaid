@@ -15,8 +15,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/acp/internal/intent/llm"
-	"github.com/alibaba/open-code-review/acp/internal/testutil"
+	"github.com/CHE3MZ/kaid/acp/internal/intent/llm"
+	"github.com/CHE3MZ/kaid/acp/internal/testutil"
 	acp "github.com/coder/acp-go-sdk"
 )
 

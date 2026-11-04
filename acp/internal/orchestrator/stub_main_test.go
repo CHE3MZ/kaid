@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/alibaba/open-code-review/acp/internal/testutil"
+	"github.com/CHE3MZ/kaid/acp/internal/testutil"
 )
 
 func TestMain(m *testing.M) {

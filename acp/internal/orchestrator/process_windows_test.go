@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/acp/internal/testutil"
+	"github.com/CHE3MZ/kaid/acp/internal/testutil"
 )
 
 func TestWindowsJobObjectReapsGrandchild(t *testing.T) {

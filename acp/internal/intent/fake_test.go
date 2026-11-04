@@ -9,7 +9,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/alibaba/open-code-review/acp/internal/contract"
+	"github.com/CHE3MZ/kaid/acp/internal/contract"
 )
 
 // fakeRepo is an offline RepoContext. Refs listed in bad fail to resolve.

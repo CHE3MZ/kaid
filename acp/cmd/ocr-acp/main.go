@@ -12,10 +12,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/alibaba/open-code-review/acp/internal/adapter"
-	"github.com/alibaba/open-code-review/acp/internal/intent"
-	"github.com/alibaba/open-code-review/acp/internal/intent/llm"
-	"github.com/alibaba/open-code-review/acp/internal/orchestrator"
+	"github.com/CHE3MZ/kaid/acp/internal/adapter"
+	"github.com/CHE3MZ/kaid/acp/internal/intent"
+	"github.com/CHE3MZ/kaid/acp/internal/intent/llm"
+	"github.com/CHE3MZ/kaid/acp/internal/orchestrator"
 )
 
 func main() {

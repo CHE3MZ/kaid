@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alibaba/open-code-review/acp/internal/contract"
+	"github.com/CHE3MZ/kaid/acp/internal/contract"
 )
 
 const (

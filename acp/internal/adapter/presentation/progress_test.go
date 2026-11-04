@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/acp/internal/contract"
-	"github.com/alibaba/open-code-review/acp/internal/orchestrator"
+	"github.com/CHE3MZ/kaid/acp/internal/contract"
+	"github.com/CHE3MZ/kaid/acp/internal/orchestrator"
 	acp "github.com/coder/acp-go-sdk"
 )
 

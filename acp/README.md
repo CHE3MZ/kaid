@@ -133,7 +133,7 @@ complete settings file: field names and nesting depend on the client.
 
 ```json
 {
-  "command": "/absolute/path/open-code-review/dist/ocr-acp",
+  "command": "/absolute/path/kaid/dist/ocr-acp",
   "args": ["--ocr-binary", "/absolute/path/ocr"],
   "env": {}
 }

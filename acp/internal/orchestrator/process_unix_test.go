@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/open-code-review/acp/internal/orchestrator/process"
+	"github.com/CHE3MZ/kaid/acp/internal/orchestrator/process"
 )
 
 func TestStopKillsIgnoringMemberAfterLeaderExit(t *testing.T) {

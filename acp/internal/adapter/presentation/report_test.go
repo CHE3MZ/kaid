@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/open-code-review/acp/internal/adapter/workspace"
-	"github.com/alibaba/open-code-review/acp/internal/contract"
-	"github.com/alibaba/open-code-review/acp/internal/orchestrator"
+	"github.com/CHE3MZ/kaid/acp/internal/adapter/workspace"
+	"github.com/CHE3MZ/kaid/acp/internal/contract"
+	"github.com/CHE3MZ/kaid/acp/internal/orchestrator"
 )
 
 func TestPartialResultRetainsDiagnosticsAndSuggestions(t *testing.T) {
