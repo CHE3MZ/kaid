@@ -207,7 +207,7 @@ const Navbar: React.FC = () => {
             )}
           </div>
           <a
-            href="https://github.com/alibaba/open-code-review"
+            href="https://github.com/CHE3MZ/kaid"
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'flex', alignItems: 'center', opacity: 0.6 }}

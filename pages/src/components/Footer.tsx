@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
           margin: '0 auto',
         }}
       >
-        <a href="https://github.com/alibaba/open-code-review" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
+        <a href="https://github.com/CHE3MZ/kaid" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
           <img src={githubIcon} alt="" style={{ width: 18, height: 18 }} />
           <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14 }}>{t('footer.brand')}</span>
         </a>

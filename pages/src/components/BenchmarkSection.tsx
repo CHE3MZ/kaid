@@ -6,7 +6,6 @@ import { useTranslation } from '../i18n';
 import { useResponsive } from '../hooks/useResponsive';
 import { useSectionTitleStyle } from '../hooks/useResponsiveStyle';
 import ocrSourceIcon from '../assets/images/icon-ocr-source.svg';
-import claudeCodeIcon from '../assets/images/icon-claude-code.svg';
 import codexIcon from '../assets/images/icon-codex.svg';
 import sortIcon from '../assets/icons/icon-sort.svg';
 import trophyGold from '../assets/icons/trophy-gold.svg';
@@ -48,11 +47,6 @@ const rawRows: BenchmarkRow[] = [
   { model: 'GLM-5.1', provider: 'Zhipu AI', source: 'Open Code Review', sourceIcon: ocrSourceIcon, version: 'v1.3.1', f1: '20.40%', f1Value: 20.40, precision: '28.90%', precisionValue: 28.90, precisionDetail: '237/820', recall: '15.70%', recallValue: 15.70, recallDetail: '237/1505', avgTime: '4m11s', avgToken: '743K', tokenDetail: '707K / 36K' },
   { model: 'Claude-4.8-Opus', provider: 'Anthropic', source: 'Open Code Review', sourceIcon: ocrSourceIcon, version: 'v1.3.1', f1: '17.90%', f1Value: 17.90, precision: '37.80%', precisionValue: 37.80, precisionDetail: '176/465', recall: '11.70%', recallValue: 11.70, recallDetail: '176/1505', avgTime: '1m6s', avgToken: '352K', tokenDetail: '342K / 11K', precisionMedal: 0 },
   { model: 'Deepseek-V4-Pro', provider: 'DeepSeek', source: 'Open Code Review', sourceIcon: ocrSourceIcon, version: 'v1.3.1', f1: '17.90%', f1Value: 17.90, precision: '30.60%', precisionValue: 30.60, precisionDetail: '191/624', recall: '12.70%', recallValue: 12.70, recallDetail: '191/1505', avgTime: '6m28s', avgToken: '394K', tokenDetail: '350K / 44K' },
-  { model: 'Claude-4.8-Opus', provider: 'Anthropic', source: 'Claude Code', sourceIcon: claudeCodeIcon, version: 'v2.1.169', f1: '14.13%', f1Value: 14.13, precision: '15.93%', precisionValue: 15.93, precisionDetail: '191/1200', recall: '12.70%', recallValue: 12.70, recallDetail: '191/1505', avgTime: '5m38s', avgToken: '2,062K', tokenDetail: '2,039K / 23K' },
-  { model: 'Qwen3.7-Max', provider: 'Alibaba', source: 'Claude Code', sourceIcon: claudeCodeIcon, version: 'v2.1.169', f1: '12.17%', f1Value: 12.17, precision: '8.23%', precisionValue: 8.23, precisionDetail: '351/4260', recall: '23.37%', recallValue: 23.37, recallDetail: '351/1505', avgTime: '8m6s', avgToken: '5,153K', tokenDetail: '5,108K / 44K', recallMedal: 1 },
-  { model: 'GLM-5.1', provider: 'Zhipu AI', source: 'Claude Code', sourceIcon: claudeCodeIcon, version: 'v2.1.169', f1: '11.93%', f1Value: 11.93, precision: '8.37%', precisionValue: 8.37, precisionDetail: '313/3742', recall: '20.80%', recallValue: 20.80, recallDetail: '313/1505', avgTime: '14m10s', avgToken: '4,038K', tokenDetail: '3,998K / 39K', recallMedal: 2 },
-  { model: 'Claude-4.6-Opus', provider: 'Anthropic', source: 'Claude Code', sourceIcon: claudeCodeIcon, version: 'v2.1.169', f1: '11.57%', f1Value: 11.57, precision: '7.23%', precisionValue: 7.23, precisionDetail: '435/5980', recall: '28.90%', recallValue: 28.90, recallDetail: '435/1505', avgTime: '13m6s', avgToken: '5,664K', tokenDetail: '5,603K / 60K', recallMedal: 0 },
-  { model: 'Deepseek-V4-Pro', provider: 'DeepSeek', source: 'Claude Code', sourceIcon: claudeCodeIcon, version: 'v2.1.169', f1: '10.93%', f1Value: 10.93, precision: '8.27%', precisionValue: 8.27, precisionDetail: '243/2945', recall: '16.13%', recallValue: 16.13, recallDetail: '243/1505', avgTime: '14m24s', avgToken: '5,450K', tokenDetail: '5,389K / 60K' },
   { model: 'GPT-5.5', provider: 'OpenAI', source: 'Codex', sourceIcon: codexIcon, version: 'v0.140.0', f1: '8.36%', f1Value: 8.36, precision: '27.82%', precisionValue: 27.82, precisionDetail: '74/266', recall: '4.92%', recallValue: 4.92, recallDetail: '74/1505', avgTime: '2m58s', avgToken: '525K', tokenDetail: '520K / 5K' },
 ];
 

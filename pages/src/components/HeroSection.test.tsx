@@ -26,7 +26,7 @@ const trigger = () => screen.getByRole('button', { name: /More|Windows/i });
 describe('HeroSection install channels', () => {
   it('starts on the first channel with the panel closed', () => {
     renderHero();
-    expect(screen.getByText('npm i -g @alibaba-group/open-code-review')).toBeTruthy();
+    expect(screen.getByText('curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh')).toBeTruthy();
     expect(panel()).toBeNull();
   });
 
@@ -39,7 +39,7 @@ describe('HeroSection install channels', () => {
 
     await user.click(screen.getByRole('button', { name: /Windows/i }));
 
-    expect(screen.getByText('irm https://open-codereview.ai/install.ps1 | iex')).toBeTruthy();
+    expect(screen.getByText('irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex')).toBeTruthy();
     expect(panel()).toBeNull();
   });
 
@@ -48,9 +48,9 @@ describe('HeroSection install channels', () => {
     renderHero();
 
     await user.click(trigger());
-    await user.click(screen.getByRole('button', { name: /Homebrew/i }));
+    await user.click(screen.getByRole('button', { name: /Linux/i }));
 
-    expect(screen.getByText('brew install open-code-review')).toBeTruthy();
+    expect(screen.getByText('curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh')).toBeTruthy();
     expect(panel()).toBeNull();
   });
 
@@ -61,10 +61,10 @@ describe('HeroSection install channels', () => {
     renderHero();
 
     await user.click(trigger());
-    screen.getByRole('button', { name: /Homebrew/i }).focus();
+    screen.getByRole('button', { name: /Linux/i }).focus();
     await user.keyboard('{Enter}');
 
-    expect(screen.getByText('brew install open-code-review')).toBeTruthy();
+    expect(screen.getByText('curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh')).toBeTruthy();
     expect(panel()).toBeNull();
   });
 
