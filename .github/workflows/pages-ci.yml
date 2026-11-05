@@ -2,7 +2,7 @@ name: Pages CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
     paths:
       - 'pages/**'
 

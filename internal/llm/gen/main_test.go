@@ -16,9 +16,8 @@ import (
 )
 
 func TestGeneratedProvidersUpToDate(t *testing.T) {
-	path := filepath.Join("..", "..", "..", "extensions", "frontend", "src", "shared", "providers.generated.ts")
-	kotlinPath := filepath.Join("..", "..", "..", "extensions", "idea", "src", "main", "kotlin", "com", "alibaba", "opencodereview", "idea", "services", "ProviderNames.generated.kt")
-	if err := check(path, kotlinPath); err != nil {
+	path := filepath.Join("..", "..", "..", "frontend", "src", "shared", "providers.generated.ts")
+	if err := check(path); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -74,11 +73,9 @@ func TestRenderPreservesMetadataAndModelOrder(t *testing.T) {
 }
 
 func TestGenerateRequiresOutput(t *testing.T) {
-	for _, paths := range [][2]string{{"", "providers.kt"}, {"providers.ts", ""}} {
-		err := generate(paths[0], paths[1])
-		if err == nil || !strings.Contains(err.Error(), "-output") || !strings.Contains(err.Error(), "-kotlin-output") || !strings.Contains(err.Error(), "go generate ./internal/llm") {
-			t.Fatalf("expected the required flags and regeneration command in the error, got %v", err)
-		}
+	err := generate("")
+	if err == nil || !strings.Contains(err.Error(), "-output") || !strings.Contains(err.Error(), "go generate ./internal/llm") {
+		t.Fatalf("expected the required flag and regeneration command in the error, got %v", err)
 	}
 }
 
@@ -103,37 +100,27 @@ func TestRenderRejectsDuplicateModels(t *testing.T) {
 func TestGenerate(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "providers.ts")
-	kotlinPath := filepath.Join(dir, "providers.kt")
-	if err := generate(path, kotlinPath); err != nil {
+	if err := generate(path); err != nil {
 		t.Fatal(err)
 	}
-	first := make(map[string][]byte)
-	for _, artifact := range []string{path, kotlinPath} {
-		data, err := os.ReadFile(artifact)
-		if err != nil {
-			t.Fatal(err)
-		}
-		first[artifact] = data
-	}
-	if err := generate(path, kotlinPath); err != nil {
+	first, err := os.ReadFile(path)
+	if err != nil {
 		t.Fatal(err)
 	}
-	for artifact, data := range first {
-		second, err := os.ReadFile(artifact)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !bytes.Equal(data, second) {
-			t.Fatalf("generating twice must produce identical bytes for %s", artifact)
-		}
-	}
-	if err := check(path, kotlinPath); err != nil {
+	if err := generate(path); err != nil {
 		t.Fatal(err)
 	}
-	if err := generate(t.TempDir(), kotlinPath); err == nil || !strings.Contains(err.Error(), "write provider presets") {
+	second, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(first, second) {
+		t.Fatalf("generating twice must produce identical bytes for %s", path)
+	}
+	if err := check(path); err != nil {
+		t.Fatal(err)
+	}
+	if err := generate(t.TempDir()); err == nil || !strings.Contains(err.Error(), "write provider presets") {
 		t.Fatalf("expected a contextual write error, got %v", err)
-	}
-	if err := generate(path, t.TempDir()); err == nil || !strings.Contains(err.Error(), "write Kotlin provider names") {
-		t.Fatalf("expected a contextual Kotlin write error, got %v", err)
 	}
 }

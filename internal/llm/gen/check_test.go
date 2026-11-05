@@ -189,15 +189,12 @@ func TestCheckPresetsImportLineTerminators(t *testing.T) {
 }
 
 func TestCheckRequiresExistingFile(t *testing.T) {
-	for _, paths := range [][2]string{{"", "providers.kt"}, {"providers.ts", ""}} {
-		if err := check(paths[0], paths[1]); err == nil || !strings.Contains(err.Error(), "-output") || !strings.Contains(err.Error(), "-kotlin-output") {
-			t.Fatalf("missing output path error = %v", err)
-		}
+	if err := check(""); err == nil || !strings.Contains(err.Error(), "-output") {
+		t.Fatalf("missing output path error = %v", err)
 	}
 	dir := t.TempDir()
 	path := filepath.Join(dir, "missing.ts")
-	kotlinPath := filepath.Join(dir, "missing.kt")
-	if err := check(path, kotlinPath); err == nil || !strings.Contains(err.Error(), "read provider presets") {
+	if err := check(path); err == nil || !strings.Contains(err.Error(), "read provider presets") {
 		t.Fatalf("missing artifact error = %v", err)
 	}
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
@@ -210,11 +207,8 @@ func TestCheckRequiresExistingFile(t *testing.T) {
 	if err := os.WriteFile(path, data, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := check(path, kotlinPath); err == nil || !strings.Contains(err.Error(), "read Kotlin provider names") {
-		t.Fatalf("missing Kotlin artifact error = %v", err)
-	}
-	if _, err := os.Stat(kotlinPath); !os.IsNotExist(err) {
-		t.Fatalf("check must not create a missing Kotlin artifact: %v", err)
+	if err := check(path); err != nil {
+		t.Fatal(err)
 	}
 }
 
@@ -230,53 +224,43 @@ func TestCheckDoesNotRewriteArtifact(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	validKotlin := renderKotlin(llm.ListProviders())
 	for _, tc := range []struct {
 		name         string
-		data, kotlin []byte
+		data         []byte
 		inconsistent bool
 	}{
-		{"matching", valid, validKotlin, false},
-		{"inconsistent frontend", []byte("import type { OcrProviderPreset } from './providers';\n" + presetDeclaration + " [];\n"), validKotlin, true},
-		{"inconsistent Kotlin", valid, []byte("package com.alibaba.opencodereview.idea.services\n" + kotlinDeclaration + ")\n"), true},
-		{"wrong import path", bytes.Replace(valid, []byte("from './providers'"), []byte("from './missing-providers'"), 1), validKotlin, true},
-		{"missing import", bytes.Replace(valid, []byte("import type { OcrProviderPreset } from './providers';"), nil, 1), validKotlin, true},
-		{"wrong Kotlin package", valid, bytes.Replace(validKotlin, []byte("package com.alibaba.opencodereview.idea.services"), []byte("package incorrect.services"), 1), true},
-		{"missing Kotlin package", valid, bytes.Replace(validKotlin, []byte("package com.alibaba.opencodereview.idea.services"), nil, 1), true},
+		{"matching", valid, false},
+		{"inconsistent frontend", []byte("import type { OcrProviderPreset } from './providers';\n" + presetDeclaration + " [];\n"), true},
+		{"wrong import path", bytes.Replace(valid, []byte("from './providers'"), []byte("from './missing-providers'"), 1), true},
+		{"missing import", bytes.Replace(valid, []byte("import type { OcrProviderPreset } from './providers';"), nil, 1), true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "providers.ts")
-			kotlinPath := filepath.Join(dir, "providers.kt")
 			modified := time.Unix(1600000000, 0)
-			artifacts := map[string][]byte{path: tc.data, kotlinPath: tc.kotlin}
-			for artifact, data := range artifacts {
-				if err := os.WriteFile(artifact, data, 0o644); err != nil {
-					t.Fatal(err)
-				}
-				if err := os.Chtimes(artifact, modified, modified); err != nil {
-					t.Fatal(err)
-				}
+			if err := os.WriteFile(path, tc.data, 0o644); err != nil {
+				t.Fatal(err)
 			}
-			err := check(path, kotlinPath)
+			if err := os.Chtimes(path, modified, modified); err != nil {
+				t.Fatal(err)
+			}
+			err := check(path)
 			if !tc.inconsistent && err != nil {
 				t.Fatal(err)
 			}
 			if tc.inconsistent && (err == nil || !strings.Contains(err.Error(), "go generate ./internal/llm")) {
 				t.Fatalf("mismatch must include the regeneration command: %v", err)
 			}
-			for artifact, data := range artifacts {
-				got, err := os.ReadFile(artifact)
-				if err != nil {
-					t.Fatal(err)
-				}
-				info, err := os.Stat(artifact)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if !bytes.Equal(got, data) || !info.ModTime().Equal(modified) {
-					t.Fatalf("check must not rewrite %s, even when it is inconsistent", artifact)
-				}
+			got, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			info, err := os.Stat(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, tc.data) || !info.ModTime().Equal(modified) {
+				t.Fatalf("check must not rewrite %s, even when it is inconsistent", path)
 			}
 		})
 	}

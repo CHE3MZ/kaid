@@ -3,7 +3,7 @@ name: ACP CI
 # acp/ is a nested Go module, so root CI does not build or test its packages.
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - 'acp/**'
       - '.github/workflows/acp-ci.yml'

@@ -27,9 +27,9 @@ var presetPreamble = preambleSyntax{
 	lineTerminators: "\r\n\u2028\u2029",
 }
 
-func check(output, kotlinOutput string) error {
-	if output == "" || kotlinOutput == "" {
-		return fmt.Errorf("-output and -kotlin-output paths are required for -check")
+func check(output string) error {
+	if output == "" {
+		return fmt.Errorf("-output path is required for -check")
 	}
 	data, err := os.ReadFile(output)
 	if err != nil {
@@ -37,14 +37,7 @@ func check(output, kotlinOutput string) error {
 	}
 	providers := llm.ListProviders()
 	if err := checkPresets(data, providers); err != nil {
-		return fmt.Errorf("provider presets are inconsistent: %w; run go generate ./internal/llm from the repository root and commit the generated files", err)
-	}
-	kotlinData, err := os.ReadFile(kotlinOutput)
-	if err != nil {
-		return fmt.Errorf("read Kotlin provider names: %w", err)
-	}
-	if err := checkKotlinNames(kotlinData, providers); err != nil {
-		return fmt.Errorf("Kotlin provider names are inconsistent: %w; run go generate ./internal/llm from the repository root and commit the generated files", err)
+		return fmt.Errorf("provider presets are inconsistent: %w; run go generate ./internal/llm from the repository root and commit the generated file", err)
 	}
 	return nil
 }

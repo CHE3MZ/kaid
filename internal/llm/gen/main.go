@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 alibaba/open-code-review Contributors
 
-// Command gen generates frontend presets and IDEA provider names from the Go registry.
+// Command gen generates frontend provider presets from the Go registry.
 package main
 
 import (
@@ -39,14 +39,13 @@ export const PROVIDER_PRESETS: OcrProviderPreset[] = `
 
 func main() {
 	output := flag.String("output", "", "path to the generated TypeScript file")
-	kotlinOutput := flag.String("kotlin-output", "", "path to the generated Kotlin file")
 	checkOnly := flag.Bool("check", false, "verify the provider presets without writing files")
 	flag.Parse()
 	var err error
 	if *checkOnly {
-		err = check(*output, *kotlinOutput)
+		err = check(*output)
 	} else {
-		err = generate(*output, *kotlinOutput)
+		err = generate(*output)
 	}
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -54,9 +53,9 @@ func main() {
 	}
 }
 
-func generate(output, kotlinOutput string) error {
-	if output == "" || kotlinOutput == "" {
-		return fmt.Errorf("-output and -kotlin-output paths are required; run go generate ./internal/llm from the repository root")
+func generate(output string) error {
+	if output == "" {
+		return fmt.Errorf("-output path is required; run go generate ./internal/llm from the repository root")
 	}
 	providers := llm.ListProviders()
 	data, err := render(providers)
@@ -65,9 +64,6 @@ func generate(output, kotlinOutput string) error {
 	}
 	if err := writeFileAtomically(output, data, 0o644); err != nil {
 		return fmt.Errorf("write provider presets: %w", err)
-	}
-	if err := writeFileAtomically(kotlinOutput, renderKotlin(providers), 0o644); err != nil {
-		return fmt.Errorf("write Kotlin provider names: %w", err)
 	}
 	return nil
 }

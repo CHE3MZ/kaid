@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths-ignore:
       - '**.md'
       - '**/LICENSE'
       - '**/.gitignore'
   pull_request:
-    branches: [main]
+    branches: [master]
     paths-ignore:
       - '**.md'
       - '**/LICENSE'
@@ -35,7 +35,7 @@ jobs:
         run: git config --global --replace-all safe.directory '*'
 
       - name: Verify generated provider presets
-        run: go run ./internal/llm/gen -check -output extensions/frontend/src/shared/providers.generated.ts -kotlin-output extensions/idea/src/main/kotlin/com/alibaba/opencodereview/idea/services/ProviderNames.generated.kt
+        run: go run ./internal/llm/gen -check -output frontend/src/shared/providers.generated.ts
 
       - name: Verify license headers
         run: bash scripts/verify-license.sh

@@ -502,11 +502,11 @@ func TestIsExcludedPath(t *testing.T) {
 		// Dependency directories and build output (#1494). Files inside these
 		// carry ordinary .js/.ts/.json/.css extensions, so the extension gate
 		// passes them through and only a path pattern stops them. The real case
-		// that prompted this: extensions/frontend/node_modules was committed
+		// that prompted this: frontend/node_modules was committed
 		// once, and from then on git diff stopped consulting .gitignore for it,
 		// so a single review picked up 389 files.
 		{"node_modules at root", "node_modules/left-pad/index.js", true},
-		{"node_modules nested in a workspace", "extensions/frontend/node_modules/@babel/core/lib/index.js", true},
+		{"node_modules nested in a workspace", "frontend/node_modules/@babel/core/lib/index.js", true},
 		{"node_modules nested at depth", "a/b/c/d/node_modules/pkg/dist/index.js", true},
 		{"bower_components", "bower_components/jquery/dist/jquery.js", true},
 		{"pnpm store", ".pnpm-store/v3/files/00/abc.js", true},

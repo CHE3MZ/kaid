@@ -46,11 +46,10 @@ open-code-review (`ocr`) is an AI-powered code review CLI tool written in Go (mo
 
 When changing built-in provider metadata or model lists in
 `internal/llm/providers.go`, run `go generate ./internal/llm` from the
-repository root. Commit both generated files with the registry change;
-do not edit them by hand:
+repository root. Commit the generated file with the registry change;
+do not edit it by hand:
 
-- `extensions/frontend/src/shared/providers.generated.ts`
-- `extensions/idea/src/main/kotlin/com/alibaba/opencodereview/idea/services/ProviderNames.generated.kt`
+- `frontend/src/shared/providers.generated.ts`
 
 ## Testing
 
