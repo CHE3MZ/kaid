@@ -2,4 +2,4 @@
 // Copyright 2026 alibaba/open-code-review Contributors
 
 export { LanguageProvider, useTranslation } from './context';
-export type { Language, TranslationKeys } from './types';
+export type { TranslationKey, TranslationKeys } from './types';

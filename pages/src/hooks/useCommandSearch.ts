@@ -11,8 +11,7 @@ interface SearchResult<S extends string> {
 }
 
 export function useCommandSearch<S extends string>(
-  runSearch: (query: string, language: string) => SearchResult<S>[],
-  language: string,
+  runSearch: (query: string) => SearchResult<S>[],
 ) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,8 +19,8 @@ export function useCommandSearch<S extends string>(
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const searchResults = useMemo(
-    () => runSearch(searchQuery, language),
-    [runSearch, searchQuery, language],
+    () => runSearch(searchQuery),
+    [runSearch, searchQuery],
   );
 
   /* Reset selection when results change */

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 alibaba/open-code-review Contributors
 
-import { I18nContext, resolveLocale } from './I18nProvider';
 import { useCallback, useEffect, useReducer } from 'preact/hooks';
 import { bridge } from './bridge';
 import { ConfigView } from './views/ConfigView';
@@ -43,7 +42,6 @@ export function ConfigPanelApp() {
   }, [state.errorHint]);
 
   return (
-    <I18nContext.Provider value={resolveLocale(state.locale)}>
     <div class="config-panel-root">
       {state.copyHint && <div class="config-toast">{state.copyHint}</div>}
       {state.errorHint && <div class="config-toast error">{state.errorHint}</div>}
@@ -69,6 +67,5 @@ export function ConfigPanelApp() {
         onClose={() => bridge.post({ type: 'closeConfigPanel' })}
       />
     </div>
-    </I18nContext.Provider>
   );
 }

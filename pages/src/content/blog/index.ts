@@ -1,16 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 alibaba/open-code-review Contributors
 
-/* Blog content index — imports all markdown files and provides lookup by slug + language */
+/* Blog content index — imports the English markdown files and provides lookup by slug */
 
-// English posts
-import enIntroducingOcr from './en/introducing-ocr-blog.md';
-
-// Chinese posts
-import zhIntroducingOcr from './zh/introducing-ocr-blog.md';
-
-// Japanese posts
-import jaIntroducingOcr from './ja/introducing-ocr-blog.md';
+import introducingOcr from './en/introducing-ocr-blog.md';
 
 export type BlogSlug =
   | 'introducing-ocr-blog';
@@ -24,22 +17,8 @@ export interface BlogMeta {
   author: string;
 }
 
-const enPosts: Record<BlogSlug, string> = {
-  'introducing-ocr-blog': enIntroducingOcr,
-};
-
-const zhPosts: Record<BlogSlug, string> = {
-  'introducing-ocr-blog': zhIntroducingOcr,
-};
-
-const jaPosts: Record<BlogSlug, string> = {
-  'introducing-ocr-blog': jaIntroducingOcr,
-};
-
-const blogMap: Record<string, Record<BlogSlug, string>> = {
-  en: enPosts,
-  zh: zhPosts,
-  ja: jaPosts,
+const posts: Record<BlogSlug, string> = {
+  'introducing-ocr-blog': introducingOcr,
 };
 
 function stripFrontmatter(md: string): string {
@@ -75,42 +54,36 @@ function parseFrontmatter(slug: BlogSlug, raw: string): BlogMeta {
   };
 }
 
-function getRawContent(slug: BlogSlug, language: string): string {
-  const langPosts = blogMap[language] || blogMap.en;
-  return langPosts[slug] || enPosts[slug] || '';
+export function getBlogContent(slug: BlogSlug): string {
+  return stripFrontmatter(posts[slug] ?? '');
 }
 
-export function getBlogContent(slug: BlogSlug, language: string): string {
-  return stripFrontmatter(getRawContent(slug, language));
+export function getBlogMeta(slug: BlogSlug): BlogMeta {
+  return parseFrontmatter(slug, posts[slug] ?? '');
 }
 
-export function getBlogMeta(slug: BlogSlug, language: string): BlogMeta {
-  return parseFrontmatter(slug, getRawContent(slug, language));
-}
-
-export function getAllBlogMetas(language: string): BlogMeta[] {
-  const slugs = Object.keys(blogMap.en) as BlogSlug[];
+export function getAllBlogMetas(): BlogMeta[] {
+  const slugs = Object.keys(posts) as BlogSlug[];
   return slugs
-    .map(slug => getBlogMeta(slug, language))
+    .map(slug => getBlogMeta(slug))
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getAllTags(language: string): string[] {
-  const metas = getAllBlogMetas(language);
+export function getAllTags(): string[] {
+  const metas = getAllBlogMetas();
   const tagSet = new Set<string>();
   metas.forEach(m => m.tags.forEach(t => tagSet.add(t)));
   return Array.from(tagSet).sort();
 }
 
-export function searchBlog(query: string, language: string): { slug: BlogSlug; title: string; snippet: string }[] {
+export function searchBlog(query: string): { slug: BlogSlug; title: string; snippet: string }[] {
   if (!query.trim()) return [];
-  const langPosts = blogMap[language] || blogMap.en;
   const results: { slug: BlogSlug; title: string; snippet: string }[] = [];
   const lowerQuery = query.toLowerCase();
-  const slugs = Object.keys(langPosts) as BlogSlug[];
+  const slugs = Object.keys(posts) as BlogSlug[];
   for (const slug of slugs) {
-    const raw = langPosts[slug] || enPosts[slug] || '';
-    const meta = getBlogMeta(slug, language);
+    const raw = posts[slug] ?? '';
+    const meta = getBlogMeta(slug);
     const content = stripFrontmatter(raw);
     const lowerContent = content.toLowerCase();
     const lowerTitle = meta.title.toLowerCase();

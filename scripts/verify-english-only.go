@@ -6,11 +6,9 @@
 // Command verify-english-only fails when unapproved non-English text appears in
 // source files.
 //
-// Comments, identifiers and user-visible strings in this repository are written
-// in English so that any contributor can review and maintain every file,
-// whichever languages they happen to read. Translated content belongs in the
-// locale-specific docs (docs/i18n/README.zh-CN.md, pages/src/content/docs/zh/…)
-// and in the i18n tables, not in code.
+// Comments, identifiers and user-visible strings in this repository are
+// written in English. English is the only source language kept in the
+// repository.
 //
 // What it detects, and the one thing it cannot:
 //
@@ -26,8 +24,7 @@
 // Symbols are deliberately left alone: box drawing, arrows, emoji and maths
 // (─ → ≥ ≈ ×) are not letters and appear throughout the TUI output on purpose.
 //
-// Markdown is not scanned: the translated READMEs and doc pages are
-// legitimately non-English.
+// Markdown is not scanned.
 //
 // Run it directly (the build tag keeps it out of ./... so it does not affect
 // go vet, go build or the coverage threshold):
@@ -37,12 +34,11 @@
 // Two escape hatches exist, in order of preference:
 //
 //  1. Append an "allow-non-english: <reason>" marker comment to the offending
-//     line — the right choice for a handful of lines, e.g. an encoding fixture
-//     or a language-switcher label. The rest of the file stays protected.
+//     line — the right choice for a handful of lines, e.g. an encoding fixture.
+//     The rest of the file stays protected.
 //
-//  2. Add a prefix to allowedPrefixes below, for whole trees that are
-//     inherently non-English (i18n tables) — or, temporarily, for a backlog
-//     that has not been translated yet.
+//  2. For a whole tree that is inherently non-English (for example, a fixture
+//     set that cannot be rewritten), add a prefix to allowedPrefixes below.
 package main
 
 import (
@@ -71,11 +67,8 @@ var scannedExts = map[string]bool{
 var scannedNames = map[string]bool{"Makefile": true}
 
 // allowedPrefixes exempts paths whose non-English content is expected. Keep
-// each entry narrow and justified; a temporary entry must say what removes it.
-var allowedPrefixes = []struct{ prefix, reason string }{
-	{"pages/src/i18n/", "translated UI copy for the docs site"},
-	{"frontend/src/shared/i18n.ts", "translated UI copy for the webview frontend"},
-}
+// each entry narrow and justified; an entry must say what removes it.
+var allowedPrefixes = []struct{ prefix, reason string }{}
 
 // exemptMarker on a line suppresses the report for that line. The trailing
 // colon is part of the marker so that a bare "allow-non-english" cannot exempt
@@ -247,12 +240,8 @@ func run() error {
 		}
 		fmt.Fprintf(os.Stderr, `
 Source files are English-only: comments, identifiers and strings alike.
-Translated prose belongs in docs/i18n/README.<locale>.md, pages/src/content/docs/<locale>/
-or an i18n table.
-
-If the non-English text is intentional — an encoding fixture, a
-language-switcher label — append a marker comment, including the reason, to
-that line:
+If the non-English text is intentional — an encoding fixture — append a marker
+comment, including the reason, to that line:
 
     {"multibyte truncation", 6, "..."}, // %s fixture exercises rune boundaries
 

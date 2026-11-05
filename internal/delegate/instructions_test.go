@@ -92,10 +92,7 @@ func newDelegateRepo(t *testing.T) delegateRepo {
 
 func delegateExamples(t *testing.T) []string {
 	t.Helper()
-	var docs []string
-	for _, locale := range []string{"en", "zh", "ja", "ko", "ru"} {
-		docs = append(docs, "pages/src/content/docs/"+locale+"/integrations/delegate.md")
-	}
+	docs := []string{"pages/src/content/docs/en/integrations/delegate.md"}
 	// Go runs package tests from the package directory, including with -trimpath.
 	examples, err := readDelegateExamples(os.DirFS(filepath.Join("..", "..")), docs)
 	if err != nil {

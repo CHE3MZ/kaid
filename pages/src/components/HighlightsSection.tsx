@@ -141,8 +141,8 @@ const HighlightsSection: React.FC = () => {
                   textTransform: 'uppercase',
                   textAlign: 'center',
                   lineHeight: '16px',
-                  // Reserve two lines so a label that wraps (long locales such
-                  // as en/ru) keeps every column's caption on the same baseline.
+                  // Reserve two lines so a wrapping label keeps every column's
+                  // caption on the same baseline.
                   minHeight: 32,
                   margin: 0,
                 }}

@@ -29,12 +29,8 @@ Each blog post is a `.md` file stored under `pages/src/content/blog/`. The direc
 ```
 pages/src/content/blog/
 ├── index.ts          # Content registry
-├── en/
-│   └── my-post.md   # English version
-├── zh/
-│   └── my-post.md   # Chinese version
-└── ja/
-    └── my-post.md   # Japanese version
+└── en/
+    └── my-post.md   # English version
 ```
 
 ### Frontmatter Metadata
@@ -59,23 +55,19 @@ author: Your Name
 | summary | No | Brief description shown in the article card |
 | author | No | Author name |
 
-### Multi-Language Support
-
-The blog supports English, Chinese, and Japanese. Place translated versions of the same article in the corresponding language directory with the same filename.
-
 ## How to Contribute a Post
 
 ### Step 1: Create Your Markdown File
 
-Create a new `.md` file under `pages/src/content/blog/en/` (and optionally `zh/` and `ja/` for translations). Choose a slug-friendly filename like `my-article-topic.md`.
+Create a new `.md` file under `pages/src/content/blog/en/`. Choose a slug-friendly filename like `my-article-topic.md`.
 
 ### Step 2: Register the Post
 
 Open `pages/src/content/blog/index.ts` and:
 
 1. Add your slug to the `BlogSlug` union type
-2. Import your markdown file(s)
-3. Add the entry to each language's post record
+2. Import your markdown file
+3. Add the entry to the post record
 
 ```typescript
 // Add to BlogSlug type
@@ -83,14 +75,13 @@ export type BlogSlug =
   | 'introducing-ocr-blog'
   | 'my-article-topic';  // your new slug
 
-// Add imports
-import enMyArticle from './en/my-article-topic.md';
-import zhMyArticle from './zh/my-article-topic.md';
+// Add import
+import myArticle from './en/my-article-topic.md';
 
-// Add to post records
-const enPosts: Record<BlogSlug, string> = {
-  'introducing-ocr-blog': enIntroducingOcr,
-  'my-article-topic': enMyArticle,
+// Add to post record
+const posts: Record<BlogSlug, string> = {
+  'introducing-ocr-blog': introducingOcr,
+  'my-article-topic': myArticle,
 };
 ```
 

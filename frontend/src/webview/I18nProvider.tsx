@@ -1,16 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 alibaba/open-code-review Contributors
 
-import { createContext } from 'preact';
-import { useContext } from 'preact/hooks';
-import { t, resolveLocale, SupportedLocale } from '../shared/i18n';
-
-export const I18nContext = createContext<SupportedLocale>('en');
+import { t } from '../shared/i18n';
 
 export function useT(): (key: string) => string {
-  const locale = useContext(I18nContext);
-  return (key: string) => t(locale, key);
+  return t;
 }
 
-export { resolveLocale, t };
-export type { SupportedLocale };
+export { t };

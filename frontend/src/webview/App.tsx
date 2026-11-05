@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 alibaba/open-code-review Contributors
 
-import { I18nContext, resolveLocale } from './I18nProvider';
 import { useEffect, useReducer } from 'preact/hooks';
 import { reducer, initialState } from './store';
 import { bridge } from './bridge';
@@ -42,8 +41,7 @@ export function App() {
   };
 
   return (
-    <I18nContext.Provider value={resolveLocale(state.locale)}>
-      <div class="ocr-root">
+    <div class="ocr-root">
         <div class="action-region">
           <IdleView gitState={state.gitState} modeFiles={state.modeFiles} filesLoading={state.filesLoading}
             configured={configured} onModeChange={onModeChange} onRequestModeFiles={requestModeFiles}
@@ -69,7 +67,6 @@ export function App() {
             </div>
           )}
         </div>
-      </div>
-    </I18nContext.Provider>
+    </div>
   );
 }

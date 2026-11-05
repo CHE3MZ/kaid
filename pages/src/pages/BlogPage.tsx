@@ -28,14 +28,14 @@ const fontFamily = 'PingFang SC, -apple-system, BlinkMacSystemFont, sans-serif';
 
 
 /* ─── Build valid slug set from blog posts ─── */
-function getValidSlugs(language: string): Set<BlogSlug> {
-  return new Set(getAllBlogMetas(language).map(m => m.slug));
+function getValidSlugs(): Set<BlogSlug> {
+  return new Set(getAllBlogMetas().map(m => m.slug));
 }
 
 const BlogPage: React.FC = () => {
   const { slug: slugParam } = useParams<{ slug?: string }>();
   const navigate = useNavigate();
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const { isMobile } = useResponsive();
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
@@ -46,15 +46,15 @@ const BlogPage: React.FC = () => {
     searchSelectedIdx, setSearchSelectedIdx,
     searchInputRef,
     searchResults,
-  } = useCommandSearch(searchBlog, language);
+  } = useCommandSearch(searchBlog);
 
-  const validSlugs = useMemo(() => getValidSlugs(language), [language]);
+  const validSlugs = useMemo(() => getValidSlugs(), []);
   const isDetailView = !!(slugParam && validSlugs.has(slugParam as BlogSlug));
   const activeSlug = isDetailView ? (slugParam as BlogSlug) : null;
 
   /* ─── List view data ─── */
-  const allMetas = useMemo(() => getAllBlogMetas(language), [language]);
-  const allTags = useMemo(() => getAllTags(language), [language]);
+  const allMetas = useMemo(() => getAllBlogMetas(), []);
+  const allTags = useMemo(() => getAllTags(), []);
   const filteredMetas = useMemo(
     () => activeTag ? allMetas.filter(m => m.tags.includes(activeTag)) : allMetas,
     [allMetas, activeTag]
@@ -62,12 +62,12 @@ const BlogPage: React.FC = () => {
 
   /* ─── Detail view data ─── */
   const docContent = useMemo(
-    () => activeSlug ? getBlogContent(activeSlug, language) : '',
-    [activeSlug, language]
+    () => activeSlug ? getBlogContent(activeSlug) : '',
+    [activeSlug]
   );
   const docMeta = useMemo(
-    () => activeSlug ? getBlogMeta(activeSlug, language) : null,
-    [activeSlug, language]
+    () => activeSlug ? getBlogMeta(activeSlug) : null,
+    [activeSlug]
   );
   const headings = useMemo(() => extractHeadings(docContent), [docContent]);
 

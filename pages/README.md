@@ -110,9 +110,9 @@ pages/
 ├── src/                 # React + TypeScript source code
 │   ├── components/      # Reusable UI components
 │   ├── pages/           # Route-level page components
-│   ├── content/         # Bundled Markdown: docs/ and blog/, per locale
+│   ├── content/         # Bundled Markdown: docs/ and blog/
 │   ├── hooks/           # Custom React hooks
-│   ├── i18n/            # Localization resources and i18n context
+│   ├── i18n/            # English UI copy and i18n context
 │   ├── styles/          # Global styles (Tailwind entry, custom CSS)
 │   ├── utils/           # Shared helpers
 │   ├── assets/          # Imported icons and images

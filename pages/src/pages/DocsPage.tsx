@@ -147,7 +147,7 @@ const DocsPage: React.FC = () => {
   const [hoveredHeadingId, setHoveredHeadingId] = useState<string>('');
   /* Cancels an in-flight click-triggered scroll when a newer one starts */
   const cancelPendingScroll = useRef<(() => void) | null>(null);
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const { isMobile } = useResponsive();
   const {
     searchOpen, setSearchOpen,
@@ -155,14 +155,14 @@ const DocsPage: React.FC = () => {
     searchSelectedIdx, setSearchSelectedIdx,
     searchInputRef,
     searchResults,
-  } = useCommandSearch(searchDocs, language);
+  } = useCommandSearch(searchDocs);
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   const fontFamily = 'PingFang SC, -apple-system, BlinkMacSystemFont, sans-serif';
 
   /* Get markdown content for current doc */
-  const docContent = useMemo(() => getDocContent(activeSlug, language), [activeSlug, language]);
-  const docTitle = useMemo(() => getDocTitle(activeSlug, language), [activeSlug, language]);
+  const docContent = useMemo(() => getDocContent(activeSlug), [activeSlug]);
+  const docTitle = useMemo(() => getDocTitle(activeSlug), [activeSlug]);
   const headings = useMemo(() => extractHeadings(docContent), [docContent]);
 
   /* Scroll direct links after their markdown heading has rendered */
