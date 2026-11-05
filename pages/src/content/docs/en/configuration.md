@@ -393,7 +393,7 @@ ocr llm test
 
 ### Reuse existing environment variables
 
-If you already have Claude Code's `ANTHROPIC_*` or OCR's own `OCR_LLM_*`
+If you already have Anthropic-compatible `ANTHROPIC_*` or OCR's own `OCR_LLM_*`
 environment variables configured, OCR picks them up automatically — no
 config file needed.
 

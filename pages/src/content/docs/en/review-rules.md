@@ -140,7 +140,7 @@ for matching:
 ## How files are filtered
 
 The filter is a six-gate algorithm in
-[`internal/agent/selection.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go).
+[`internal/agent/selection.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go).
 For each diff, OCR asks:
 
 1. **`binary`** — Is the file binary? Excluded.
@@ -155,7 +155,7 @@ For each diff, OCR asks:
    match? If yes, **kept immediately** (bypasses the `unsupported_ext`
    and `default_path` gates below).
 5. **`unsupported_ext`** — Is the file extension in the
-   [allowlist](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/supported_file_types.json)?
+   [allowlist](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/supported_file_types.json)?
    Excluded if not.
 6. **`default_path`** — Does the path match a built-in exclude pattern?
    Excluded. These cover test files (`**/*_test.go`,
@@ -173,7 +173,7 @@ without spending a token.
 ### Built-in secret paths
 
 The built-in secret paths are not reviewed (see
-[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_secret_patterns.json)):
+[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_secret_patterns.json)):
 
 - `**/.ssh/**`
 - `**/id_rsa`
@@ -191,7 +191,7 @@ The built-in secret paths are not reviewed (see
 ### Default path exclusions
 
 The built-in exclude list (see
-[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_exclude_patterns.json))
+[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_exclude_patterns.json))
 covers two groups. Test files across languages, plus test fixtures,
 snapshots, and generated code:
 
@@ -273,7 +273,7 @@ snapshots, and generated code:
 hand-written sources in both.
 
 The same noisy directories are also filtered earlier, at the diff level in
-[`internal/diff/git.go`](https://github.com/alibaba/open-code-review/blob/main/internal/diff/git.go).
+[`internal/diff/git.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/diff/git.go).
 That list matches by path prefix, so it catches only a directory at the
 **repository root**. `vendor/pkg/x.go` never reaches the per-file filter and
 is reported as `provider_directory`; `api/vendor/pkg/x.go` does reach it and

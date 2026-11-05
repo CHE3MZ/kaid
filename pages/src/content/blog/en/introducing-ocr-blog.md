@@ -115,7 +115,7 @@ Here's an example of how an image renders:
 
 ### Step 3: Submit a PR
 
-Submit a Pull Request on [GitHub](https://github.com/alibaba/open-code-review). Once the PR is merged, your article will go live within minutes.
+Submit a Pull Request on [GitHub](https://github.com/CHE3MZ/kaid). Once the PR is merged, your article will go live within minutes.
 
 ## Features
 

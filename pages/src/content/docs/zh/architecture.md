@@ -23,11 +23,11 @@ flowchart TD
 ```
 
 编排逻辑位于
-[`internal/agent/`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/)
+[`internal/agent/`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/)
 包，主要文件有：`agent.go`（分发与按组编排）、`grouping.go`（语义文件分组）、
 `selection.go`（文件过滤）、`preview.go`（`--preview` 报告）和 `util.go`（辅助）；
 工具调用循环与记忆压缩位于相邻的
-[`internal/llmloop/`](https://github.com/alibaba/open-code-review/blob/main/internal/llmloop/)。
+[`internal/llmloop/`](https://github.com/CHE3MZ/kaid/blob/master/internal/llmloop/)。
 两个入口点值得关注：`Agent.Run`（流水线顶部）和 `Agent.dispatchSubtasks`
 （per-group 扇出）。
 
@@ -50,7 +50,7 @@ untracked 文件从磁盘读取并作为整文件新增处理，以便 commit �
 ## 五重门文件过滤
 
 diff 加载后，每个文件经过
-[`whyExcluded`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go)。
+[`whyExcluded`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go)。
 该函数返回以下之一：
 
 ```
@@ -295,9 +295,9 @@ if countMessagesTokens(messages) > tokenLimit {
 | `{{comments}}` | 累积的评论（JSON），用于 `REVIEW_FILTER_TASK`。 |
 
 占位符替换位于
-[`agent.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/agent.go)。
+[`agent.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/agent.go)。
 模板本身不是 CLI 覆盖——要修改 prompt，你需要编辑
-[`task_template.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/template/task_template.json)
+[`task_template.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json)
 并重新构建。`--tools` 参数是*工具注册表*覆盖（它替换 `internal/config/toolsconfig`
 消费的 JSON），不是模板覆盖——见[工具](../tools/#customizing-tools)。
 
@@ -367,7 +367,7 @@ Web UI（`ocr viewer`）直接读这些文件——没有数据库，只有 appe
 | 会话 JSONL 写入器 | `internal/session/persist.go` |
 | Web 查看器 | `internal/viewer/server.go` |
 
-构建与测试说明见[贡献](../contributing/)。
+构建与测试说明见 [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md)。
 
 ## 另见
 

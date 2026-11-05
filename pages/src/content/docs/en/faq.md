@@ -6,7 +6,7 @@ sidebar:
 
 Common errors, surprises, and "is this supposed to do that?" questions.
 If your problem isn't here, open a
-[GitHub issue](https://github.com/alibaba/open-code-review/issues) with
+[GitHub issue](https://github.com/CHE3MZ/kaid/issues) with
 the steps you ran and the full output.
 
 ## Configuration & startup
@@ -26,7 +26,7 @@ and didn't find a complete `(URL, token, model)` triple. Either:
   to populate `~/.opencodereview/config.json`, **or**
 - Export `OCR_LLM_URL` / `OCR_LLM_TOKEN` / `OCR_LLM_MODEL`, **or**
 - Export `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
-  `ANTHROPIC_MODEL` if you already use Claude Code.
+  `ANTHROPIC_MODEL` if you already use an Anthropic-compatible client.
 
 Then `ocr llm test` to verify connectivity before retrying the review.
 
@@ -166,7 +166,7 @@ common causes:
   the sliding-window match.
 
 The comment is still real — it just wasn't placed automatically. Most
-agent integrations (the SKILL, the Claude Code plugin) read the
+agent integrations read the
 `existing_code` field and locate the spot in the file themselves.
 
 ### Token threshold exceeded
@@ -381,25 +381,25 @@ Not built-in. The recommended workflow:
    secrets out of diffs.
 
 A "redaction rule" feature is on the roadmap; track
-[the issue tracker](https://github.com/alibaba/open-code-review/issues).
+[the issue tracker](https://github.com/CHE3MZ/kaid/issues).
 
 ## Misc
 
 ### Where's the changelog?
 
-[GitHub Releases](https://github.com/alibaba/open-code-review/releases)
+[GitHub Releases](https://github.com/CHE3MZ/kaid/releases)
 — each release has notes generated from Conventional Commits.
 
 ### Does OCR support non-Git VCS?
 
 No. The diff providers shell out to `git`. SVN / Mercurial / etc. would
 need new providers; an issue for Hg support is open
-[here](https://github.com/alibaba/open-code-review/issues).
+[here](https://github.com/CHE3MZ/kaid/issues).
 
 ### Why is the binary called `opencodereview` but the CLI is `ocr`?
 
 The static binary published in releases is named after the project
-(`opencodereview`); the NPM wrapper installs it as `ocr` for
+(`opencodereview`); the install script places it as `ocr` for
 ergonomics. If you build from source you get `dist/opencodereview`
 (`dist/opencodereview.exe` on Windows) —
 copy it to `ocr` on your `$PATH`.
@@ -407,13 +407,12 @@ copy it to `ocr` on your `$PATH`.
 ### How do I uninstall?
 
 ```bash
-npm uninstall -g @alibaba-group/open-code-review        # NPM install
-sudo rm /usr/local/bin/ocr                              # binary install
-rm -rf ~/.opencodereview                                # all state
+rm -f /usr/local/bin/ocr
+rm -rf ~/.opencodereview
 ```
 
 OCR doesn't write outside `~/.opencodereview` (apart from the binary
-download via NPM), so removing that directory wipes history, config,
+download via the install script), so removing that directory wipes history, config,
 and per-user rules.
 
 ## See Also

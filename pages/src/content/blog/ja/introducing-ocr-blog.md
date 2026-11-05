@@ -115,7 +115,7 @@ Markdown で絶対パスを使って参照します：
 
 ### ステップ 3：PR を提出
 
-[GitHub](https://github.com/alibaba/open-code-review) で Pull Request を提出してください。PR がマージされれば、数分後に記事が公開されます。
+[GitHub](https://github.com/CHE3MZ/kaid) で Pull Request を提出してください。PR がマージされれば、数分後に記事が公開されます。
 
 ## 機能
 

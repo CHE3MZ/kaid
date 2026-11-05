@@ -42,7 +42,7 @@ Use "ocr config" for more information about config.
 Use "ocr llm" for more information about LLM utilities.
 Use "ocr session -h" for more information about session inspection.
 
-GitHub: https://github.com/alibaba/open-code-review
+GitHub: https://github.com/CHE3MZ/kaid
 ```
 
 ## 全局参数
@@ -145,7 +145,7 @@ ocr scan --provider openai --model gpt-5.4 --format json
 
 显式 `--provider` 会在常规来源解析前，从已保存的 `providers` 或 `custom_providers`
 中选择条目。不传 `--provider` 时，OCR 保持原有来源顺序：已保存的配置、完整的
-`OCR_LLM_*` 环境配置、完整的 Claude Code 环境配置、shell rc 文件。`--model` 会覆盖
+`OCR_LLM_*` 环境配置、完整的 Anthropic-compatible 环境配置、shell rc 文件。`--model` 会覆盖
 最终选中来源中的 model，但不会改变来源顺序。不完整的策略会继续回退，而不会与其他策略
 混合。选中的内置 provider 仍可从其支持的环境变量读取凭据。
 
@@ -250,7 +250,7 @@ Concurrent map access without a lock — wrap with sync.RWMutex.
 #### Text（agent，`--audience agent`）
 
 评论输出相同，但通过一个内部可静默的 stdout writer 屏蔽进度行
-（[`internal/stdout`](https://github.com/alibaba/open-code-review/blob/main/internal/stdout/stdout.go)）。
+（[`internal/stdout`](https://github.com/CHE3MZ/kaid/blob/master/internal/stdout/stdout.go)）。
 在 CI / 流水线中交给另一个 agent 时使用。
 
 #### JSON
@@ -599,7 +599,7 @@ ocr llm test
 ```
 
 以与 `ocr review` 完全相同的方式解析 LLM 端点，从
-[`internal/config/testconnection/task.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/testconnection/task.json)
+[`internal/config/testconnection/task.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/testconnection/task.json)
 发送一条预置 chat 请求，并打印：
 
 ```
@@ -665,7 +665,7 @@ ocr -V
 
 打印构建时写入的版本信息、短 Git commit（存在时）、平台
 （`<GOOS>/<GOARCH>`）、构建日期（存在时），以及 GitHub URL
-（`https://github.com/alibaba/open-code-review`）。
+（`https://github.com/CHE3MZ/kaid`）。
 
 
 ## ocr completion
@@ -756,4 +756,3 @@ ocr completion powershell > ocr.ps1
 - [快速开始](../quickstart/)——安装并完成首次评审。
 - [配置](../configuration/)——参数背后的环境变量与 config key。
 - [评审规则](../review-rules/)——`--rule` 参数与规则解析。
-- [集成](../integrations/agent-skill/)——从 agent 与 CI 调用 `ocr review`。

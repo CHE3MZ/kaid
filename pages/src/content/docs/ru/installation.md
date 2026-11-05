@@ -4,55 +4,7 @@ sidebar:
   order: 4
 ---
 
-Установить CLI `ocr` можно пятью способами.
-
-## npm (рекомендуется)
-
-#### Установка
-
-```bash
-npm install -g @alibaba-group/open-code-review
-```
-
-Закрепить конкретную версию:
-
-```bash
-npm install -g @alibaba-group/open-code-review@<version>
-```
-
-#### Обновление
-
-При установке через npm `ocr` обновляется автоматически. Статический бинарник
-в этом механизме не участвует. При каждом запуске обёртка проверяет реестр npm
-в фоне и устанавливает найденное обновление, не прерывая текущее ревью.
-Интервал между проверками составляет 18 минут. Изменить его можно через
-`OCR_UPDATE_INTERVAL` (в минутах).
-
-Чтобы отключить автообновления, задайте `OCR_NO_UPDATE` любым непустым значением:
-
-```bash
-export OCR_NO_UPDATE=1
-```
-
-#### Удаление
-
-```bash
-npm uninstall -g @alibaba-group/open-code-review
-```
-
-## Homebrew (macOS / Linux)
-
-```bash
-brew install open-code-review
-```
-
-Формула собирает `ocr` из исходников и устанавливает бинарник.
-
-Для обновления:
-
-```bash
-brew upgrade open-code-review
-```
+Установить CLI `ocr` можно четырьмя способами.
 
 ## Скрипт установки (curl | sh)
 
@@ -60,7 +12,7 @@ brew upgrade open-code-review
 сумму. Он удобен для базовых образов CI и систем без графического интерфейса:
 
 ```bash
-curl -fsSL https://open-codereview.ai/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 Скрипт учитывает три переменные окружения:
@@ -82,7 +34,7 @@ export OCR_GITHUB_MIRROR='YOUR_MIRROR_DOMAIN'
 ```
 
 Значение должно быть «голым» доменом — без схемы `https://` и без завершающего слэша (`gh-proxy.com`, а не `https://gh-proxy.com/`). Оно используется как зеркало с *префиксом пути*: бинарник загружается с
-`https://<зеркало>/github.com/alibaba/open-code-review/releases/download/<версия>/…`.
+`https://<зеркало>/github.com/CHE3MZ/kaid/releases/download/<версия>/…`.
 Зеркала с подменой домена (например, переписывающие `github.com` на `hub.example.org`) не подходят под эту форму — используйте зеркало с префиксом пути.
 
 Зеркало покрывает и бинарник релиза, и его контрольную сумму `sha256sum.txt`. Разрешение версии (когда `OCR_VERSION` не задана) по-прежнему обращается к GitHub API напрямую, а не к зеркалу. Чтобы полностью пропустить разрешение версии, закрепите версию:
@@ -91,12 +43,12 @@ export OCR_GITHUB_MIRROR='YOUR_MIRROR_DOMAIN'
 export OCR_VERSION='v1.2.3'
 ```
 
-> **Примечание по безопасности:** Зеркало — это сторонний сервис, поэтому при заданной `OCR_GITHUB_MIRROR` и бинарник, и его `sha256sum.txt` загружаются с зеркала. Это значит, что вредоносное зеркало может отдать подменённый бинарник вместе с подходящей контрольной суммой; в режиме зеркала гарантия целостности не действует. Если зеркало не заслуживает доверия, сверьте загруженный файл с оригинальным `sha256sum.txt` на [странице релизов](https://github.com/alibaba/open-code-review/releases).
+> **Примечание по безопасности:** Зеркало — это сторонний сервис, поэтому при заданной `OCR_GITHUB_MIRROR` и бинарник, и его `sha256sum.txt` загружаются с зеркала. Это значит, что вредоносное зеркало может отдать подменённый бинарник вместе с подходящей контрольной суммой; в режиме зеркала гарантия целостности не действует. Если зеркало не заслуживает доверия, сверьте загруженный файл с оригинальным `sha256sum.txt` на [странице релизов](https://github.com/CHE3MZ/kaid/releases).
 
 В Windows с PowerShell 5.1 или новее запустите PowerShell-установщик:
 
 ```powershell
-irm https://open-codereview.ai/install.ps1 | iex
+irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
 ```
 
 Установщик учитывает те же переменные `OCR_INSTALL_DIR`, `OCR_VERSION` и
@@ -106,40 +58,64 @@ irm https://open-codereview.ai/install.ps1 | iex
 
 ## Бинарник из GitHub Release
 
-Если Node.js не нужен, скачайте статический бинарник напрямую со
-[страницы релизов](https://github.com/alibaba/open-code-review/releases):
+Если вы предпочитаете прямую загрузку, возьмите статический бинарник со
+[страницы релизов](https://github.com/CHE3MZ/kaid/releases):
 
 ```bash
 # macOS (Apple Silicon)
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-darwin-arm64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-darwin-arm64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # macOS (Intel)
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-darwin-amd64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-darwin-amd64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Linux x86_64
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-linux-amd64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-linux-amd64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Linux ARM64
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-linux-arm64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-linux-arm64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Windows (AMD64)
-curl -Lo ocr.exe https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-windows-amd64.exe
+curl -Lo ocr.exe https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-windows-amd64.exe
 
 # Windows (ARM64)
-curl -Lo ocr.exe https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-windows-arm64.exe
+curl -Lo ocr.exe https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-windows-arm64.exe
 ```
 
 К каждому релизу прилагается файл `sha256sum.txt` с контрольными суммами.
 С его помощью можно проверить целостность загруженных файлов:
 
 ```bash
-curl -LO https://github.com/alibaba/open-code-review/releases/latest/download/sha256sum.txt
+curl -LO https://github.com/CHE3MZ/kaid/releases/latest/download/sha256sum.txt
 shasum -a 256 -c sha256sum.txt --ignore-missing
 ```
+
+## Установка через go install
+
+Требуется Go 1.26.10 или новее:
+
+```bash
+go install github.com/CHE3MZ/kaid/cmd/opencodereview@latest
+```
+
+Команда устанавливает `opencodereview` в `$(go env GOPATH)/bin` (обычно
+`~/go/bin`). Имя CLI — `ocr`, поэтому переименуйте файл или создайте ссылку:
+
+```bash
+mv "$(go env GOPATH)/bin/opencodereview" "$(go env GOPATH)/bin/ocr"
+```
+
+В Windows:
+
+```powershell
+Rename-Item "$(go env GOPATH)\bin\opencodereview.exe" ocr.exe
+```
+
+`go install` собирает код модуля напрямую и не применяет release-ldflags,
+поэтому `ocr version` может показывать `dev` вместо тега релиза.
 
 ## Сборка из исходников
 
@@ -155,8 +131,8 @@ shasum -a 256 -c sha256sum.txt --ignore-missing
 #### Сборка
 
 ```bash
-git clone https://github.com/alibaba/open-code-review.git
-cd open-code-review
+git clone https://github.com/CHE3MZ/kaid.git
+cd kaid
 make build              # пишет dist/opencodereview (dist/opencodereview.exe в Windows)
 sudo cp dist/opencodereview /usr/local/bin/ocr
 ```
@@ -175,7 +151,8 @@ make sha256sum          # также создать sha256sum.txt
 ```
 
 `make dist` выполняет `clean → build-all → sha256sum` и сохраняет файл `VERSION`
-в каталоге с бинарными файлами. Таким же способом собираются официальные релизы.
+в каталоге с бинарными файлами. Это удобно для локального воспроизведения
+релизной сборки. Официальные релизы собираются в CI через GoReleaser.
 
 #### Запуск тестов
 
@@ -224,15 +201,14 @@ ocr completion zsh > "${fpath[1]}/_ocr"
 | `~/.opencodereview/config.json` | LLM-эндпоинт, язык и настройки телеметрии (управляются через `ocr config set`). |
 | `~/.opencodereview/rule.json` | Необязательные глобальные правила ревью. |
 | `~/.opencodereview/sessions/<encoded-repo-path>/<session-id>.jsonl` | Журнал каждой сессии ревью в формате JSONL, используется `ocr viewer`. |
-| `~/.opencodereview/{last-update-check,update.lock,update-available}` | Состояние фоновой проверки обновлений npm-обёртки. Обёртка опрашивает наличие нового релиза (по умолчанию примерно раз в 18 мин) и печатает подсказку об обновлении. Отключить: `OCR_NO_UPDATE=1`; интервал: `OCR_UPDATE_INTERVAL` (минуты). Статический бинарник эти файлы не пишет. |
 | `<repo>/.opencodereview/rule.json` | Необязательный файл с правилами ревью для конкретного проекта. Его можно хранить в репозитории. |
 
 OCR не хранит постоянные данные за пределами `~/.opencodereview/`: исключение
-составляет временная загрузка бинарника при установке через npm. Удаление
+составляет временная загрузка бинарника при установке через install script. Удаление
 каталога полностью очищает локальные данные OCR.
 
 ## См. также
 
 - [Быстрый старт](../quickstart/): настройка LLM и первое ревью.
 - [Конфигурация](../configuration/): все переменные окружения и ключи конфигурации, которые учитывает OCR.
-- [Участие в разработке](../contributing/): сборка из исходников, тесты и доработка OCR.
+- [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md): сборка из исходников, тесты и доработка OCR.

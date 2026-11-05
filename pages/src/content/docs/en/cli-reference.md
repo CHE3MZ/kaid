@@ -43,7 +43,7 @@ Use "ocr config" for more information about config.
 Use "ocr llm" for more information about LLM utilities.
 Use "ocr session -h" for more information about session inspection.
 
-GitHub: https://github.com/alibaba/open-code-review
+GitHub: https://github.com/CHE3MZ/kaid
 ```
 
 ## Global flags
@@ -152,7 +152,7 @@ ocr scan --provider openai --model gpt-5.4 --format json
 An explicit `--provider` selects a saved entry from `providers` or
 `custom_providers` before normal source resolution. Without `--provider`, OCR
 preserves the legacy source order: saved configuration, complete `OCR_LLM_*`
-environment configuration, complete Claude Code environment configuration, then
+environment configuration, complete Anthropic-compatible environment configuration, then
 shell rc files. `--model` overrides the model within whichever source wins; it
 does not change that source order. Incomplete strategies fall through without
 being mixed. A selected built-in provider's credentials may still come from its
@@ -270,7 +270,7 @@ Concurrent map access without a lock — wrap with sync.RWMutex.
 #### Text (agent, `--audience agent`)
 
 Identical comment output, but progress lines are suppressed via an internal
-quiet-able stdout writer ([`internal/stdout`](https://github.com/alibaba/open-code-review/blob/main/internal/stdout/stdout.go)).
+quiet-able stdout writer ([`internal/stdout`](https://github.com/CHE3MZ/kaid/blob/master/internal/stdout/stdout.go)).
 Use this in CI / when piping into another agent.
 
 #### JSON
@@ -638,7 +638,7 @@ ocr llm test
 
 Resolves the LLM endpoint exactly the way `ocr review` does, sends a single
 canned chat request from
-[`internal/config/testconnection/task.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/testconnection/task.json),
+[`internal/config/testconnection/task.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/testconnection/task.json),
 and prints:
 
 ```
@@ -707,7 +707,7 @@ ocr -V
 
 Prints the version stamped at build time, the short Git commit (when
 present), the platform (`<GOOS>/<GOARCH>`), the build date (when present),
-and the GitHub URL (`https://github.com/alibaba/open-code-review`).
+and the GitHub URL (`https://github.com/CHE3MZ/kaid`).
 
 
 ## ocr completion
@@ -815,4 +815,3 @@ Add a line to your PowerShell profile that dot-sources `ocr.ps1`.
 - [QuickStart](../quickstart/) — install and run your first review.
 - [Configuration](../configuration/) — env vars and config keys behind the flags.
 - [Review Rules](../review-rules/) — the `--rule` flag and rule resolution.
-- [Integrations](../integrations/agent-skill/) — calling `ocr review` from agents and CI.

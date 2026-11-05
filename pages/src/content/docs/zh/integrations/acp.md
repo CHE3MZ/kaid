@@ -34,7 +34,7 @@ command -v ocr
   "agent_servers": {
     "OpenCodeReview": {
       "type": "custom",
-      "command": "/absolute/path/open-code-review/dist/ocr-acp",
+      "command": "/absolute/path/kaid/dist/ocr-acp",
       "args": [
         "--ocr-binary",
         "/absolute/path/ocr"

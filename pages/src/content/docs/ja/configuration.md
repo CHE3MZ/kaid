@@ -390,7 +390,7 @@ ocr llm test
 
 ### 既存の環境変数を再利用する
 
-Claude Code の `ANTHROPIC_*` や OCR 独自の `OCR_LLM_*` 環境変数をすでに
+Anthropic-compatible の `ANTHROPIC_*` や OCR 独自の `OCR_LLM_*` 環境変数をすでに
 設定している場合、OCR はそれらを自動的に認識するため、設定ファイルを書く
 必要はありません。
 

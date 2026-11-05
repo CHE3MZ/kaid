@@ -8,7 +8,7 @@ OCR поставляется с **шестью встроенными инстр
 вызывать во время ревью. На этой странице описаны назначение каждого
 инструмента, его схема входных данных и примеры ввода/вывода. Полные
 машиночитаемые определения находятся в файле
-[`internal/config/toolsconfig/tools.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/toolsconfig/tools.json).
+[`internal/config/toolsconfig/tools.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/toolsconfig/tools.json).
 
 ## Доступность инструментов на разных этапах
 

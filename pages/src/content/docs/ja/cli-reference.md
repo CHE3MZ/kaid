@@ -42,7 +42,7 @@ Use "ocr config" for more information about config.
 Use "ocr llm" for more information about LLM utilities.
 Use "ocr session -h" for more information about session inspection.
 
-GitHub: https://github.com/alibaba/open-code-review
+GitHub: https://github.com/CHE3MZ/kaid
 ```
 
 ## グローバルフラグ
@@ -144,7 +144,7 @@ ocr scan --provider openai --model gpt-5.4 --format json
 
 明示的な `--provider` は通常のソース解決より先に、保存済みの `providers` または
 `custom_providers` からエントリを選択します。`--provider` を指定しない場合、OCR は従来の
-ソース順序を維持します: 保存済み設定、完全な `OCR_LLM_*` 環境設定、完全な Claude Code
+ソース順序を維持します: 保存済み設定、完全な `OCR_LLM_*` 環境設定、完全な Anthropic-compatible
 環境設定、shell rc ファイルの順です。`--model` は選ばれたソース内の model を上書きしますが、
 ソース順序は変更しません。不完全な戦略は別の戦略と混合されず、次へフォールバックします。
 選択された組み込み provider の認証情報は、対応する環境変数から引き続き取得できます。
@@ -252,7 +252,7 @@ Concurrent map access without a lock — wrap with sync.RWMutex.
 
 #### Text（agent、`--audience agent`）
 
-コメントの出力は同じですが、内部的に静音化可能な stdout ライターを通じて進捗行が抑制されます（[`internal/stdout`](https://github.com/alibaba/open-code-review/blob/main/internal/stdout/stdout.go)）。CI / パイプライン内で別の agent に引き渡す場合に使用します。
+コメントの出力は同じですが、内部的に静音化可能な stdout ライターを通じて進捗行が抑制されます（[`internal/stdout`](https://github.com/CHE3MZ/kaid/blob/master/internal/stdout/stdout.go)）。CI / パイプライン内で別の agent に引き渡す場合に使用します。
 
 #### JSON
 
@@ -598,7 +598,7 @@ Sub-commands:
 ocr llm test
 ```
 
-`ocr review` とまったく同じ方法で LLM エンドポイントを解決し、[`internal/config/testconnection/task.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/testconnection/task.json) からあらかじめ用意された chat リクエストを送信して、以下を出力します:
+`ocr review` とまったく同じ方法で LLM エンドポイントを解決し、[`internal/config/testconnection/task.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/testconnection/task.json) からあらかじめ用意された chat リクエストを送信して、以下を出力します:
 
 ```
 Source: <which strategy was used>
@@ -659,7 +659,7 @@ ocr --version
 ocr -V
 ```
 
-ビルド時に書き込まれたバージョン情報、短い Git commit（存在する場合）、プラットフォーム（`<GOOS>/<GOARCH>`）、ビルド日（存在する場合）、そして GitHub URL（`https://github.com/alibaba/open-code-review`）を出力します。
+ビルド時に書き込まれたバージョン情報、短い Git commit（存在する場合）、プラットフォーム（`<GOOS>/<GOARCH>`）、ビルド日（存在する場合）、そして GitHub URL（`https://github.com/CHE3MZ/kaid`）を出力します。
 
 ## ocr completion
 
@@ -743,4 +743,3 @@ ocr completion powershell > ocr.ps1
 - [クイックスタート](../quickstart/): インストールして最初のレビューを完了します。
 - [設定](../configuration/): 引数の背後にある環境変数と config key。
 - [レビュールール](../review-rules/): `--rule` 引数とルールの解決。
-- [連携](../integrations/agent-skill/): agent と CI から `ocr review` を呼び出します。

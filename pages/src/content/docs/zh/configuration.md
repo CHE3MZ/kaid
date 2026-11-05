@@ -362,7 +362,7 @@ ocr llm test
 
 ### 复用已有的环境变量
 
-如果你已经配好了 Claude Code 的 `ANTHROPIC_*`，或 OCR 自己的 `OCR_LLM_*`环境变量，OCR 会自动识别，无需再写配置文件。
+如果你已经配好了 Anthropic-compatible 的 `ANTHROPIC_*`，或 OCR 自己的 `OCR_LLM_*`环境变量，OCR 会自动识别，无需再写配置文件。
 
 ### 使用 CC-Switch
 

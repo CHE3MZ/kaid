@@ -25,12 +25,12 @@ flowchart TD
 ```
 
 The orchestration lives in the
-[`internal/agent/`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/)
+[`internal/agent/`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/)
 package, whose main files are `agent.go` (dispatch & per-group
 orchestration), `grouping.go` (semantic file grouping), `selection.go`
 (the file filter), `preview.go` (the `--preview` report), and `util.go`
 (helpers); the tool-use loop and memory compression live alongside it in
-[`internal/llmloop/`](https://github.com/alibaba/open-code-review/blob/main/internal/llmloop/).
+[`internal/llmloop/`](https://github.com/CHE3MZ/kaid/blob/master/internal/llmloop/).
 Two entry points matter: `Agent.Run` (top of pipeline) and
 `Agent.dispatchSubtasks` (per-group fan-out).
 
@@ -56,7 +56,7 @@ they're reviewed pre-commit.
 ## The five-gate file filter
 
 Once diffs are loaded, every file passes through
-[`whyExcluded`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go).
+[`whyExcluded`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go).
 The function returns one of:
 
 ```
@@ -102,7 +102,7 @@ the full algorithm.
 
 Files that survive filtering are **not** reviewed one at a time. Before
 dispatch, `groupDiffs` (in
-[`grouping.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/grouping.go))
+[`grouping.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/grouping.go))
 makes a single `GROUPING_TASK` LLM call carrying only file *metadata* —
 path, status (`ADDED` / `MODIFIED` / `DELETED` / `RENAMED`), and
 insertion/deletion counts — never diff content. The model returns a JSON
@@ -363,9 +363,9 @@ per-group:
 | `{{comments}}` | Accumulated comments (JSON), used in `REVIEW_FILTER_TASK`. |
 
 The placeholder substitution lives in
-[`agent.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/agent.go).
+[`agent.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/agent.go).
 The template itself isn't a CLI override — to change prompts you edit
-[`task_template.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/template/task_template.json)
+[`task_template.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json)
 and rebuild. The `--tools` flag is a *tool-registry* override (it
 swaps the JSON consumed by `internal/config/toolsconfig`), not a
 template override — see [Tools](../tools/#customizing-tools).
@@ -447,7 +447,7 @@ If you want to read along:
 | Session JSONL writer | `internal/session/persist.go` |
 | Web viewer | `internal/viewer/server.go` |
 
-See [Contributing](../contributing/) for build & test instructions.
+See [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md) for build & test instructions.
 
 ## See Also
 

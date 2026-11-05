@@ -5,19 +5,15 @@
 
 // English posts
 import enIntroducingOcr from './en/introducing-ocr-blog.md';
-import enOssRetro from './en/oss-two-month-retrospective.md';
 
 // Chinese posts
 import zhIntroducingOcr from './zh/introducing-ocr-blog.md';
-import zhOssRetro from './zh/oss-two-month-retrospective.md';
 
 // Japanese posts
 import jaIntroducingOcr from './ja/introducing-ocr-blog.md';
-import jaOssRetro from './ja/oss-two-month-retrospective.md';
 
 export type BlogSlug =
-  | 'introducing-ocr-blog'
-  | 'oss-two-month-retrospective';
+  | 'introducing-ocr-blog';
 
 export interface BlogMeta {
   slug: BlogSlug;
@@ -30,17 +26,14 @@ export interface BlogMeta {
 
 const enPosts: Record<BlogSlug, string> = {
   'introducing-ocr-blog': enIntroducingOcr,
-  'oss-two-month-retrospective': enOssRetro,
 };
 
 const zhPosts: Record<BlogSlug, string> = {
   'introducing-ocr-blog': zhIntroducingOcr,
-  'oss-two-month-retrospective': zhOssRetro,
 };
 
 const jaPosts: Record<BlogSlug, string> = {
   'introducing-ocr-blog': jaIntroducingOcr,
-  'oss-two-month-retrospective': jaOssRetro,
 };
 
 const blogMap: Record<string, Record<BlogSlug, string>> = {

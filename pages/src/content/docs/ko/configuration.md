@@ -307,7 +307,7 @@ ocr llm test
 
 ### 기존 환경 변수 재사용 {#reuse-existing-environment-variables}
 
-Claude Code의 `ANTHROPIC_*` 또는 OCR 자체의 `OCR_LLM_*` 환경 변수를 이미 설정해 두었다면 OCR이 자동으로 인식합니다. 설정 파일이 필요 없습니다.
+Anthropic-compatible의 `ANTHROPIC_*` 또는 OCR 자체의 `OCR_LLM_*` 환경 변수를 이미 설정해 두었다면 OCR이 자동으로 인식합니다. 설정 파일이 필요 없습니다.
 
 ### CC-Switch 사용 {#using-cc-switch}
 

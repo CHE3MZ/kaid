@@ -6,7 +6,7 @@ sidebar:
 
 OCR 内置 **六个工具**，供 LLM 在评审过程中调用。本页记录每个工具的用途、输入
 schema 与示例输入/输出。完整的机器可读定义位于
-[`internal/config/toolsconfig/tools.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/toolsconfig/tools.json)。
+[`internal/config/toolsconfig/tools.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/toolsconfig/tools.json)。
 
 ## 各阶段工具可用性
 

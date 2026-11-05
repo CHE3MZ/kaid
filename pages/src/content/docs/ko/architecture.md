@@ -24,11 +24,11 @@ flowchart TD
 ```
 
 전체 흐름을 지휘하는 코드는
-[`internal/agent/`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/)
+[`internal/agent/`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/)
 패키지에 있습니다. 주요 파일은 `agent.go`(디스패치와 그룹별 오케스트레이션),
 `grouping.go`(의미 기반 파일 그룹화), `selection.go`(파일 필터),
 `preview.go`(`--preview` 보고서), `util.go`(헬퍼)입니다. 도구 호출 루프와 메모리 압축은 그 옆의
-[`internal/llmloop/`](https://github.com/alibaba/open-code-review/blob/main/internal/llmloop/)에
+[`internal/llmloop/`](https://github.com/CHE3MZ/kaid/blob/master/internal/llmloop/)에
 있습니다. 진입점은 두 개가 중요합니다. `Agent.Run`(파이프라인 최상단)과
 `Agent.dispatchSubtasks`(그룹별 팬아웃)입니다.
 
@@ -54,7 +54,7 @@ diff마다 옛/새 경로, 옛/새 hunk, 추가·삭제 줄 수, 바이너리 �
 ## 다섯 관문 파일 필터 {#the-five-gate-file-filter}
 
 diff를 다 읽고 나면 모든 파일이
-[`whyExcluded`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go)를
+[`whyExcluded`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go)를
 지나갑니다. 이 함수는 다음 중 하나를 반환합니다.
 
 ```
@@ -98,7 +98,7 @@ diff 프로바이더 단계에서, `internal/diff/git.go`의 `providerDirIgnoreD
 ## 의미 기반 파일 그룹화 {#semantic-file-grouping}
 
 필터를 통과한 파일을 하나씩 따로 리뷰하지는 **않습니다**. 디스패치 전에
-[`grouping.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/grouping.go)의
+[`grouping.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/grouping.go)의
 `groupDiffs`가 `GROUPING_TASK` LLM 호출을 한 번 합니다. 이때 실어 보내는 것은
 파일 *메타데이터* — 경로, 상태(`ADDED` / `MODIFIED` / `DELETED` / `RENAMED`),
 추가·삭제 줄 수 — 뿐이고 diff 내용은 절대 보내지 않습니다. 모델은
@@ -349,9 +349,9 @@ OCR은 이 검사로 괴물 같은 diff(자동 생성된 lock 파일, 수천 줄
 | `{{comments}}` | 그때까지 모인 코멘트(JSON). `REVIEW_FILTER_TASK`에 쓰입니다. |
 
 플레이스홀더 치환 코드는
-[`agent.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/agent.go)에
+[`agent.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/agent.go)에
 있습니다. 템플릿 자체는 CLI로 덮어쓸 수 없습니다. 프롬프트를 바꾸려면
-[`task_template.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/template/task_template.json)을
+[`task_template.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json)을
 고치고 다시 빌드해야 합니다. `--tools` 플래그는 *도구 레지스트리*를 덮어쓰는
 것이지(`internal/config/toolsconfig`가 읽는 JSON을 갈아 끼웁니다) 템플릿을
 덮어쓰는 게 아닙니다. [도구](../tools/#customizing-tools)를 참고하세요.
@@ -430,7 +430,7 @@ OCR은 이 검사로 괴물 같은 diff(자동 생성된 lock 파일, 수천 줄
 | 세션 JSONL 기록기 | `internal/session/persist.go` |
 | 웹 뷰어 | `internal/viewer/server.go` |
 
-빌드와 테스트 방법은 [기여하기](../contributing/)를 참고하세요.
+빌드와 테스트 방법은 [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md)를 참고하세요.
 
 ## 함께 보기 {#see-also}
 

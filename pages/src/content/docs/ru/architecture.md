@@ -25,7 +25,7 @@ flowchart TD
 ```
 
 Оркестрация реализована в пакете
-[`internal/agent/`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/).
+[`internal/agent/`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/).
 Основные файлы:
 
 - `agent.go` — диспетчеризация и оркестрация по группам;
@@ -35,7 +35,7 @@ flowchart TD
 - `util.go` — вспомогательные функции.
 
 Цикл вызова инструментов и сжатие памяти находятся рядом, в пакете
-[`internal/llmloop/`](https://github.com/alibaba/open-code-review/blob/main/internal/llmloop/).
+[`internal/llmloop/`](https://github.com/CHE3MZ/kaid/blob/master/internal/llmloop/).
 
 Основные точки входа:
 
@@ -65,7 +65,7 @@ flowchart TD
 ## Пятиступенчатый фильтр файлов
 
 После загрузки diff каждый файл проходит через функцию
-[`whyExcluded`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go).
+[`whyExcluded`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go).
 Она возвращает одно из следующих значений:
 
 ```
@@ -359,10 +359,10 @@ if countMessagesTokens(messages) > tokenLimit {
 | `{{comments}}` | Накопленные комментарии (JSON), используемые в `REVIEW_FILTER_TASK`. |
 
 Подстановка плейсхолдеров реализована в
-[`agent.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/agent.go).
+[`agent.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/agent.go).
 Сам шаблон нельзя переопределить через CLI: чтобы изменить промпты,
 отредактируйте
-[`task_template.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/template/task_template.json)
+[`task_template.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json)
 и заново соберите проект. Флаг `--tools` переопределяет *реестр инструментов*
 (заменяет JSON, используемый `internal/config/toolsconfig`), а не шаблон. См.
 раздел [Инструменты](../tools/#customizing-tools).
@@ -445,7 +445,7 @@ if countMessagesTokens(messages) > tokenLimit {
 | Веб-просмотрщик | `internal/viewer/server.go` |
 
 Инструкции по сборке и тестированию приведены в разделе
-[Участие в разработке](../contributing/).
+[AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md).
 
 ## См. также
 

@@ -21,7 +21,7 @@ flowchart TD
     A --> B --> C --> D --> D2 --> E --> F
 ```
 
-オーケストレーションのロジックは [`internal/agent/`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/) パッケージにあり、主要なファイルは `agent.go`（ディスパッチとグループごとのオーケストレーション）、`grouping.go`（セマンティックなファイルグルーピング）、`selection.go`（ファイルフィルタリング）、`preview.go`（`--preview` のレポート）、`util.go`（ヘルパー）です。ツール呼び出しループとメモリ圧縮は、その隣にある [`internal/llmloop/`](https://github.com/alibaba/open-code-review/blob/main/internal/llmloop/) にあります。注目すべきエントリポイントは 2 つです: `Agent.Run`（パイプラインの最上部）と `Agent.dispatchSubtasks`（グループごとのファンアウト）。
+オーケストレーションのロジックは [`internal/agent/`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/) パッケージにあり、主要なファイルは `agent.go`（ディスパッチとグループごとのオーケストレーション）、`grouping.go`（セマンティックなファイルグルーピング）、`selection.go`（ファイルフィルタリング）、`preview.go`（`--preview` のレポート）、`util.go`（ヘルパー）です。ツール呼び出しループとメモリ圧縮は、その隣にある [`internal/llmloop/`](https://github.com/CHE3MZ/kaid/blob/master/internal/llmloop/) にあります。注目すべきエントリポイントは 2 つです: `Agent.Run`（パイプラインの最上部）と `Agent.dispatchSubtasks`（グループごとのファンアウト）。
 
 ## diff provider
 
@@ -39,7 +39,7 @@ untracked ファイルはディスクから読み込まれ、ファイル全体�
 
 ## 5 段階ゲートのファイルフィルタリング
 
-diff の読み込み後、各ファイルは [`whyExcluded`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go) を通過します。この関数は次のいずれかを返します:
+diff の読み込み後、各ファイルは [`whyExcluded`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go) を通過します。この関数は次のいずれかを返します:
 
 ```
 binary          — file is binary
@@ -225,7 +225,7 @@ if countMessagesTokens(messages) > tokenLimit {
 | `{{path}}` | グループのキー（グループ内のファイルパスをカンマ区切りで連結）。`REVIEW_FILTER_TASK` に使用されます。 |
 | `{{comments}}` | 蓄積されたコメント（JSON）。`REVIEW_FILTER_TASK` に使用されます。 |
 
-プレースホルダーの置換は [`agent.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/agent.go) にあります。テンプレート自体は CLI では上書きできません。prompt を変更するには、[`task_template.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/template/task_template.json) を編集して再ビルドする必要があります。`--tools` 引数は*ツールレジストリ*の上書きです（`internal/config/toolsconfig` が消費する JSON を置き換えます）。テンプレートの上書きではありません。[ツール](../tools/#customizing-tools)を参照してください。
+プレースホルダーの置換は [`agent.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/agent.go) にあります。テンプレート自体は CLI では上書きできません。prompt を変更するには、[`task_template.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json) を編集して再ビルドする必要があります。`--tools` 引数は*ツールレジストリ*の上書きです（`internal/config/toolsconfig` が消費する JSON を置き換えます）。テンプレートの上書きではありません。[ツール](../tools/#customizing-tools)を参照してください。
 
 > **プレースホルダー構文についての注意。** 上記のプレースホルダーはすべて二重波括弧 `{{…}}` 構文を使用します。*ただし* `RE_LOCATION_TASK` は例外で、単一波括弧の `{diff}`、`{existing_code}`、`{suggestion_content}` を置換します（`internal/diff/relocation.go` を参照）。
 
@@ -275,7 +275,7 @@ if countMessagesTokens(messages) > tokenLimit {
 | セッション JSONL ライター | `internal/session/persist.go` |
 | Web ビューア | `internal/viewer/server.go` |
 
-ビルドとテストの説明は[コントリビュート](../contributing/)を参照してください。
+ビルドとテストの説明は [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md) を参照してください。
 
 ## 関連項目
 

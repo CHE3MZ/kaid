@@ -17,12 +17,9 @@ import enTools from './en/tools.md';
 import enMcp from './en/mcp.md';
 import enViewer from './en/viewer.md';
 import enTelemetry from './en/telemetry.md';
-import enAgentSkill from './en/integrations/agent-skill.md';
-import enClaudeCode from './en/integrations/claude-code.md';
 import enCicd from './en/integrations/ci.md';
 import enDelegate from './en/integrations/delegate.md';
 import enAcp from './en/integrations/acp.md';
-import enContributing from './en/contributing.md';
 import enFaq from './en/faq.md';
 
 // Chinese docs
@@ -37,12 +34,9 @@ import zhTools from './zh/tools.md';
 import zhMcp from './zh/mcp.md';
 import zhViewer from './zh/viewer.md';
 import zhTelemetry from './zh/telemetry.md';
-import zhAgentSkill from './zh/integrations/agent-skill.md';
-import zhClaudeCode from './zh/integrations/claude-code.md';
 import zhCicd from './zh/integrations/ci.md';
 import zhDelegate from './zh/integrations/delegate.md';
 import zhAcp from './zh/integrations/acp.md';
-import zhContributing from './zh/contributing.md';
 import zhFaq from './zh/faq.md';
 
 // Japanese docs
@@ -57,12 +51,9 @@ import jaTools from './ja/tools.md';
 import jaMcp from './ja/mcp.md';
 import jaViewer from './ja/viewer.md';
 import jaTelemetry from './ja/telemetry.md';
-import jaAgentSkill from './ja/integrations/agent-skill.md';
-import jaClaudeCode from './ja/integrations/claude-code.md';
 import jaCicd from './ja/integrations/ci.md';
 import jaDelegate from './ja/integrations/delegate.md';
 import jaAcp from './ja/integrations/acp.md';
-import jaContributing from './ja/contributing.md';
 import jaFaq from './ja/faq.md';
 
 // Korean docs
@@ -77,12 +68,9 @@ import koTools from './ko/tools.md';
 import koMcp from './ko/mcp.md';
 import koViewer from './ko/viewer.md';
 import koTelemetry from './ko/telemetry.md';
-import koAgentSkill from './ko/integrations/agent-skill.md';
-import koClaudeCode from './ko/integrations/claude-code.md';
 import koCicd from './ko/integrations/ci.md';
 import koDelegate from './ko/integrations/delegate.md';
 import koAcp from './ko/integrations/acp.md';
-import koContributing from './ko/contributing.md';
 import koFaq from './ko/faq.md';
 
 // Russian docs (incremental — partial LocalizedDocs)
@@ -97,12 +85,9 @@ import ruTools from './ru/tools.md';
 import ruMcp from './ru/mcp.md';
 import ruViewer from './ru/viewer.md';
 import ruTelemetry from './ru/telemetry.md';
-import ruAgentSkill from './ru/integrations/agent-skill.md';
-import ruClaudeCode from './ru/integrations/claude-code.md';
 import ruCicd from './ru/integrations/ci.md';
 import ruDelegate from './ru/integrations/delegate.md';
 import ruAcp from './ru/integrations/acp.md';
-import ruContributing from './ru/contributing.md';
 import ruFaq from './ru/faq.md';
 
 export type DocSlug =
@@ -116,12 +101,9 @@ export type DocSlug =
   | 'mcp'
   | 'viewer'
   | 'telemetry'
-  | 'agent-skill'
-  | 'claude-code'
   | 'cicd'
   | 'delegate'
   | 'acp'
-  | 'contributing'
   | 'faq'
   | 'chatgpt-preview';
 
@@ -139,12 +121,9 @@ const enDocs: Record<DocSlug, string> = {
   'mcp': enMcp,
   'viewer': enViewer,
   'telemetry': enTelemetry,
-  'agent-skill': enAgentSkill,
-  'claude-code': enClaudeCode,
   'cicd': enCicd,
   'delegate': enDelegate,
   'acp': enAcp,
-  'contributing': enContributing,
   'faq': enFaq,
 };
 
@@ -160,12 +139,9 @@ const zhDocs: Record<DocSlug, string> = {
   'mcp': zhMcp,
   'viewer': zhViewer,
   'telemetry': zhTelemetry,
-  'agent-skill': zhAgentSkill,
-  'claude-code': zhClaudeCode,
   'cicd': zhCicd,
   'delegate': zhDelegate,
   'acp': zhAcp,
-  'contributing': zhContributing,
   'faq': zhFaq,
 };
 
@@ -181,12 +157,9 @@ const jaDocs: Record<DocSlug, string> = {
   'mcp': jaMcp,
   'viewer': jaViewer,
   'telemetry': jaTelemetry,
-  'agent-skill': jaAgentSkill,
-  'claude-code': jaClaudeCode,
   'cicd': jaCicd,
   'delegate': jaDelegate,
   'acp': jaAcp,
-  'contributing': jaContributing,
   'faq': jaFaq,
 };
 
@@ -202,12 +175,9 @@ const koDocs: Record<DocSlug, string> = {
   'mcp': koMcp,
   'viewer': koViewer,
   'telemetry': koTelemetry,
-  'agent-skill': koAgentSkill,
-  'claude-code': koClaudeCode,
   'cicd': koCicd,
   'delegate': koDelegate,
   'acp': koAcp,
-  'contributing': koContributing,
   'faq': koFaq,
 };
 
@@ -223,12 +193,9 @@ const ruDocs: LocalizedDocs = {
   'mcp': ruMcp,
   'viewer': ruViewer,
   'telemetry': ruTelemetry,
-  'agent-skill': ruAgentSkill,
-  'claude-code': ruClaudeCode,
   'cicd': ruCicd,
   'delegate': ruDelegate,
   'acp': ruAcp,
-  'contributing': ruContributing,
   'faq': ruFaq,
 };
 

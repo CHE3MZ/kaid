@@ -6,7 +6,7 @@ sidebar:
 
 よくあるエラー、想定外の挙動、そして「これは仕様ですか？」という疑問をまとめました。ここに
 あなたの問題が見つからない場合は、実行手順と完全な出力を添えて
-[GitHub issue](https://github.com/alibaba/open-code-review/issues) を作成してください。
+[GitHub issue](https://github.com/CHE3MZ/kaid/issues) を作成してください。
 
 ## 設定と起動
 
@@ -25,7 +25,7 @@ OCR はエンドポイント解決チェーン全体（[設定](../configuration
 - `ocr config set llm.url …` / `llm.auth_token …` / `llm.model …` を実行して
   `~/.opencodereview/config.json` を埋める、**または**
 - `OCR_LLM_URL` / `OCR_LLM_TOKEN` / `OCR_LLM_MODEL` をエクスポートする、**または**
-- すでに Claude Code を使っている場合は、`ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
+- すでに AI coding agent を使っている場合は、`ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
   `ANTHROPIC_MODEL` をエクスポートする。
 
 その後 `ocr llm test` で接続性を検証してからレビューを再試行してください。
@@ -155,8 +155,8 @@ OCR はコメントを diff 内の正確な行にアンカーできませんで�
 - diff のフォーマットが異常（CRLF、tab/空白の混在）で、スライディングウィンドウのマッチングが
   壊れた。
 
-コメント自体は本物です——ただ自動的に配置されなかっただけです。ほとんどのエージェント統合
-（SKILL、Claude Code plugin）は `existing_code` フィールドを読み、ファイル内で自ら位置を特定します。
+コメント自体は本物です——ただ自動的に配置されなかっただけです。ほとんどのエージェント統合は
+`existing_code` フィールドを読み、ファイル内で自ら位置を特定します。
 
 ### Token threshold exceeded
 
@@ -337,36 +337,35 @@ collector にエクスポートされることは決してありません。予�
 3. `git diff --no-textconv` フィルターまたは pre-commit でマスクし、secret が diff に入らないようにする。
 
 「マスクルール」機能はロードマップにあります。
-[issue トラッカー](https://github.com/alibaba/open-code-review/issues)をご覧ください。
+[issue トラッカー](https://github.com/CHE3MZ/kaid/issues)をご覧ください。
 
 ## その他
 
 ### changelog はどこにある？
 
-[GitHub Releases](https://github.com/alibaba/open-code-review/releases)
+[GitHub Releases](https://github.com/CHE3MZ/kaid/releases)
 ——各 release には Conventional Commits から生成された notes が付属しています。
 
 ### OCR は Git 以外の VCS をサポートするか？
 
 しません。diff provider は shell 経由で `git` を呼び出します。SVN / Mercurial などには新しい
-provider が必要です。Hg サポートの issue は[こちら](https://github.com/alibaba/open-code-review/issues)で
+provider が必要です。Hg サポートの issue は[こちら](https://github.com/CHE3MZ/kaid/issues)で
 オープンになっています。
 
 ### なぜバイナリは `opencodereview` なのに CLI は `ocr` なのか？
 
-release で配布される静的バイナリはプロジェクト名（`opencodereview`）を持ちます。NPM wrapper は
+release で配布される静的バイナリはプロジェクト名（`opencodereview`）を持ちます。install script wrapper は
 使いやすさのため `ocr` としてインストールされます。ソースからビルドすると `dist/opencodereview`（Windows では `dist/opencodereview.exe`）が
 得られます——`$PATH` 上の `ocr` としてコピーしてください。
 
 ### アンインストールするには？
 
 ```bash
-npm uninstall -g @alibaba-group/open-code-review        # NPM install
-sudo rm /usr/local/bin/ocr                              # binary install
-rm -rf ~/.opencodereview                                # all state
+rm -f /usr/local/bin/ocr
+rm -rf ~/.opencodereview
 ```
 
-OCR は `~/.opencodereview` の外には書き込みません（NPM がダウンロードするバイナリを除く）。
+OCR は `~/.opencodereview` の外には書き込みません（install script がダウンロードするバイナリを除く）。
 したがってこのディレクトリを削除すれば、履歴、設定、ユーザーごとのルールが消去されます。
 
 ## 関連項目

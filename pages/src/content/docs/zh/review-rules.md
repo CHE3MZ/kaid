@@ -124,7 +124,7 @@ OCR 用 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 ## 文件如何被过滤
 
 过滤是一个六重门算法，位于
-[`internal/agent/selection.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go)。
+[`internal/agent/selection.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go)。
 对每个 diff，OCR 依次问：
 
 1. **`binary`**——文件是二进制吗？排除。
@@ -134,7 +134,7 @@ OCR 用 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 4. **`user_include`**——若用户定义了 `include`，路径匹配吗？若是，**立即保留**
    （绕过下面的 `unsupported_ext` 和 `default_path` 门）。
 5. **`unsupported_ext`**——文件扩展名在
-   [白名单](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/supported_file_types.json)
+   [白名单](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/supported_file_types.json)
    里吗？不在则排除。
 6. **`default_path`**——路径匹配某个内置测试文件排除模式
    （`**/*_test.go`、`**/*.test.{js,jsx,ts,tsx}`、`**/*_spec.rb`……）吗？排除。
@@ -147,7 +147,7 @@ OCR 用 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 ### 内置敏感路径 {#built-in-secret-paths}
 
 内置的敏感路径不会被审查（见
-[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_secret_patterns.json)）：
+[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_secret_patterns.json)）：
 
 - `**/.ssh/**`
 - `**/id_rsa`
@@ -165,7 +165,7 @@ OCR 用 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 ### 默认路径排除
 
 内置排除列表（见
-[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_exclude_patterns.json)）
+[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_exclude_patterns.json)）
 涵盖两组。第一组是各语言的测试文件，以及测试夹具、快照与生成代码：
 
 - `**/*_test.go`
@@ -245,7 +245,7 @@ OCR 用 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 `**/build/**` 和 `**/bin/**` 有意不在其中：很多项目会把手写源码放在这两个目录下。
 
 同样这些噪声目录在更早的 diff 层也会被过滤，位于
-[`internal/diff/git.go`](https://github.com/alibaba/open-code-review/blob/main/internal/diff/git.go)。
+[`internal/diff/git.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/diff/git.go)。
 该列表按路径前缀匹配，因此只能命中**仓库根目录**下的目录：`vendor/pkg/x.go`
 根本不会进入 per-file 过滤，会被报告为 `provider_directory`；而
 `api/vendor/pkg/x.go` 会进入，并由 `default_path` 排除。只有后者可以用

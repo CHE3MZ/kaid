@@ -132,7 +132,7 @@ OCR은 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublesta
 ## 파일을 걸러내는 방식 {#how-files-are-filtered}
 
 필터는
-[`internal/agent/selection.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go)에
+[`internal/agent/selection.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go)에
 있는 여섯 관문 알고리즘입니다. diff마다 OCR이 다음을 묻습니다.
 
 1. **`binary`** — 바이너리 파일인가? 그렇다면 제외.
@@ -143,7 +143,7 @@ OCR은 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublesta
    걸리면 **바로 통과**합니다(아래 `unsupported_ext`와 `default_path` 관문을
    건너뜁니다).
 5. **`unsupported_ext`** — 파일 확장자가
-   [허용 목록](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/supported_file_types.json)에
+   [허용 목록](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/supported_file_types.json)에
    있는가? 없으면 제외.
 6. **`default_path`** — 경로가 내장 테스트 파일 제외 패턴(`**/*_test.go`,
    `**/*.test.{js,jsx,ts,tsx}`, `**/*_spec.rb` 등)에 걸리는가? 그렇다면 제외.
@@ -157,7 +157,7 @@ OCR은 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublesta
 ### 내장 시크릿 경로 {#built-in-secret-paths}
 
 내장 시크릿 경로는 리뷰되지 않습니다
-([`internal/config/allowlist/default_secret_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_secret_patterns.json)
+([`internal/config/allowlist/default_secret_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_secret_patterns.json)
 참고):
 
 - `**/.ssh/**`
@@ -176,7 +176,7 @@ OCR은 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublesta
 ### 기본 경로 제외 목록 {#default-path-exclusions}
 
 내장 제외 목록은
-([`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_exclude_patterns.json)
+([`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_exclude_patterns.json)
 참고) 두 그룹을 다룹니다. 첫 번째는 여러 언어의 테스트 파일과 테스트 fixture, 스냅샷, 생성 코드입니다.
 
 - `**/*_test.go`
@@ -257,7 +257,7 @@ OCR은 [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublesta
 작성한 소스를 그 안에 두기 때문입니다.
 
 같은 디렉터리들은 더 앞선 diff 단계
-[`internal/diff/git.go`](https://github.com/alibaba/open-code-review/blob/main/internal/diff/git.go) 에서도 걸러집니다.
+[`internal/diff/git.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/diff/git.go) 에서도 걸러집니다.
 이 목록은 경로 접두사로 비교하므로 **저장소 루트**의 디렉터리만 잡습니다.
 `vendor/pkg/x.go` 는 파일별 필터까지 오지 않고 `provider_directory` 로
 보고되고, `api/vendor/pkg/x.go` 는 도달해서 `default_path` 로 제외됩니다.

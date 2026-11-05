@@ -4,55 +4,7 @@ sidebar:
   order: 4
 ---
 
-`ocr` CLI をインストールするには、サポートされた 5 つの方法があります。
-
-## NPM（推奨）
-
-#### インストール
-
-```bash
-npm install -g @alibaba-group/open-code-review
-```
-
-特定のバージョンに固定：
-
-```bash
-npm install -g @alibaba-group/open-code-review@<version>
-```
-
-#### 更新
-
-NPM 経由でインストールした場合、`ocr` はデフォルトで自動的に最新の状態を保ちます
-（静的バイナリはこのメカニズムの対象外です）。`ocr` を実行するたびに、wrapper は
-バックグラウンドで registry の最新バージョンを静かにチェックし、更新が見つかると
-今回のレビューに影響を与えることなく自動的にアップグレードします。チェックの間には
-18 分のクールダウンがあり、`OCR_UPDATE_INTERVAL`（分）で調整できます。
-
-自動更新をオフにするには、`OCR_NO_UPDATE` に空でない任意の値を設定します。
-
-```bash
-export OCR_NO_UPDATE=1
-```
-
-#### アンインストール
-
-```bash
-npm uninstall -g @alibaba-group/open-code-review
-```
-
-## Homebrew（macOS / Linux）
-
-```bash
-brew install open-code-review
-```
-
-この formula はソースからビルドして `ocr` バイナリをインストールします。
-
-後でアップグレードするには：
-
-```bash
-brew upgrade open-code-review
-```
+`ocr` CLI をインストールするには、サポートされた 4 つの方法があります。
 
 ## インストールスクリプト（curl | sh）
 
@@ -60,7 +12,7 @@ GitHub Release バイナリのダウンロード（検証付き）をラップ�
 イメージやヘッドレス環境に適しています。
 
 ```bash
-curl -fsSL https://open-codereview.ai/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 3 つの環境変数を認識します。
@@ -82,7 +34,7 @@ export OCR_GITHUB_MIRROR='YOUR_MIRROR_DOMAIN'
 ```
 
 値はスキームや末尾スラッシュを含まないベアドメインである必要があります（`https://gh-proxy.com/` ではなく `gh-proxy.com`）。これは*パスプレフィックス*ミラーとして使用されます。バイナリは
-`https://<ミラー>/github.com/alibaba/open-code-review/releases/download/<バージョン>/…`
+`https://<ミラー>/github.com/CHE3MZ/kaid/releases/download/<バージョン>/…`
 から取得されます。ドメイン置換型ミラー（例：`github.com` を `hub.example.org` に書き換えるもの）はこの形式に一致しません——パスプレフィックス型のミラーを使用してください。
 
 ミラーはリリースバイナリとその `sha256sum.txt` チェックサムの両方をカバーします。バージョン解決（`OCR_VERSION` が未設定の場合）は引き続きミラーではなく GitHub API を直接呼び出します。バージョン解決を完全にスキップするには、バージョンを固定してください：
@@ -91,12 +43,12 @@ export OCR_GITHUB_MIRROR='YOUR_MIRROR_DOMAIN'
 export OCR_VERSION='v1.2.3'
 ```
 
-> **セキュリティ上の注意：** ミラーは第三者のサービスであるため、`OCR_GITHUB_MIRROR` を設定するとバイナリとその `sha256sum.txt` の両方がミラーからダウンロードされます。つまり、悪意のあるミラーは改ざんされたバイナリと一致するチェックサムを同時に配布できます。そのため、ミラーモードでは完全性の保証はありません。ミラーを信頼できない場合は、[releases ページ](https://github.com/alibaba/open-code-review/releases) のアップストリームの `sha256sum.txt` と照合して検証してください。
+> **セキュリティ上の注意：** ミラーは第三者のサービスであるため、`OCR_GITHUB_MIRROR` を設定するとバイナリとその `sha256sum.txt` の両方がミラーからダウンロードされます。つまり、悪意のあるミラーは改ざんされたバイナリと一致するチェックサムを同時に配布できます。そのため、ミラーモードでは完全性の保証はありません。ミラーを信頼できない場合は、[releases ページ](https://github.com/CHE3MZ/kaid/releases) のアップストリームの `sha256sum.txt` と照合して検証してください。
 
-Windows（PowerShell 5.1+）では、代わりに PowerShell インストーラーを使用してください：
+Windows（PowerShell 3.1+）では、代わりに PowerShell インストーラーを使用してください：
 
 ```powershell
-irm https://open-codereview.ai/install.ps1 | iex
+irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
 ```
 
 同じ `OCR_INSTALL_DIR`、`OCR_VERSION`、`OCR_GITHUB_MIRROR` を認識します
@@ -106,40 +58,66 @@ irm https://open-codereview.ai/install.ps1 | iex
 
 ## GitHub Release バイナリ
 
-Node.js をインストールしたくない場合は、
-[releases ページ](https://github.com/alibaba/open-code-review/releases) から
-静的バイナリを直接取得できます。
+直接ダウンロードしたい場合は、
+[releases ページ](https://github.com/CHE3MZ/kaid/releases) から
+静的バイナリを取得できます。
 
 ```bash
 # macOS (Apple Silicon)
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-darwin-arm64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-darwin-arm64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # macOS (Intel)
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-darwin-amd64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-darwin-amd64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Linux x86_64
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-linux-amd64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-linux-amd64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Linux ARM64
-curl -Lo ocr https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-linux-arm64
+curl -Lo ocr https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-linux-arm64
 chmod +x ocr && sudo mv ocr /usr/local/bin/ocr
 
 # Windows (AMD64)
-curl -Lo ocr.exe https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-windows-amd64.exe
+curl -Lo ocr.exe https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-windows-amd64.exe
 
 # Windows (ARM64)
-curl -Lo ocr.exe https://github.com/alibaba/open-code-review/releases/latest/download/opencodereview-windows-arm64.exe
+curl -Lo ocr.exe https://github.com/CHE3MZ/kaid/releases/latest/download/opencodereview-windows-arm64.exe
 ```
 
 各 release では、バイナリの隣に `sha256sum.txt` も公開されており、完全性を検証できます。
 
 ```bash
-curl -LO https://github.com/alibaba/open-code-review/releases/latest/download/sha256sum.txt
+curl -LO https://github.com/CHE3MZ/kaid/releases/latest/download/sha256sum.txt
 shasum -a 256 -c sha256sum.txt --ignore-missing
 ```
+
+## go install でインストール
+
+Go 1.26.10 以降が必要です：
+
+```bash
+go install github.com/CHE3MZ/kaid/cmd/opencodereview@latest
+```
+
+このコマンドは `opencodereview` を `$(go env GOPATH)/bin`（通常は
+`~/go/bin`）にインストールします。CLI 名は `ocr` なので、名前を変更するか
+リンクを作成してください：
+
+```bash
+mv "$(go env GOPATH)/bin/opencodereview" "$(go env GOPATH)/bin/ocr"
+```
+
+Windows の場合：
+
+```powershell
+Rename-Item "$(go env GOPATH)\bin\opencodereview.exe" ocr.exe
+```
+
+`go install` はモジュールのソースから直接ビルドし、リリース用の ldflags を
+適用しないため、`ocr version` はリリースタグではなく `dev` を表示することが
+あります。
 
 ## ソースからビルドする
 
@@ -154,8 +132,8 @@ OCR 自体を変更する場合、またはプリコンパイル済みバイナ�
 #### ビルド
 
 ```bash
-git clone https://github.com/alibaba/open-code-review.git
-cd open-code-review
+git clone https://github.com/CHE3MZ/kaid.git
+cd kaid
 make build              # dist/opencodereview を生成（Windows では dist/opencodereview.exe）
 sudo cp dist/opencodereview /usr/local/bin/ocr
 ```
@@ -174,7 +152,8 @@ make sha256sum          # sha256sum.txt も生成
 ```
 
 `make dist` は `clean → build-all → sha256sum` を実行し、バイナリの隣に
-`VERSION` ファイルを書き込みます——これはまさに release パイプラインが実行するステップです。
+`VERSION` ファイルを書き込みます——ローカルで release ビルドを再現するのに便利です。
+公式 release は CI の GoReleaser でビルドされます。
 
 #### テストの実行
 
@@ -221,14 +200,13 @@ fish、PowerShell、および永続化の詳しい設定方法は [CLI リファ
 | `~/.opencodereview/config.json` | LLM エンドポイント、言語、テレメトリ設定（`ocr config set` で管理）。 |
 | `~/.opencodereview/rule.json` | オプションのグローバルレビュールール。 |
 | `~/.opencodereview/sessions/<encoded-repo-path>/<session-id>.jsonl` | レビューセッションごとのストリーミング JSONL トランスクリプト。`ocr viewer` で使用します。 |
-| `~/.opencodereview/{last-update-check,update.lock,update-available}` | NPM wrapper のバックグラウンド更新チェックの状態。wrapper はより新しい release があるかをポーリングし（デフォルトで約 18 分ごと）、アップグレードの案内を表示します。`OCR_NO_UPDATE=1` で無効化するか、`OCR_UPDATE_INTERVAL`（分）で間隔を調整します。静的バイナリはこれらのファイルを書き込みません。 |
 | `<repo>/.opencodereview/rule.json` | オプションのプロジェクトレベルのレビュールール——安全にコミットできます。 |
 
-OCR は `~/.opencodereview/` の外に書き込むことは決してありません（NPM が一時的にバイナリをダウンロードする場合を除く）。
+OCR は `~/.opencodereview/` の外に書き込むことは決してありません（install script が一時的にバイナリをダウンロードする場合を除く）。
 このディレクトリを削除すれば、クリーンなアンインストールが完了します。
 
 ## 関連項目
 
 - [クイックスタート](../quickstart/)——LLM を設定して初回のレビューを完了します。
 - [設定](../configuration/)——OCR が受け入れる各環境変数と config key。
-- [コントリビュート](../contributing/)——ソースからビルドし、テストを実行して開発に参加します。
+- [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md)——ソースからビルドし、テストを実行して開発に参加します。

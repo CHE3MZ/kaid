@@ -6,7 +6,7 @@ sidebar:
 
 Распространённые ошибки, неожиданное поведение и вопросы в духе «так и должно
 работать?». Если вашей проблемы здесь нет, создайте
-[задачу на GitHub](https://github.com/alibaba/open-code-review/issues), указав
+[задачу на GitHub](https://github.com/CHE3MZ/kaid/issues), указав
 выполненные шаги и полный вывод.
 
 ## Конфигурация и запуск
@@ -27,7 +27,7 @@ OCR прошёл всю цепочку разрешения эндпоинта (
   чтобы заполнить `~/.opencodereview/config.json`, **или**
 - Экспортируйте `OCR_LLM_URL` / `OCR_LLM_TOKEN` / `OCR_LLM_MODEL`, **или**
 - Экспортируйте `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
-  `ANTHROPIC_MODEL`, если уже используете Claude Code.
+  `ANTHROPIC_MODEL`, если уже используете AI coding agent.
 
 Затем выполните `ocr llm test`, чтобы проверить подключение перед повторным
 запуском ревью.
@@ -172,7 +172,7 @@ OCR не смог привязать комментарий к конкретн�
   сопоставление скользящим окном.
 
 Комментарий всё равно действителен — просто он не был размещён автоматически.
-Большинство интеграций с агентами (SKILL, плагин Claude Code) читают поле
+Большинство интеграций с агентами  читают поле
 `existing_code` и самостоятельно находят нужное место в файле.
 
 ### Превышен порог токенов
@@ -388,25 +388,25 @@ OCR отправляет ваши **diff** (и необязательные фр
    чтобы секреты не попадали в diff.
 
 Функция «правил маскирования» запланирована; следите за
-[трекером задач](https://github.com/alibaba/open-code-review/issues).
+[трекером задач](https://github.com/CHE3MZ/kaid/issues).
 
 ## Разное
 
 ### Где находится журнал изменений?
 
-В [релизах GitHub](https://github.com/alibaba/open-code-review/releases):
+В [релизах GitHub](https://github.com/CHE3MZ/kaid/releases):
 каждый релиз содержит примечания, созданные из Conventional Commits.
 
 ### Поддерживает ли OCR системы контроля версий, отличные от Git?
 
 Нет. Провайдеры diff запускают `git` во внешнем процессе. Для SVN, Mercurial и
 других систем потребуются новые провайдеры; задача о поддержке Hg открыта
-[здесь](https://github.com/alibaba/open-code-review/issues).
+[здесь](https://github.com/CHE3MZ/kaid/issues).
 
 ### Почему бинарный файл называется `opencodereview`, а CLI — `ocr`?
 
 Статический бинарный файл, публикуемый в релизах, назван по имени проекта
-(`opencodereview`); обёртка NPM устанавливает его как `ocr` для удобства. При
+(`opencodereview`); обёртка install script устанавливает его как `ocr` для удобства. При
 сборке из исходного кода получается `dist/opencodereview`
 (`dist/opencodereview.exe` в Windows) — скопируйте его как
 `ocr` в каталог из `$PATH`.
@@ -414,13 +414,12 @@ OCR отправляет ваши **diff** (и необязательные фр
 ### Как удалить OCR?
 
 ```bash
-npm uninstall -g @alibaba-group/open-code-review        # NPM install
-sudo rm /usr/local/bin/ocr                              # binary install
-rm -rf ~/.opencodereview                                # all state
+rm -f /usr/local/bin/ocr
+rm -rf ~/.opencodereview
 ```
 
 OCR не записывает данные за пределами `~/.opencodereview` (кроме бинарного
-файла, загружаемого через NPM), поэтому удаление этого каталога очищает историю,
+файла, загружаемого через install script), поэтому удаление этого каталога очищает историю,
 конфигурацию и пользовательские правила.
 
 ## См. также

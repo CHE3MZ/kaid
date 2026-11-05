@@ -143,7 +143,7 @@ OCR использует [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com
 ## Как фильтруются файлы
 
 Фильтр — шестишаговый алгоритм в
-[`internal/agent/selection.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go).
+[`internal/agent/selection.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go).
 Для каждого diff OCR спрашивает:
 
 1. **`binary`** — Файл бинарный? Исключается.
@@ -155,7 +155,7 @@ OCR использует [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com
    да, **сразу остаётся** (обходит проверки `unsupported_ext` и `default_path`
    ниже).
 5. **`unsupported_ext`** — Расширение файла есть в
-   [списке разрешённых](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/supported_file_types.json)?
+   [списке разрешённых](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/supported_file_types.json)?
    Исключается, если нет.
 6. **`default_path`** — Путь совпадает со встроенным шаблоном исключения
    тестовых файлов (`**/*_test.go`, `**/*.test.{js,jsx,ts,tsx}`,
@@ -171,7 +171,7 @@ OCR использует [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com
 ### Встроенные секретные пути {#built-in-secret-paths}
 
 Встроенные секретные пути не попадают в ревью (см.
-[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_secret_patterns.json)):
+[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_secret_patterns.json)):
 
 - `**/.ssh/**`
 - `**/id_rsa`
@@ -189,7 +189,7 @@ OCR использует [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com
 ### Стандартные исключения путей
 
 Встроенный список исключений (см.
-[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_exclude_patterns.json))
+[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_exclude_patterns.json))
 охватывает две группы. Первая — тестовые файлы разных языков, а также
 фикстуры, снапшоты и сгенерированный код:
 
@@ -271,7 +271,7 @@ OCR использует [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com
 лежат написанные вручную исходники.
 
 Те же шумные каталоги фильтруются и раньше, на уровне diff в
-[`internal/diff/git.go`](https://github.com/alibaba/open-code-review/blob/main/internal/diff/git.go).
+[`internal/diff/git.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/diff/git.go).
 Этот список сопоставляется по префиксу пути, поэтому ловит каталог только в
 **корне репозитория**: `vendor/pkg/x.go` не доходит до файлового фильтра и
 отмечается как `provider_directory`, а `api/vendor/pkg/x.go` доходит и

@@ -5,7 +5,7 @@ sidebar:
 ---
 
 常见错误、意外与“这应该这样吗？”的问题。若你的问题不在此处，开一个带运行步骤
-与完整输出的 [GitHub issue](https://github.com/alibaba/open-code-review/issues)。
+与完整输出的 [GitHub issue](https://github.com/CHE3MZ/kaid/issues)。
 
 ## 配置与启动
 
@@ -23,7 +23,7 @@ OCR 走完了整条端点解析链（[配置](../configuration/#复用已有的�
 - 运行 `ocr config set llm.url …` / `llm.auth_token …` / `llm.model …` 填充
   `~/.opencodereview/config.json`，**或**
 - 导出 `OCR_LLM_URL` / `OCR_LLM_TOKEN` / `OCR_LLM_MODEL`，**或**
-- 若你已在用 Claude Code，导出 `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
+- 若你已在用 AI coding agent，导出 `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
   `ANTHROPIC_MODEL`。
 
 然后 `ocr llm test` 验证连通性再重试评审。
@@ -145,8 +145,8 @@ OCR 无法把评论锚定到 diff 中的精确行。两个常见原因：
   仍会如此。
 - diff 有异常格式（CRLF、tab/空格混用）破坏了滑动窗口匹配。
 
-评论仍是真实的——只是没被自动放置。多数 agent 集成（SKILL、Claude Code
-plugin）读 `existing_code` 字段并自行在文件中定位。
+评论仍是真实的——只是没被自动放置。多数 agent 集成读 `existing_code`
+字段并自行在文件中定位。
 
 ### Token threshold exceeded
 
@@ -309,34 +309,33 @@ OCR 把你的 **diff**（及可选 read-tool 片段）发到你配置的 LLM 端
 3. 用 `git diff --no-textconv` 过滤器或 pre-commit 脱敏，使 secret 不进入 diff。
 
 “脱敏规则”功能在路线图上；关注
-[issue 跟踪器](https://github.com/alibaba/open-code-review/issues)。
+[issue 跟踪器](https://github.com/CHE3MZ/kaid/issues)。
 
 ## 杂项
 
 ### changelog 在哪？
 
-[GitHub Releases](https://github.com/alibaba/open-code-review/releases)
+[GitHub Releases](https://github.com/CHE3MZ/kaid/releases)
 ——每个 release 都附带从 Conventional Commits 生成的 notes。
 
 ### OCR 支持非 Git VCS 吗？
 
 不支持。diff provider 通过 shell 调用 `git`。SVN / Mercurial 等需要新的 provider；Hg 支持的
-issue 已在[此](https://github.com/alibaba/open-code-review/issues)开放。
+issue 已在[此](https://github.com/CHE3MZ/kaid/issues)开放。
 
 ### 为什么二进制叫 `opencodereview` 而 CLI 是 `ocr`？
 
-release 中发布的静态二进制以项目命名（`opencodereview`）；NPM wrapper 为了便于使用而安装为 `ocr`。从源码构建得到 `dist/opencodereview`（Windows 上是 `dist/opencodereview.exe`）——复制为 `$PATH` 上的
+release 中发布的静态二进制以项目命名（`opencodereview`）；install script wrapper 为了便于使用而安装为 `ocr`。从源码构建得到 `dist/opencodereview`（Windows 上是 `dist/opencodereview.exe`）——复制为 `$PATH` 上的
 `ocr`。
 
 ### 如何卸载？
 
 ```bash
-npm uninstall -g @alibaba-group/open-code-review        # NPM install
-sudo rm /usr/local/bin/ocr                              # binary install
-rm -rf ~/.opencodereview                                # all state
+rm -f /usr/local/bin/ocr
+rm -rf ~/.opencodereview
 ```
 
-OCR 不在 `~/.opencodereview` 之外写入（NPM 下载二进制除外），因此删除该目录即可
+OCR 不在 `~/.opencodereview` 之外写入（install script 下载二进制除外），因此删除该目录即可
 清除历史、配置与每用户规则。
 
 ## 另见

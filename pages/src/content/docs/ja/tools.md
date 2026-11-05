@@ -6,7 +6,7 @@ sidebar:
 
 OCR には、レビュー中に LLM が呼び出すための **6 つのツール**が組み込まれています。本ページでは、各ツールの用途、入力
 schema、および入出力の例を記載します。完全な機械可読の定義は
-[`internal/config/toolsconfig/tools.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/toolsconfig/tools.json)
+[`internal/config/toolsconfig/tools.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/toolsconfig/tools.json)
 にあります。
 
 ## 各フェーズでのツールの利用可否

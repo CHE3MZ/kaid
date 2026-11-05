@@ -106,14 +106,14 @@ OCR は [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 
 ## ファイルがどのようにフィルタリングされるか
 
-フィルタリングは 6 段階のゲートアルゴリズムで、[`internal/agent/selection.go`](https://github.com/alibaba/open-code-review/blob/main/internal/agent/selection.go) にあります。各 diff について、OCR は順に次を問います:
+フィルタリングは 6 段階のゲートアルゴリズムで、[`internal/agent/selection.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go) にあります。各 diff について、OCR は順に次を問います:
 
 1. **`binary`**: ファイルはバイナリか？ 除外します。
 2. **`secret_exclude`**: 古いパスまたは新しいパスが組み込みのシークレットパス保護の対象か？ 対象なら除外します。この保護はユーザールールより先に適用され、`include` パターンでは上書きできません。パターンの一覧は下記の[組み込みのシークレットパス](#built-in-secret-paths)にあります。
 
 3. **`user_exclude`**: パスがいずれかのユーザー `exclude` パターンに一致するか？ 除外します。
 4. **`user_include`**: ユーザーが `include` を定義している場合、パスは一致するか？ 一致するなら**即座に保持**します（下記の `unsupported_ext` と `default_path` のゲートをバイパス）。
-5. **`unsupported_ext`**: ファイルの拡張子は[ホワイトリスト](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/supported_file_types.json)にあるか？ なければ除外します。
+5. **`unsupported_ext`**: ファイルの拡張子は[ホワイトリスト](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/supported_file_types.json)にあるか？ なければ除外します。
 6. **`default_path`**: パスがいずれかの組み込みテストファイル除外パターン（`**/*_test.go`、`**/*.test.{js,jsx,ts,tsx}`、`**/*_spec.rb`……）に一致するか？ 除外します。
 
 6 つのゲートをすべて通過したファイルだけが LLM に送られます。ただし diff だけで `max_tokens` の 80% を超える場合は例外で、`selectFiles` がゲートのあとにその上限を適用し、そのファイルを `too_large` として除外します。同じく、新しいパスが `/dev/null` であるファイルは `deleted` と記されます。レビューすべき新しい内容がありません。`ocr review --preview` を使えば、token を消費せずにこのフィルタリング結果を出力できます。
@@ -121,7 +121,7 @@ OCR は [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 ### 組み込みのシークレットパス {#built-in-secret-paths}
 
 組み込みのシークレットパスはレビューされません（
-[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_secret_patterns.json)
+[`internal/config/allowlist/default_secret_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_secret_patterns.json)
 を参照）:
 
 - `**/.ssh/**`
@@ -139,7 +139,7 @@ OCR は [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 
 ### デフォルトパスの除外
 
-組み込みの除外リスト（[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/allowlist/default_exclude_patterns.json) を参照）は 2 つのグループを対象とします。1 つ目は各言語のテストファイルに加えて、テスト fixture、スナップショット、生成コードです:
+組み込みの除外リスト（[`internal/config/allowlist/default_exclude_patterns.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/allowlist/default_exclude_patterns.json) を参照）は 2 つのグループを対象とします。1 つ目は各言語のテストファイルに加えて、テスト fixture、スナップショット、生成コードです:
 
 - `**/*_test.go`
 - `**/src/test/java/**/*.java`
@@ -217,7 +217,7 @@ OCR は [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublest
 
 `**/build/**` と `**/bin/**` は意図的に含めていません。手書きのソースをそこに置くプロジェクトが多いためです。
 
-同じディレクトリは、より早い [`internal/diff/git.go`](https://github.com/alibaba/open-code-review/blob/main/internal/diff/git.go) の diff 層でもフィルタリングされます。このリストはパスの接頭辞で照合するため、**リポジトリルート**のディレクトリしか捕捉しません。`vendor/pkg/x.go` はファイルごとのフィルタに届かず `provider_directory` として報告され、`api/vendor/pkg/x.go` は届いて `default_path` で除外されます。`include` ルールで戻せるのは後者だけです。
+同じディレクトリは、より早い [`internal/diff/git.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/diff/git.go) の diff 層でもフィルタリングされます。このリストはパスの接頭辞で照合するため、**リポジトリルート**のディレクトリしか捕捉しません。`vendor/pkg/x.go` はファイルごとのフィルタに届かず `provider_directory` として報告され、`api/vendor/pkg/x.go` は届いて `default_path` で除外されます。`include` ルールで戻せるのは後者だけです。
 
 上記いずれかのパターンに一致するファイルを**レビューする**には、それをユーザー `include` リストに追加してください。それが default-path ゲートを上書きします。
 

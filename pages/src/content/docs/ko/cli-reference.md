@@ -42,7 +42,7 @@ Use "ocr config" for more information about config.
 Use "ocr llm" for more information about LLM utilities.
 Use "ocr session -h" for more information about session inspection.
 
-GitHub: https://github.com/alibaba/open-code-review
+GitHub: https://github.com/CHE3MZ/kaid
 ```
 
 ## 전역 플래그 {#global-flags}
@@ -149,7 +149,7 @@ ocr scan --provider openai --model gpt-5.4 --format json
 
 `--provider`를 명시하면 일반적인 소스 해석에 앞서 `providers`나 `custom_providers`에
 저장된 항목을 고릅니다. `--provider`가 없으면 OCR은 기존 소스 순서를 그대로
-따릅니다. 저장된 설정, 완전한 `OCR_LLM_*` 환경 변수 설정, 완전한 Claude Code 환경
+따릅니다. 저장된 설정, 완전한 `OCR_LLM_*` 환경 변수 설정, 완전한 Anthropic-compatible 환경
 변수 설정, 그다음 셸 rc 파일 순입니다. `--model`은 어떤 소스가 선택되든 그 안에서
 모델만 덮어쓰며, 소스 순서 자체는 바꾸지 않습니다. 조건을 다 갖추지 못한 방식은
 섞이지 않고 그대로 다음으로 넘어갑니다. 내장 프로바이더를 골랐다면 자격 증명은
@@ -264,7 +264,7 @@ Concurrent map access without a lock — wrap with sync.RWMutex.
 #### 텍스트(agent, `--audience agent`) {#text-agent-audience-agent}
 
 코멘트 출력은 같지만, 내부의 끌 수 있는 stdout writer로 진행 상황만 억제합니다
-([`internal/stdout`](https://github.com/alibaba/open-code-review/blob/main/internal/stdout/stdout.go)).
+([`internal/stdout`](https://github.com/CHE3MZ/kaid/blob/master/internal/stdout/stdout.go)).
 CI에서 쓰거나 다른 Agent로 파이프할 때 이 모드를 쓰세요.
 
 #### JSON {#json}
@@ -621,7 +621,7 @@ ocr llm test
 ```
 
 `ocr review`와 똑같은 방식으로 LLM 엔드포인트를 해석한 뒤,
-[`internal/config/testconnection/task.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/testconnection/task.json)에
+[`internal/config/testconnection/task.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/testconnection/task.json)에
 담긴 정해진 채팅 요청을 한 번 보내고 다음을 출력합니다:
 
 ```
@@ -687,7 +687,7 @@ ocr -V
 ```
 
 빌드 시점에 새겨진 버전, 짧은 Git 커밋(있을 때), 플랫폼(`<GOOS>/<GOARCH>`), 빌드
-날짜(있을 때), GitHub URL(`https://github.com/alibaba/open-code-review`)을 출력합니다.
+날짜(있을 때), GitHub URL(`https://github.com/CHE3MZ/kaid`)을 출력합니다.
 
 
 ## ocr completion {#ocr-completion}
@@ -789,5 +789,4 @@ PowerShell 프로필에 `ocr.ps1`을 점으로 불러오는 줄을 추가하세�
 - [빠른 시작](../quickstart/) — 설치하고 첫 리뷰를 실행합니다.
 - [설정](../configuration/) — 플래그 뒤에 있는 환경 변수와 설정 키입니다.
 - [리뷰 규칙](../review-rules/) — `--rule` 플래그와 규칙 해석 방식입니다.
-- [연동](../integrations/agent-skill/) — Agent와 CI에서 `ocr review`를 호출하는
   방법입니다.

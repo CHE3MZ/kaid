@@ -7,7 +7,7 @@ sidebar:
 OCR에는 리뷰 중에 LLM이 호출할 수 있는 **내장 도구 여섯 개**가 들어 있습니다. 이
 페이지에서는 도구마다 용도와 입력 스키마, 입출력 예시를 다룹니다. 기계가 읽는 전체
 정의는
-[`internal/config/toolsconfig/tools.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/toolsconfig/tools.json)에
+[`internal/config/toolsconfig/tools.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/toolsconfig/tools.json)에
 있습니다.
 
 ## 단계별 도구 제공 여부 {#tool-availability-per-phase}

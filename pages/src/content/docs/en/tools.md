@@ -7,7 +7,7 @@ sidebar:
 OCR ships with **six built-in tools** the LLM can call during a review.
 This page documents each tool's purpose, input schema, and example
 input/output. The full machine-readable definitions live in
-[`internal/config/toolsconfig/tools.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/toolsconfig/tools.json).
+[`internal/config/toolsconfig/tools.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/toolsconfig/tools.json).
 
 ## Tool availability per phase
 

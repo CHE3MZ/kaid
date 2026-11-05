@@ -43,7 +43,7 @@ Use "ocr config" for more information about config.
 Use "ocr llm" for more information about LLM utilities.
 Use "ocr session -h" for more information about session inspection.
 
-GitHub: https://github.com/alibaba/open-code-review
+GitHub: https://github.com/CHE3MZ/kaid
 ```
 
 ## Глобальные флаги
@@ -266,7 +266,7 @@ Concurrent map access without a lock — wrap with sync.RWMutex.
 
 Вывод комментариев остаётся тем же, но строки хода выполнения подавляются
 внутренним переключаемым в тихий режим средством записи stdout
-([`internal/stdout`](https://github.com/alibaba/open-code-review/blob/main/internal/stdout/stdout.go)).
+([`internal/stdout`](https://github.com/CHE3MZ/kaid/blob/master/internal/stdout/stdout.go)).
 Используйте этот режим в CI или при передаче вывода другому агенту.
 
 #### JSON
@@ -629,7 +629,7 @@ ocr llm test
 
 Определяет эндпоинт LLM точно так же, как `ocr review`, отправляет один
 подготовленный запрос чата из файла
-[`internal/config/testconnection/task.json`](https://github.com/alibaba/open-code-review/blob/main/internal/config/testconnection/task.json)
+[`internal/config/testconnection/task.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/testconnection/task.json)
 и выводит:
 
 ```
@@ -699,7 +699,7 @@ ocr -V
 
 Выводит версию, записанную при сборке, короткий Git-коммит (если есть),
 платформу (`<GOOS>/<GOARCH>`), дату сборки (если есть) и URL GitHub
-(`https://github.com/alibaba/open-code-review`).
+(`https://github.com/CHE3MZ/kaid`).
 
 ## Советы и подводные камни
 
@@ -721,4 +721,3 @@ ocr -V
 - [Быстрый старт](../quickstart/) — установка и запуск первого ревью.
 - [Конфигурация](../configuration/) — переменные окружения и ключи конфигурации, связанные с флагами.
 - [Правила ревью](../review-rules/) — флаг `--rule` и разрешение правил.
-- [Интеграции](../integrations/agent-skill/) — вызов `ocr review` из агентов и CI.

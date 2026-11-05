@@ -6,7 +6,7 @@ sidebar:
 
 자주 만나는 오류와 뜻밖의 동작, "원래 이런 건가?" 싶은 질문을 모았습니다. 찾는
 문제가 여기 없다면 실행한 절차와 전체 출력을 담아
-[GitHub 이슈](https://github.com/alibaba/open-code-review/issues)를 열어 주세요.
+[GitHub 이슈](https://github.com/CHE3MZ/kaid/issues)를 열어 주세요.
 
 ## 설정과 시작 {#configuration-startup}
 
@@ -26,7 +26,7 @@ OCR이 엔드포인트 해석 체인을 끝까지
 - `ocr config set llm.url …` / `llm.auth_token …` / `llm.model …`을 실행해
   `~/.opencodereview/config.json`을 채우거나,
 - `OCR_LLM_URL` / `OCR_LLM_TOKEN` / `OCR_LLM_MODEL`을 export 하거나,
-- 이미 Claude Code를 쓰고 있다면 `ANTHROPIC_BASE_URL` /
+- 이미 AI coding agent를 쓰고 있다면 `ANTHROPIC_BASE_URL` /
   `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_MODEL`을 export 하세요.
 
 그런 다음 `ocr llm test`로 연결을 확인하고 리뷰를 다시 돌리세요.
@@ -162,7 +162,7 @@ OCR이 코멘트를 diff의 정확한 줄에 붙이지 못했다는 뜻입니다
   깨졌습니다.
 
 코멘트 자체는 여전히 유효합니다. 자동으로 위치를 잡지 못했을 뿐입니다. Agent
-연동 대부분(SKILL, Claude Code 플러그인)은 `existing_code` 필드를 읽어 파일에서
+연동 대부분은 `existing_code` 필드를 읽어 파일에서
 그 자리를 직접 찾아냅니다.
 
 ### 토큰 임계값 초과 {#token-threshold-exceeded}
@@ -358,37 +358,36 @@ JSONL과 규칙 파일은 로컬에만 있습니다.
    섞이지 않게 하세요.
 
 "가리기 규칙" 기능은 로드맵에 있습니다.
-[이슈 트래커](https://github.com/alibaba/open-code-review/issues)에서 진행 상황을
+[이슈 트래커](https://github.com/CHE3MZ/kaid/issues)에서 진행 상황을
 지켜보세요.
 
 ## 기타 {#misc}
 
 ### 변경 로그는 어디에 있나요? {#where-s-the-changelog}
 
-[GitHub Releases](https://github.com/alibaba/open-code-review/releases)에
+[GitHub Releases](https://github.com/CHE3MZ/kaid/releases)에
 있습니다. 릴리스마다 Conventional Commits에서 생성한 노트가 붙습니다.
 
 ### Git이 아닌 버전 관리 시스템도 지원하나요? {#does-ocr-support-non-git-vcs}
 
 지원하지 않습니다. diff 프로바이더가 `git`을 직접 실행합니다. SVN이나 Mercurial
 등을 쓰려면 프로바이더를 새로 만들어야 합니다. Hg 지원 이슈는
-[여기](https://github.com/alibaba/open-code-review/issues)에 열려 있습니다.
+[여기](https://github.com/CHE3MZ/kaid/issues)에 열려 있습니다.
 
 ### 바이너리 이름은 `opencodereview`인데 CLI는 왜 `ocr`인가요? {#why-is-the-binary-called-opencodereview-but-the-cli-is-ocr}
 
-릴리스에 올라가는 정적 바이너리는 프로젝트 이름을 따 `opencodereview`이고, NPM
+릴리스에 올라가는 정적 바이너리는 프로젝트 이름을 따 `opencodereview`이고, install script
 래퍼는 쓰기 편하도록 `ocr`이라는 이름으로 설치합니다. 소스에서 빌드하면
 `dist/opencodereview`(Windows에서는 `dist/opencodereview.exe`)가 나옵니다. `$PATH`에 `ocr`로 복사해 두세요.
 
 ### 어떻게 제거하나요? {#how-do-i-uninstall}
 
 ```bash
-npm uninstall -g @alibaba-group/open-code-review        # NPM install
-sudo rm /usr/local/bin/ocr                              # binary install
-rm -rf ~/.opencodereview                                # all state
+rm -f /usr/local/bin/ocr
+rm -rf ~/.opencodereview
 ```
 
-OCR은 `~/.opencodereview` 바깥에 아무것도 쓰지 않습니다(NPM으로 내려받는
+OCR은 `~/.opencodereview` 바깥에 아무것도 쓰지 않습니다(install script으로 내려받는
 바이너리는 예외). 그러니 이 디렉터리를 지우면 기록과 설정, 사용자별 규칙이 모두
 사라집니다.
 
