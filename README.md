@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/CHE3MZ/kaid/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/CHE3MZ/kaid/release.yml?style=flat-square" /></a>
-  <a href="https://github.com/CHE3MZ/kaid/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/CHE3MZ/kaid?style=flat-square" /></a>
+  <a href="https://github.com/CHE3MZ/kaid/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/CHE3MZ/kaid?style=flat-square" /></a>
 </p>
 <p align="center">
   <a href="#supported-platforms"><img alt="Windows" src="https://img.shields.io/badge/Windows-supported-blue.svg" /></a>
@@ -91,13 +91,13 @@ The agent's strengths are concentrated where they matter most — dynamic decisi
 #### Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
 ```
 
 On Windows:
 
 ```powershell
-irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
 ```
 
 After installation, the `ocr` command is available globally.

@@ -85,7 +85,7 @@ def run_ocr_review(from_ref: str | None = None, to_ref: str | None = None,
     except FileNotFoundError as exc:
         raise OcrReviewError(
             "`ocr` CLI not found on PATH. Install it first "
-            "(curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh)."
+            "(curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh)."
         ) from exc
     except subprocess.TimeoutExpired as exc:
         raise OcrReviewError(f"`ocr review` timed out after {timeout}s.") from exc

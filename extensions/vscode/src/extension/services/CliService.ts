@@ -69,8 +69,8 @@ export class CliService {
       const windows = process.platform === 'win32';
       const command = windows ? 'powershell' : 'sh';
       const args = windows
-        ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', 'irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 | iex']
-        : ['-c', 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh'];
+        ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', 'irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex']
+        : ['-c', 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh'];
       onLog({ text: `$ ${command} ${args.join(' ')}`, level: 'info' });
       const proc = spawn(resolveBin(command), args, {
         env: getShellEnv(),

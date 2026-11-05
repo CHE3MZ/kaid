@@ -26,7 +26,7 @@ An IntelliJ IDEA plugin built on the [`open-code-review`](https://github.com/CHE
 1. Install the `ocr` CLI globally:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
    ```
 
 2. Configure a working LLM (endpoint, API key, model). Configure it via the CLI directly, or in the plugin's config panel:

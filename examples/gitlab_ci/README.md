@@ -179,7 +179,7 @@ To avoid re-reviewing on every push to an existing MR (and wasting LLM API token
 ```yaml
 script:
   # Install OpenCodeReview
-  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
 
   # Configure OCR
   - |

@@ -26,7 +26,7 @@
 1. 全局安装 `ocr` CLI：
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
    ```
 
 2. 配置可用的 LLM（接口地址、API Key、模型）。可用 CLI 直接配置，或在插件内的配置视图填写：

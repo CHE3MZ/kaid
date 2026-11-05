@@ -4,7 +4,7 @@ This directory provides a ready-to-use GitHub Actions workflow demo that integra
 
 ## Quick Start: `ocr-review.yml`
 
-The simplest adoption path: this demo delegates every step — checkout, OCR install, review, comment posting, artifact upload — to the official reusable composite action at [`action.yml`](../../action.yml) via a single `uses: CHE3MZ/kaid@main` step. It covers both automatic PR review (`pull_request_target: opened/synchronize/reopened`) and on-demand re-review via comments (`/open-code-review` or `@open-code-review`). No inline scripts to maintain — `@main` always runs the latest action; see [Reproducible pinning](#reproducible-pinning) when you need runs to be repeatable.
+The simplest adoption path: this demo delegates every step — checkout, OCR install, review, comment posting, artifact upload — to the official reusable composite action at [`action.yml`](../../action.yml) via a single `uses: CHE3MZ/kaid@master` step. It covers both automatic PR review (`pull_request_target: opened/synchronize/reopened`) and on-demand re-review via comments (`/open-code-review` or `@open-code-review`). No inline scripts to maintain — `@main` always runs the latest action; see [Reproducible pinning](#reproducible-pinning) when you need runs to be repeatable.
 
 ```bash
 mkdir -p .github/workflows
@@ -14,7 +14,7 @@ cp ocr-review.yml .github/workflows/ocr-review.yml
 The core of the demo is a single action step:
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ secrets.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -42,9 +42,9 @@ Take the commit SHA from the [releases page](https://github.com/CHE3MZ/kaid/rele
 
 ## Running on a self-hosted runner
 
-The demo above runs on GitHub-hosted runners (`runs-on: ubuntu-latest`) and pulls the action from `CHE3MZ/kaid@main`. If you prefer to run OCR on your own self-hosted runner — to reach private network resources, keep LLM traffic on-prem, or avoid runner-minute costs — the OCR project itself does exactly this in its own CI.
+The demo above runs on GitHub-hosted runners (`runs-on: ubuntu-latest`) and pulls the action from `CHE3MZ/kaid@master`. If you prefer to run OCR on your own self-hosted runner — to reach private network resources, keep LLM traffic on-prem, or avoid runner-minute costs — the OCR project itself does exactly this in its own CI.
 
-See [`.github/workflows/ocr-review.yml`](../../.github/workflows/ocr-review.yml) for that workflow. It runs on `runs-on: self-hosted` inside a `node:24.22.1` container. One important caveat: it invokes the action with `uses: ./` only because `action.yml` lives in that same repository — that is an internal shortcut and will not resolve in your repo. As an external user, keep `uses: CHE3MZ/kaid@main` (the runner fetches the action automatically); only the runner environment needs to change. What is worth borrowing from it:
+See [`.github/workflows/ocr-review.yml`](../../.github/workflows/ocr-review.yml) for that workflow. It runs on `runs-on: self-hosted` inside a `node:24.22.1` container. One important caveat: it invokes the action with `uses: ./` only because `action.yml` lives in that same repository — that is an internal shortcut and will not resolve in your repo. As an external user, keep `uses: CHE3MZ/kaid@master` (the runner fetches the action automatically); only the runner environment needs to change. What is worth borrowing from it:
 
 - `runs-on: self-hosted`, optionally with a `container:` image such as `node:24.22.1` (the action needs Node.js; git is installed automatically if missing).
 - Marking the workspace as a trusted git `safe.directory` when running inside a container (e.g. `git config --global --replace-all safe.directory '*'`) to avoid "dubious ownership" errors. Use `--replace-all` (not `--add`) so repeated runs across multiple self-hosted actions replace rather than accumulate entries in the global git config.
@@ -89,7 +89,7 @@ Go to your repository's **Settings → Secrets and variables → Actions**.
 
 ## Customization
 
-> These knobs are action inputs — they apply to the demo workflow and any workflow calling `CHE3MZ/kaid@main`.
+> These knobs are action inputs — they apply to the demo workflow and any workflow calling `CHE3MZ/kaid@master`.
 
 See [`action.yml`](../../action.yml) for the full input list. Workflow-level settings (triggers, keywords) are edited in the workflow file itself.
 
@@ -132,7 +132,7 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: CHE3MZ/kaid@main
+      - uses: CHE3MZ/kaid@master
         with:
           llm_url: ${{ secrets.OCR_LLM_URL }}
           llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
@@ -188,7 +188,7 @@ The action requires `ocr_version` 1.9.6 or newer because its secure token config
 unverifiable CLI is installed.
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     ocr_version: 1.9.10
 ```
@@ -203,7 +203,7 @@ The task and request timeouts are independent:
 | `llm_timeout` | `'300'` | LLM HTTP request timeout in seconds, applied independently to each model request. |
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     review_task_timeout: '30'
     llm_timeout: '900'
@@ -217,7 +217,7 @@ The task and request timeouts are independent:
 | `max_tokens_budget` | `''` | Total token cap (input+output) passed to `ocr review --max-tokens-budget`. Empty or `'0'` means unlimited. Checked before every LLM round: a group already over the cap gets one final round to submit findings, no further groups are dispatched, over-budget and skipped files are reported as failed(budget), partial results are still published, and the review exits 0. |
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     effort: high
     max_tokens_budget: '10000000'
@@ -232,7 +232,7 @@ For models with steerable reasoning depth (e.g. GLM-5.x, OpenAI reasoning models
 | `llm_reasoning_effort` | `''` | One of `minimal`, `low`, `medium`, `high`, `max` (case-insensitive). Empty sends nothing. |
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_reasoning_effort: low
 ```
@@ -246,7 +246,7 @@ By default the review runs with the machine-oriented `agent` audience and stays 
 | `stream_progress` | `'false'` | Stream live `[ocr]` review progress to the workflow log (human audience on stderr) instead of staying silent until the run finishes. One of `'true'` / `'false'`. |
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     stream_progress: 'true'
 ```
@@ -254,7 +254,7 @@ By default the review runs with the machine-oriented `agent` audience and stays 
 ### Add custom review rules
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     rule: ./my-rules.json
 ```
@@ -273,7 +273,7 @@ The action posts a summary issue comment plus inline review comments. Two inputs
 | `resolve_outdated` | `'false'` | Resolve the action's own outdated inline threads. `'false'` does nothing; `'report'` logs what it would resolve; `'true'` resolves them. See below. |
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     sticky_summary: 'true'
     incremental: 'true'
@@ -292,7 +292,7 @@ The action posts a summary issue comment plus inline review comments. Two inputs
 | `full_review` | `'false'` | Force one full review even with `checkpoint_range` enabled. The run still records a new checkpoint. |
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     sticky_summary: 'true'
     checkpoint_range: 'true'
@@ -360,7 +360,7 @@ Over a long PR, the bot's inline comments pile up on code that no longer exists.
 Start with `'report'` for a few PRs and read the `[resolve-outdated]` log line before switching to `'true'`.
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     resolve_outdated: 'report'
 ```
@@ -375,7 +375,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: CHE3MZ/kaid@main
+      - uses: CHE3MZ/kaid@master
         with:
           resolve_outdated: 'false'
 
@@ -387,7 +387,7 @@ jobs:
       contents: write
       pull-requests: read
     steps:
-      - uses: CHE3MZ/kaid@main
+      - uses: CHE3MZ/kaid@master
         with:
           resolve_outdated: 'true'
 ```
@@ -436,7 +436,7 @@ jobs:
     env:
       OCR_MAX_RETRIES: 5
     steps:
-      - uses: CHE3MZ/kaid@main
+      - uses: CHE3MZ/kaid@master
         with:
           llm_url: ${{ secrets.OCR_LLM_URL }}
           # ...other inputs
@@ -455,7 +455,7 @@ If the read API itself is unavailable (rate-limited or `5xx`), the check returns
 ### Limit LLM concurrency
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     review_concurrency: 5
 ```
@@ -463,7 +463,7 @@ If the read API itself is unavailable (rate-limited or `5xx`), the check returns
 ### Provide background context
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     background: ${{ github.event.pull_request.title }}
 ```
@@ -477,7 +477,7 @@ Particularly useful when PR titles follow semantic conventions (e.g., `feat(auth
 > core.setOutput('title', pullRequest.title);
 > ```
 > ```yaml
-> - uses: CHE3MZ/kaid@main
+> - uses: CHE3MZ/kaid@master
 >   with:
 >     background: ${{ steps.pr-context.outputs.title || github.event.pull_request.title }}
 > ```
@@ -537,7 +537,7 @@ Mint a token with `actions/create-github-app-token` and pass it via the `github_
     app-id: ${{ secrets.GITHUB_APP_ID }}
     private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
 
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     github_token: ${{ steps.app-token.outputs.token }}
     llm_url: ${{ secrets.OCR_LLM_URL }}
@@ -596,7 +596,7 @@ OCR supports both OpenAI and Anthropic API formats:
 `llm_protocol` (`anthropic`, `openai` or `openai-responses`) takes precedence over `llm_use_anthropic` when set, and `llm.use_anthropic` is mirrored from it. An `OCR_LLM_PROTOCOL` variable in the job environment is honoured the same way when the input is empty.
 
 ```yaml
-- uses: CHE3MZ/kaid@main
+- uses: CHE3MZ/kaid@master
   with:
     llm_url: ${{ vars.OCR_LLM_URL }}
     llm_auth_token: ${{ secrets.OCR_LLM_TOKEN }}

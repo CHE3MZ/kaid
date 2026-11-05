@@ -43,7 +43,7 @@
 
         <b>Prerequisites</b>
         <ul>
-            <li>Install the ocr CLI: <code>curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh</code></li>
+            <li>Install the ocr CLI: <code>curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh</code></li>
             <li>Configure an LLM provider (endpoint, API key, model) via the CLI or the plugin's
                 configuration panel.</li>
         </ul>

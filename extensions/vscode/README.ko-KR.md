@@ -26,7 +26,7 @@
 1. `ocr` CLI를 전역으로 설치합니다:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
    ```
 
 2. 사용할 LLM(엔드포인트, API 키, 모델)을 설정합니다. CLI에서 직접 설정하거나 확장의 설정 화면에서 입력합니다:

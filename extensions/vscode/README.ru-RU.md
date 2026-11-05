@@ -26,7 +26,7 @@
 1. Установите CLI `ocr` глобально:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
    ```
 
 2. Настройте рабочего провайдера LLM (эндпоинт, API-ключ, модель). Это можно сделать напрямую через CLI или в представлении настроек расширения:

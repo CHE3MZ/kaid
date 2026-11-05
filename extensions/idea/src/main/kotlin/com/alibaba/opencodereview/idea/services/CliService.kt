@@ -32,8 +32,8 @@ class CliService(private val cliPath: String = "ocr") {
         const val ENV_CACHE_TTL_MS = 5 * 60 * 1000L
         const val PROBE_TIMEOUT_MS = 10_000L
         const val FORCE_KILL_DELAY_MS = 3_000L
-        const val INSTALL_SH = "https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh"
-        const val INSTALL_PS1 = "https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1"
+        const val INSTALL_SH = "https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh"
+        const val INSTALL_PS1 = "https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1"
     }
 
     /** Installation has a separate lifecycle from review and configuration commands. */

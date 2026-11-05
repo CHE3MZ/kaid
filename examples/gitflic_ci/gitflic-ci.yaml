@@ -42,7 +42,7 @@ code-review:
       fi
 
     # Install OpenCodeReview
-    - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+    - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
 
     # Configure OCR
     - |

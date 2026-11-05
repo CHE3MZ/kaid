@@ -26,7 +26,7 @@
 1. `ocr` CLI をグローバルにインストールします：
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
    ```
 
 2. 利用する LLM（エンドポイント、API キー、モデル）を設定します。CLI で直接設定するか、拡張機能の設定ビューで入力します：

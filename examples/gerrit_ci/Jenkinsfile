@@ -51,7 +51,7 @@ pipeline {
         stage('Install OCR') {
             steps {
                 // Pin the version you have validated; bump deliberately.
-                sh 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR="$HOME/.local/bin" sh'
+                sh 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR="$HOME/.local/bin" sh'
                 // extra_body has no env-var equivalent. Providers that accept
                 // a top-level "thinking" field (e.g. DashScope/GLM; OpenAI
                 // rejects unknown fields) must fall back to the config file,
@@ -87,7 +87,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'gerrit-http', usernameVariable: 'GERRIT_HTTP_USER', passwordVariable: 'GERRIT_HTTP_PASSWORD')]) {
                     // post_review.py sits in the reviewed repo only in this
                     // demo; real jobs vendor it or fetch it:
-                    //   curl -fsSLO https://raw.githubusercontent.com/CHE3MZ/kaid/main/examples/gerrit_ci/post_review.py
+                    //   curl -fsSLO https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/gerrit_ci/post_review.py
                     // --revision pins the reviewed SHA explicitly: the
                     // `current` default would retarget comments if a new
                     // patchset landed mid-pipeline. GERRIT_CHANGE_NUMBER and
