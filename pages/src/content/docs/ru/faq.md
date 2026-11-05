@@ -107,7 +107,7 @@ curl http://127.0.0.1:11434/v1/chat/completions -H "Content-Type: application/js
 ```
 src/foo.go              modified
 src/foo_test.go         modified  (excluded: user_exclude)
-imgs/logo.png           binary    (excluded: unsupported_ext)
+assets/logo.png         binary    (excluded: unsupported_ext)
 3 file(s) in provider directories (node_modules/) — not reviewable
 ```
 

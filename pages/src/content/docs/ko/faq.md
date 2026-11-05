@@ -100,7 +100,7 @@ provider 디렉터리의 파일은 터미널에서는 한 줄로 묶입니다. `
 ```
 src/foo.go              modified
 src/foo_test.go         modified  (excluded: user_exclude)
-imgs/logo.png           binary    (excluded: unsupported_ext)
+assets/logo.png         binary    (excluded: unsupported_ext)
 3 file(s) in provider directories (node_modules/) — not reviewable
 ```
 

@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://open-codereview.ai">
-    <img src="imgs/logo-core.svg" alt="OpenCodeReview logo" width="180" />
+    <img src="assets/logo-core.svg" alt="OpenCodeReview logo" width="180" />
   </a>
   <h1>OpenCodeReview</h1>
 </div>
@@ -28,8 +28,6 @@ It reads Git diffs, sends changed files to a configurable LLM via an agent with 
 
 Visit the [official website](https://open-codereview.ai) for more details.
 
-![Highlights](imgs/highlights-en.png)
-
 ## Benchmark
 
 > Compared to general-purpose coding agents, Open Code Review achieves significantly higher **Precision** and **F1** with the same underlying model, while consuming only **~1/9 of the tokens** and completing reviews faster. Note that its Recall is lower than general-purpose agents — a deliberate trade-off favoring precision over noise.
@@ -45,8 +43,6 @@ A real-world code review benchmark built from **50** popular open-source reposit
 | **Recall** | Proportion of real defects that are found | Higher = fewer issues slip through review |
 | **Avg Time** | Wall-clock time per review | Matters for CI pipeline latency |
 | **Avg Token** | Total tokens consumed per review | Directly impacts API cost |
-
-![Benchmark](imgs/benchmark-en.png)
 
 ## Why Open Code Review?
 
@@ -115,7 +111,7 @@ ocr config provider          # Select a built-in provider or add a custom one
 ocr config model             # Pick a model for the active provider
 ```
 
-![Provider setup](imgs/providers.jpg)
+![Provider setup](assets/providers.jpg)
 
 The interactive UI guides you through provider selection, API key entry, and model configuration, then automatically tests connectivity.
 

@@ -101,7 +101,7 @@ terminal; `ocr review --preview --format json` still lists every entry:
 ```
 src/foo.go              modified
 src/foo_test.go         modified  (excluded: user_exclude)
-imgs/logo.png           binary    (excluded: unsupported_ext)
+assets/logo.png         binary    (excluded: unsupported_ext)
 3 file(s) in provider directories (node_modules/) — not reviewable
 ```
 

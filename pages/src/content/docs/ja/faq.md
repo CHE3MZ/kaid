@@ -98,7 +98,7 @@ provider ディレクトリ配下のファイルは端末では 1 行に集約�
 ```
 src/foo.go              modified
 src/foo_test.go         modified  (excluded: user_exclude)
-imgs/logo.png           binary    (excluded: unsupported_ext)
+assets/logo.png         binary    (excluded: unsupported_ext)
 3 file(s) in provider directories (node_modules/) — not reviewable
 ```
 
