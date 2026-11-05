@@ -12,18 +12,18 @@
          project itself. Only the Marketplace / Plugins listing shows this name — the
          tool window and the Tools menu action read their labels from OcrBundle, which
          still says "Open Code Review". -->
-    <name>Alibaba Open Code Review</name>
+    <name>CHE3MZ Open Code Review</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://github.com/alibaba/open-code-review">Alibaba</vendor>
+    <vendor url="https://github.com/CHE3MZ/kaid">CHE3MZ</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
     <description><![CDATA[
         AI Code Review — powered by the open-code-review CLI.<br/>
-        The official IntelliJ plugin of the
-        <a href="https://github.com/alibaba/open-code-review">alibaba/open-code-review</a>
-        project, published by the project itself.<br/>
+        An IntelliJ plugin for the
+        <a href="https://github.com/CHE3MZ/kaid">CHE3MZ/kaid</a>
+        fork of open-code-review.<br/>
         Bring AI code review into IntelliJ IDEA: start reviews from the tool window,
         stream logs live, and act on every comment right in the editor.<br/><br/>
 
@@ -43,13 +43,13 @@
 
         <b>Prerequisites</b>
         <ul>
-            <li>Install the ocr CLI: <code>npm i -g @alibaba-group/open-code-review</code></li>
+            <li>Install the ocr CLI: <code>curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh</code></li>
             <li>Configure an LLM provider (endpoint, API key, model) via the CLI or the plugin's
                 configuration panel.</li>
         </ul>
 
         Source code &amp; issue tracker:
-        <a href="https://github.com/alibaba/open-code-review">github.com/alibaba/open-code-review</a>
+        <a href="https://github.com/CHE3MZ/kaid">github.com/CHE3MZ/kaid</a>
     ]]></description>
 
     <!-- Product and plugin compatibility requirements.

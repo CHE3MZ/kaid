@@ -174,7 +174,7 @@ class HostMessagesTest {
             ConfigPanelHostToWebview.Init(
                 config = OcrConfig(),
                 focus = focus,
-                env = EnvCheckResult(node = EnvToolStatus(ok = true, version = "v20.0.0")),
+                env = EnvCheckResult(ocr = EnvToolStatus(ok = true, version = "v20.0.0")),
                 skipEnvCheck = true,
                 locale = SupportedLocale.EN,
             ).toJson(),

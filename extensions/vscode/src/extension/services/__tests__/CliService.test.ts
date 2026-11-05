@@ -43,10 +43,10 @@ describe('CliService probe shell option', () => {
     spawnSpy.mockReturnValue(mockProc as any);
 
     const svc = new CliService('node');
-    await (svc as any).probeCommand('npm');
+    await (svc as any).probeCommand('ocr');
 
     expect(spawnSpy).toHaveBeenCalledWith(
-      'npm',
+      'ocr',
       ['--version'],
       expect.objectContaining({ shell: true }),
     );
@@ -63,10 +63,10 @@ describe('CliService probe shell option', () => {
     spawnSpy.mockReturnValue(mockProc as any);
 
     const svc = new CliService('node');
-    await (svc as any).probeCommand('npm');
+    await (svc as any).probeCommand('ocr');
 
     expect(spawnSpy).toHaveBeenCalledWith(
-      'npm',
+      'ocr',
       ['--version'],
       expect.objectContaining({ shell: false }),
     );

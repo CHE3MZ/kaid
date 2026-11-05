@@ -98,8 +98,6 @@ export interface EnvToolStatus {
 }
 
 export interface EnvCheckResult {
-  node: EnvToolStatus;
-  npm: EnvToolStatus;
   ocr: EnvToolStatus;
 }
 

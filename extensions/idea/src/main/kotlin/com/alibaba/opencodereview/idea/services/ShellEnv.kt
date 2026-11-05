@@ -14,7 +14,7 @@ private const val SHELL_TIMEOUT_MS = 5_000L
 private val BIN_NAME_REGEX = Regex("^[a-zA-Z0-9._/-]+$")
 
 /**
- * IDEA launched from Dock/Spotlight inherits only a minimal PATH, without nvm/homebrew/npm global bin.
+ * IDEA launched from Dock/Spotlight inherits only a minimal PATH, without user-local or package-manager bin directories.
  * Solution: spawn a login interactive shell to read the real environment into a cache, then resolve
  * command names to absolute paths with `command -v`.
  * On Windows the GUI and terminal environments are identical, so the current process environment is used directly.

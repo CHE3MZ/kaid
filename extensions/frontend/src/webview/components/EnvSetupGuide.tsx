@@ -6,11 +6,9 @@ import { CliStatus } from '../configStore';
 import { LogViewer } from './LogViewer';
 import { useT } from '../I18nProvider';
 
-export const OCR_INSTALL_CMD = 'npm install -g @alibaba-group/open-code-review';
+export const OCR_INSTALL_CMD = 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh';
 
 const CHECK_ITEMS = [
-  { key: 'node', label: 'Node.js' },
-  { key: 'npm', label: 'npm' },
   { key: 'ocr', label: 'ocr CLI' },
 ] as const;
 
@@ -91,32 +89,14 @@ export function EnvSetupGuide({
     );
   }
 
-  const nodeActive = true;
-  const npmActive = envCheck?.node.ok ?? false;
-  const ocrActive = npmActive && (envCheck?.npm.ok ?? false);
-
   return (
     <div class="wizard-body">
       <p class="env-guide-lead">{t('view.env.stepLead')}</p>
 
       <div class="env-timeline">
         <EnvTimelineItem
-          title="Node.js"
-          state={resolveStepState(nodeActive, false, envCheck?.node.ok)}
-          version={envCheck?.node.version}
-          command="node --version"
-          hint={t('view.env.nodeHint')}
-        />
-        <EnvTimelineItem
-          title="npm"
-          state={resolveStepState(npmActive, false, envCheck?.npm.ok)}
-          version={envCheck?.npm.version}
-          command="npm --version"
-          hint={t('view.env.npmHint')}
-        />
-        <EnvTimelineItem
           title="ocr CLI"
-          state={resolveStepState(ocrActive, false, envCheck?.ocr.ok)}
+          state={resolveStepState(true, false, envCheck?.ocr.ok)}
           version={envCheck?.ocr.version}
           command={OCR_INSTALL_CMD}
           hint={t('view.env.ocrHint')}
@@ -130,7 +110,7 @@ export function EnvSetupGuide({
       <div class={`form-footer${layout === 'panel' ? ' page-footer' : ''}`}>
         <div class={`form-actions${layout === 'panel' ? ' panel-actions' : ''}`}>
           <button type="button" class="btn-default" onClick={onCheckEnv}>{t('view.env.redetect')}</button>
-          {ocrActive && !envCheck?.ocr.ok && (
+          {!envCheck?.ocr.ok && (
             <button type="button" class="btn-primary" onClick={onInstall}>{t('view.env.oneClickInstall')}</button>
           )}
         </div>

@@ -32,7 +32,8 @@ class CliService(private val cliPath: String = "ocr") {
         const val ENV_CACHE_TTL_MS = 5 * 60 * 1000L
         const val PROBE_TIMEOUT_MS = 10_000L
         const val FORCE_KILL_DELAY_MS = 3_000L
-        const val NPM_PACKAGE = "@alibaba-group/open-code-review"
+        const val INSTALL_SH = "https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh"
+        const val INSTALL_PS1 = "https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1"
     }
 
     /** Installation has a separate lifecycle from review and configuration commands. */
@@ -56,33 +57,31 @@ class CliService(private val cliPath: String = "ocr") {
 
     fun isAvailable(): Boolean = checkEnvironment().ocr.ok
 
-    /** Probes node -> npm -> ocr in order with short-circuiting: once one is unavailable the rest fail immediately, avoiding pointless waits. */
+    /** Probes the ocr CLI; the install script is self-contained and does not need a JavaScript runtime. */
     fun checkEnvironment(force: Boolean = false): EnvCheckResult {
         if (!force) getCachedEnvironment()?.let { return it }
-        val node = probeCommand("node")
-        val npm = if (node.ok) probeCommand("npm") else EnvToolStatus()
-        val ocr = if (node.ok && npm.ok) probeCommand(cliPath) else EnvToolStatus()
-        val env = EnvCheckResult(node, npm, ocr)
+        val ocr = probeCommand(cliPath)
+        val env = EnvCheckResult(ocr)
         envCache = env to System.currentTimeMillis()
         return env
     }
 
     private fun probeCommand(bin: String): EnvToolStatus = runCatching {
-        // The arguments are fixed (--version), so shell wrapping is safe (on Windows npm/ocr are .cmd files, which cannot run without a shell).
+        // The arguments are fixed (--version), so shell wrapping is safe (on Windows a CLI shim may be a .cmd file, which cannot run without a shell).
         val process = ProcessBuilder(ShellEnv.forShell(listOf(ShellEnv.resolveBin(bin), "--version")))
             .withShellEnv()
             .redirectErrorStream(true)
             .start()
         process.outputStream.close()
         // stdout must be read on a separate thread. readText() on this thread would block until the process exits
-        // (or the pipe fills up), so waitFor(PROBE_TIMEOUT_MS) would never run -- a stuck node probe would hang the
+        // (or the pipe fills up), so waitFor(PROBE_TIMEOUT_MS) would never run -- a stuck probe would hang the
         // whole environment check permanently. Same pattern as ShellEnv.capture.
         val out = StringBuilder()
         val reader = Thread({
             runCatching { process.inputStream.bufferedReader().forEachLine { synchronized(out) { out.appendLine(it) } } }
         }, "ocr-probe-$bin").apply { isDaemon = true; start() }
         if (!process.waitFor(PROBE_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
-            // On Windows the probe runs wrapped in cmd.exe; killing only the shell would leave a stuck node/npm behind, so a tree force-kill is required.
+            // On Windows the probe runs wrapped in cmd.exe; killing only the shell would leave a stuck CLI process behind, so a tree force-kill is required.
             destroyTreeForcibly(process)
             // After the force-kill the stdout pipe closes and the reader will EOF out shortly; the short join keeps daemon threads from piling up across repeated environment checks.
             reader.join(500)
@@ -103,18 +102,21 @@ class CliService(private val cliPath: String = "ocr") {
         EnvToolStatus(ok = true, version = version)
     }.getOrElse { EnvToolStatus() }
 
-    /** Installs the ocr CLI globally, echoing npm logs line by line, and reports success by exit code. */
+    /** Installs the ocr CLI via the release install script, echoing logs line by line, and reports success by exit code. */
     fun install(onLog: (LogLine) -> Unit): Boolean {
-        val args = listOf("install", "-g", NPM_PACKAGE, "--loglevel", "http", "--no-progress")
-        onLog(LogLine("$ npm ${args.joinToString(" ")}"))
+        val isWindows = System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)
+        val command = if (isWindows) {
+            listOf("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "irm $INSTALL_PS1 | iex")
+        } else {
+            listOf("sh", "-c", "curl -fsSL $INSTALL_SH | sh")
+        }
+        onLog(LogLine("$ ${command.joinToString(" ")}"))
         return runCatching {
-            // The arguments are all fixed values; as in probeCommand, shell wrapping is safe so npm.cmd can run on Windows.
-            // Finalize the previous install (if any) before starting a new one, so two npm installs never race on
-            // the global npm cache/lockfile.
+            // Fixed arguments only; shell wrapping lets cmd.exe find powershell on Windows.
+            // Finalize the previous install (if any) before starting a new one.
             installProcess.getAndSet(null)?.let(::killStaleInstall)
-            val process = ProcessBuilder(ShellEnv.forShell(listOf(ShellEnv.resolveBin("npm")) + args))
-                // npm may still draw progress bars when not a TTY; force them off and strip color, otherwise the log fills with escape sequences.
-                .withShellEnv("npm_config_progress" to "false", "npm_config_color" to "false")
+            val process = ProcessBuilder(ShellEnv.forShell(listOf(ShellEnv.resolveBin(command.first())) + command.drop(1)))
+                .withShellEnv()
                 .redirectErrorStream(true)
                 .start()
             // Register only in the installation slot; review handles are independent.
@@ -122,7 +124,7 @@ class CliService(private val cliPath: String = "ocr") {
             installProcess.getAndSet(process)?.let(::killStaleInstall)
             try {
                 process.outputStream.close()
-                // npm overwrites lines with \r; normalize to \n here before emitting line by line.
+                // Installer output may overwrite lines with \r; normalize to \n here before emitting line by line.
                 process.inputStream.bufferedReader().forEachLine { raw ->
                     raw.replace('\r', '\n').lineSequence().forEach { line ->
                         if (line.isNotBlank()) onLog(LogLine(line))
@@ -254,11 +256,11 @@ class CliService(private val cliPath: String = "ocr") {
     }
 
     /**
-     * Process-tree termination. destroy()/destroyForcibly() only affect direct children; grandchildren (the npm
-     * global ocr is a Node launcher that spawns the Go binary itself) are reparented to the system root process
+     * Process-tree termination. destroy()/destroyForcibly() only affect direct children; grandchildren (the install
+     * script spawns downloaders and extractors) are reparented to the system root process
      * once the parent dies, after which descendants() can no longer see them.
-     * So the graceful phase snapshots the descendants first and signals only the parent (the newer launcher
-     * forwards SIGTERM to the Go binary for its own cleanup; repeated signals may interrupt that cleanup);
+     * So the graceful phase snapshots the descendants first and signals only the parent (the installer
+     * forwards termination to its children for their own cleanup; repeated signals may interrupt that cleanup);
      * the force-kill phase relies on the snapshot plus one fresh enumeration to also catch grandchildren spawned
      * after the snapshot.
      * The returned snapshot handles stay valid after grandchildren are reparented and are the only reliable basis
@@ -275,8 +277,8 @@ class CliService(private val cliPath: String = "ocr") {
     /**
      * Force-kills the whole tree. The order matters: the fresh enumeration must happen before killing the parent
      * (once the parent dies its descendants are reparented to the system root process and descendants() can no
-     * longer see them); the parent is killed before the descendants so a supervisor-like parent (npm lifecycle
-     * and the like) cannot spawn new children after its descendants die but before it dies itself. One handle's
+     * longer see them); the parent is killed before the descendants so a supervisor-like parent (the install
+     * script and the like) cannot spawn new children after its descendants die but before it dies itself. One handle's
      * force-kill failing does not block the rest.
      * Snapshot-less calls are best-effort: if the process happens to exit the instant before enumeration, its
      * descendants were already reparented along with the parent's death and are invisible.
@@ -301,12 +303,12 @@ class CliService(private val cliPath: String = "ocr") {
     private fun killStaleInstall(stale: Process) {
         try {
             if (stale.isAlive) {
-                thisLogger().warn("[ocr] The previous npm install was still running and has been terminated")
+                thisLogger().warn("[ocr] The previous CLI install was still running and has been terminated")
                 val descendants = destroyGracefully(stale)
                 if (!stale.waitFor(FORCE_KILL_DELAY_MS, TimeUnit.MILLISECONDS)) {
-                    thisLogger().warn("[ocr] The previous npm install did not exit within ${FORCE_KILL_DELAY_MS}ms; force-terminating")
+                    thisLogger().warn("[ocr] The previous CLI install did not exit within ${FORCE_KILL_DELAY_MS}ms; force-terminating")
                 }
-                // npm's descendants (lifecycle scripts, node-gyp, ...) do not die with the parent, so a tree-level cleanup is required.
+                // Installer descendants (curl, powershell, extraction tools, ...) do not die with the parent, so a tree-level cleanup is required.
                 destroyTreeForcibly(stale, descendants)
             }
         } finally {

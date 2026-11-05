@@ -22,7 +22,7 @@ export function parseEnvBlock(stdout: string): Record<string, string> {
 let cached: NodeJS.ProcessEnv | null = null;
 
 /**
- * VS Code launched from the GUI inherits a minimal PATH without nvm, Homebrew, or global npm binaries.
+ * VS Code launched from the GUI inherits a minimal PATH without nvm, Homebrew, or user-local bin directories.
  * Resolve and cache the environment using the interactive login shell, which loads ~/.zshrc, ~/.zprofile, etc.
  * On Windows, the terminal and GUI share the environment, so use process.env directly.
  */

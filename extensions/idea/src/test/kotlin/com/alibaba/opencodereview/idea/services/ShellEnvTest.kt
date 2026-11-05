@@ -62,8 +62,8 @@ class ShellEnvTest {
     @Test
     fun `forShell preserves the command and may only prepend cmd`() {
         // Assert only the platform-independent properties: preserve the entire original command at the end,
-        // and allow only a cmd.exe /c prefix, needed to interpret npm/ocr .cmd files on Windows.
-        val command = listOf("/usr/local/bin/npm", "install", "-g", "pkg")
+        // and allow only a cmd.exe /c prefix, needed to interpret .cmd shims on Windows.
+        val command = listOf("/usr/local/bin/ocr", "review")
         val wrapped = ShellEnv.forShell(command)
         assertEquals(command, wrapped.takeLast(command.size))
         val prefix = wrapped.dropLast(command.size)

