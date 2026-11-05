@@ -19,7 +19,7 @@ Machine-generated text is usually longer than it needs to be, and brevity matter
 
 **Please do NOT report security vulnerabilities through public GitHub issues.**
 
-Instead, use **GitHub Private Vulnerability Reporting** — go to the [Security Advisories](https://github.com/alibaba/open-code-review/security/advisories/new) page and submit a new advisory.
+Instead, use **GitHub Private Vulnerability Reporting** — go to the [Security Advisories](https://github.com/CHE3MZ/kaid/security/advisories/new) page and submit a new advisory.
 
 ### What to Include
 
@@ -56,7 +56,7 @@ All release binaries and checksums are signed using [GitHub Artifact Attestation
 To verify a downloaded binary:
 
 ```bash
-gh attestation verify opencodereview-linux-amd64 --repo alibaba/open-code-review
+gh attestation verify opencodereview-linux-amd64 --repo CHE3MZ/kaid
 ```
 
 To verify a version tag:

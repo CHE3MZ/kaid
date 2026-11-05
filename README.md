@@ -6,33 +6,13 @@
 </div>
 
 <p align="center">
-  <a href="https://trendshift.io/repositories/41087?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-41087" target="_blank" rel="noopener noreferrer">
-    <img src="https://trendshift.io/api/badge/repositories/41087" alt="alibaba%2Fopen-code-review | Trendshift" style="width: 280px; height: 60px;" width="280" height="60" />
-  </a>
-</p>
-<p align="center">
-  <a href="https://trendshift.io/repositories/41087" target="_blank">
-    <img src="https://trendshift.io/api/badge/trendshift/repositories/41087/weekly" alt="alibaba%2Fopen-code-review | Trendshift" style="width: 280px; height: 60px;" width="280" height="60" />
-  </a>
-  <a href="https://trendshift.io/repositories/41087" target="_blank">
-    <img src="https://trendshift.io/api/badge/trendshift/repositories/41087/monthly?language=Go" alt="alibaba%2Fopen-code-review | Trendshift" style="width: 280px; height: 60px;" width="280" height="60" />
-  </a>
-</p>
-<p align="center">
-  <a href="https://www.npmjs.com/package/@alibaba-group/open-code-review"><img alt="npm" src="https://img.shields.io/npm/v/@alibaba-group/open-code-review?style=flat-square" /></a>
-  <a href="https://github.com/alibaba/open-code-review/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/alibaba/open-code-review/release.yml?style=flat-square" /></a>
+  <a href="https://github.com/CHE3MZ/kaid/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/CHE3MZ/kaid/release.yml?style=flat-square" /></a>
   <a href="https://github.com/CHE3MZ/kaid/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/CHE3MZ/kaid?style=flat-square" /></a>
-  <a href="https://deepwiki.com/alibaba/open-code-review"><img alt="Ask DeepWiki" src="https://img.shields.io/badge/Ask-DeepWiki-blue?style=flat-square" /></a>
-  <a href="https://www.bestpractices.dev/projects/13328"><img alt="OpenSSF Best Practices" src="https://img.shields.io/badge/OpenSSF-Gold-D4AF37?style=flat-square" /></a>
 </p>
 <p align="center">
   <a href="#supported-platforms"><img alt="Windows" src="https://img.shields.io/badge/Windows-supported-blue.svg" /></a>
   <a href="#supported-platforms"><img alt="macOS" src="https://img.shields.io/badge/macOS-supported-blue.svg" /></a>
   <a href="#supported-platforms"><img alt="Linux" src="https://img.shields.io/badge/Linux-supported-blue.svg" /></a>
-  <a href="#supported-agents"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-supported-blueviolet.svg" /></a>
-  <a href="#supported-agents"><img alt="Codex" src="https://img.shields.io/badge/Codex-supported-blueviolet.svg" /></a>
-  <a href="#supported-agents"><img alt="Cursor" src="https://img.shields.io/badge/Cursor-supported-blueviolet.svg" /></a>
-  <a href="#supported-agents"><img alt="Kimi Code" src="https://img.shields.io/badge/Kimi_Code-supported-blueviolet.svg" /></a>
 </p>
 <p align="center">
   English | <a href="docs/i18n/README.zh-CN.md">简体中文</a> | <a href="docs/i18n/README.ja-JP.md">日本語</a> | <a href="docs/i18n/README.ko-KR.md">한국어</a> | <a href="docs/i18n/README.ru-RU.md">Русский</a>
@@ -52,7 +32,7 @@ Visit the [official website](https://open-codereview.ai) for more details.
 
 ## Benchmark
 
-> Compared to general-purpose agents (Claude Code), Open Code Review achieves significantly higher **Precision** and **F1** with the same underlying model, while consuming only **~1/9 of the tokens** and completing reviews faster. Note that its Recall is lower than general-purpose agents — a deliberate trade-off favoring precision over noise.
+> Compared to general-purpose coding agents, Open Code Review achieves significantly higher **Precision** and **F1** with the same underlying model, while consuming only **~1/9 of the tokens** and completing reviews faster. Note that its Recall is lower than general-purpose agents — a deliberate trade-off favoring precision over noise.
 
 A real-world code review benchmark built from **50** popular open-source repositories, **200** real Pull Requests, and **10** programming languages — cross-validated by 80+ senior engineers (**1,505** annotated ground-truth issues).
 
@@ -72,11 +52,11 @@ A real-world code review benchmark built from **50** popular open-source reposit
 
 ### The Problem with General-Purpose Agents
 
-If you've used general-purpose agents like Claude Code with Skills for code review, you've likely encountered these pain points:
+If you've used general-purpose coding agents for code review, you've likely encountered these pain points:
 
 - **Incomplete coverage** — On larger changesets, agents tend to "cut corners," selectively reviewing only some files and missing others.
 - **Position drift** — Reported issues frequently don't match the actual code location, with line numbers or file references drifting off target.
-- **Unstable quality** — Natural-language-driven Skills are hard to debug, and review quality fluctuates significantly with minor prompt variations.
+- **Unstable quality** — Natural-language-driven review prompts are hard to debug, and review quality fluctuates significantly with minor variations.
 
 The root cause: a purely language-driven architecture lacks hard constraints on the review process.
 
@@ -111,12 +91,18 @@ The agent's strengths are concentrated where they matter most — dynamic decisi
 #### Install
 
 ```bash
-npm install -g @alibaba-group/open-code-review
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | sh
+```
+
+On Windows:
+
+```powershell
+irm https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.ps1 | iex
 ```
 
 After installation, the `ocr` command is available globally.
 
-For other installation methods (install script, GitHub Release binary, from source), see [Installation](https://open-codereview.ai/docs/installation).
+For other installation methods (GitHub Release binary, from source), see [Installation](https://open-codereview.ai/docs/installation).
 
 #### Quick Start
 
@@ -172,20 +158,12 @@ ocr delegate rule src/main.go src/handler.go
 Full documentation lives at **[open-codereview.ai/docs](https://open-codereview.ai/docs)**:
 
 - [Quickstart](https://open-codereview.ai/docs/quickstart) — install and run your first review
-- [Installation](https://open-codereview.ai/docs/installation) — all platforms and package managers
+- [Installation](https://open-codereview.ai/docs/installation) — all platforms and installation methods
 - [CLI Reference](https://open-codereview.ai/docs/cli-reference) — every command and flag
 - [Review Rules](https://open-codereview.ai/docs/review-rules) — customize review rules with path filtering and targeting
 - [Configuration](https://open-codereview.ai/docs/configuration) — config keys and environment variables
 - [MCP Server](https://open-codereview.ai/docs/mcp) — extend the review agent with external tools
-- Coding Agent Integrations — choose the platform you use
-  - [Claude Code](plugins/open-code-review/README.md#claude-code) — install a plugin with review slash commands
-  - [Codex](plugins/open-code-review/README.md#codex) — install a plugin with callable review skills
-  - [Cursor](plugins/open-code-review/README.md#cursor) — install a plugin with portable review skills
-  - [Kimi Code](plugins/open-code-review/README.md#kimi-code) — install a plugin with review slash commands and skills
-  - [OpenCode](plugins/open-code-review/opencode/README.md) — install native review tools and slash commands
-  - [QCA Forward](plugins/open-code-review/qca/README.md) — run delegation mode with the QCA host model and a ready-to-publish template
-  - [Skill-compatible agents](https://open-codereview.ai/docs/agent-skill) — install the portable agent skill
-- Review Execution Modes — after integration, choose which LLM performs the review
+- Review Execution Modes — choose which LLM performs the review
   - [Default (OCR-managed)](https://open-codereview.ai/docs/configuration) — OCR runs the review using its configured LLM
   - [Delegation Mode](https://open-codereview.ai/docs/delegate) — your coding agent runs the review using its own LLM; no OCR API key required
 - [CI/CD Integration](https://open-codereview.ai/docs/cicd) — GitHub Actions, GitLab CI, GitFlic CI, and Gerrit integration
@@ -195,11 +173,7 @@ Full documentation lives at **[open-codereview.ai/docs](https://open-codereview.
 
 ## Contributing
 
-This project exists thanks to all the people who contribute. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding guidelines, and how to submit pull requests.
-
-<a href="https://github.com/alibaba/open-code-review/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=alibaba/open-code-review" />
-</a>
+See [AGENTS.md](AGENTS.md) for development setup and coding guidelines.
 
 ## License
 

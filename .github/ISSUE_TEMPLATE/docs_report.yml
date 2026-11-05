@@ -27,7 +27,7 @@ body:
     attributes:
       label: Document Location
       description: Which file or section is affected? Provide a URL or file path if possible.
-      placeholder: "e.g., README.md > Configuration Reference, or https://github.com/alibaba/open-code-review#review-rules"
+      placeholder: "e.g., README.md > Configuration Reference, or https://github.com/CHE3MZ/kaid#review-rules"
     validations:
       required: true
 

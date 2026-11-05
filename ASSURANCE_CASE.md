@@ -70,7 +70,7 @@ OCR is a CLI tool that:
 
 API keys are never hardcoded in the binary. They may be supplied at runtime from:
 
-1. Environment variables (`OCR_LLM_TOKEN`, provider-specific variables such as `ANTHROPIC_API_KEY`). Env-only use is supported: a complete `OCR_LLM_*` or Claude Code `ANTHROPIC_*` environment needs no config file.
+1. Environment variables (`OCR_LLM_TOKEN`, provider-specific variables such as `ANTHROPIC_API_KEY`). Env-only use is supported: a complete `OCR_LLM_*` or `ANTHROPIC_*` environment needs no config file.
 2. A credential command (`api_key_cmd` / `auth_token_cmd`) whose stdout is the secret. The command string may be stored in config; the secret itself is not.
 3. Optional persistence in the user config file (`~/.opencodereview/config.json`) as `api_key` or `auth_token`. `ocr config set` and interactive provider setup write this file in plaintext; `saveConfig` (`cmd/opencodereview/provider_cmd.go`) creates new config files with mode `0600` and tightens existing config files to `0600` before persisting credentials.
 
