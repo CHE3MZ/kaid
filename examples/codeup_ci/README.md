@@ -7,7 +7,7 @@ as a merge request comment via Flow.
 ## How it works
 
 1. A Yunxiao Flow pipeline is triggered on merge request open/update.
-2. The pipeline installs Node.js and the `ocr` CLI.
+2. The pipeline installs the `ocr` CLI.
 3. `post_review.py` runs `ocr review --format json` against the diff
    between the merge request's target and source branches.
 4. Findings are formatted into a single Markdown summary and posted to the

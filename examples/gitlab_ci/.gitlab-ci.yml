@@ -31,8 +31,8 @@
 #   OCR_RULE               - Path to a custom rules JSON file, passed via `--rule`.
 #
 # Optional CI/CD Variables (versioning):
-#   OCR_VERSION - npm version spec for @alibaba-group/open-code-review (default: latest).
-#                 Pinning (e.g. "1.8.8" or "~1.8") makes reviews reproducible.
+#   OCR_VERSION - release tag for kaid (default: latest).
+#                 Pinning (e.g. "1.8.8") makes reviews reproducible.
 #
 # Optional CI/CD Variables (GitLab token):
 #   GITLAB_API_TOKEN   - GitLab Personal/Project Access Token with "api" scope
@@ -84,11 +84,11 @@ code-review:
     GIT_DEPTH: 0  # Full history needed for merge-base diff
   script:
     # Install OpenCodeReview
-    # OCR_VERSION (optional) pins the npm version spec for reproducible reviews;
+    # OCR_VERSION (optional) pins the release tag for reproducible reviews;
     # unset falls back to "latest".
     - |
       : "${OCR_VERSION:=latest}"
-      npm install -g "@alibaba-group/open-code-review@${OCR_VERSION}"
+      curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_VERSION="$OCR_VERSION" OCR_INSTALL_DIR=/usr/local/bin sh
       echo "OpenCodeReview installed with version:" && ocr version || true
 
     # Configure OCR

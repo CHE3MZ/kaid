@@ -9,7 +9,7 @@ MR Created/Updated → GitLab Pipeline Triggered → OCR Reviews Diff → Discus
 ```
 
 1. When a Merge Request is opened or updated, the pipeline triggers
-2. It installs OCR via npm in a `node:20` Docker image
+2. It installs OCR from GitHub Releases in a `node:20` Docker image
 3. Runs `ocr review --from origin/<target> --to <commit_sha> --format json --audience agent` to analyze the diff (uses commit SHA to support fork MRs)
 4. Parses the JSON output and posts inline discussions on the MR using GitLab's Discussions API
 
@@ -40,7 +40,7 @@ Go to your project's **Settings → CI/CD → Variables** and add:
 | `OCR_LLM_AUTH_TOKEN` | Yes | Yes | API authentication token |
 | `OCR_LLM_MODEL` | Yes | No | Model name (e.g., `gpt-4o`) — OCR has no built-in default model and fails when this is unset |
 | `GITLAB_API_TOKEN` | No | Yes | GitLab access token with `api` scope (falls back to `CI_JOB_TOKEN` if not set) |
-| `OCR_VERSION` | No | No | npm version spec for `@alibaba-group/open-code-review` (default: `latest`). Pin it (e.g. `1.8.8` or `~1.8`) for reproducible reviews. |
+| `OCR_VERSION` | No | No | Release tag for kaid (default: `latest`). Pin it (e.g. `v1.8.8`) for reproducible reviews. |
 | `OCR_LANGUAGE` | No | No | Review output language, written via `ocr config set language` (e.g. `English`, `Chinese`). Defaults to OCR's built-in default. |
 | `OCR_LLM_AUTH_HEADER` | No | No | Custom auth header name, written via `ocr config set llm.auth_header` (e.g. `x-api-key` for some providers). |
 | `OCR_LLM_EXTRA_HEADERS` | No | No | Extra headers `K=V,K=V`, written via `ocr config set llm.extra_headers`. |
@@ -179,7 +179,7 @@ To avoid re-reviewing on every push to an existing MR (and wasting LLM API token
 ```yaml
 script:
   # Install OpenCodeReview
-  - npm install -g @alibaba-group/open-code-review
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
 
   # Configure OCR
   - |

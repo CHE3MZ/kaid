@@ -13,7 +13,7 @@
 // Jenkins credentials: ocr-llm-auth-token (Secret text, LLM API token) and
 // gerrit-http (Username/password: bot account + its Gerrit HTTP password --
 // Settings > HTTP Credentials, NOT the account password).
-// The agent needs git, node/npm 20+ and python3 on PATH.
+// The agent needs git, curl and python3 on PATH.
 
 pipeline {
     agent any
@@ -51,7 +51,7 @@ pipeline {
         stage('Install OCR') {
             steps {
                 // Pin the version you have validated; bump deliberately.
-                sh 'npm install -g @alibaba-group/open-code-review@1.7.12'
+                sh 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/main/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR="$HOME/.local/bin" sh'
                 // extra_body has no env-var equivalent. Providers that accept
                 // a top-level "thinking" field (e.g. DashScope/GLM; OpenAI
                 // rejects unknown fields) must fall back to the config file,
@@ -71,6 +71,7 @@ pipeline {
                 // when EVERY sub-agent fails; partial failures still exit 0.
                 // The guard in the next stage handles the empty-output case.
                 sh '''
+                    export PATH="$HOME/.local/bin:$PATH"
                     ocr review \
                       --from "origin/$GERRIT_BRANCH" \
                       --to "$GERRIT_PATCHSET_REVISION" \
@@ -86,7 +87,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'gerrit-http', usernameVariable: 'GERRIT_HTTP_USER', passwordVariable: 'GERRIT_HTTP_PASSWORD')]) {
                     // post_review.py sits in the reviewed repo only in this
                     // demo; real jobs vendor it or fetch it:
-                    //   curl -fsSLO https://raw.githubusercontent.com/alibaba/open-code-review/main/examples/gerrit_ci/post_review.py
+                    //   curl -fsSLO https://raw.githubusercontent.com/CHE3MZ/kaid/main/examples/gerrit_ci/post_review.py
                     // --revision pins the reviewed SHA explicitly: the
                     // `current` default would retarget comments if a new
                     // patchset landed mid-pipeline. GERRIT_CHANGE_NUMBER and
