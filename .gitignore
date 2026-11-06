@@ -6,7 +6,6 @@ dist/
 coverage.out
 coverage.html
 
-pages/package-lock.json
 scripts/hooks/
 scripts/publish/.env.internal
 
@@ -29,3 +28,6 @@ node_modules
 # Python
 __pycache__/
 *.py[cod]
+
+# Mkdocs
+/site/

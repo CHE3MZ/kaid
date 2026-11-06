@@ -11,7 +11,7 @@ import (
 )
 
 func TestCLIReferenceDocumentsSessionCompare(t *testing.T) {
-	path := filepath.Join("..", "..", "pages", "src", "content", "docs", "en", "cli-reference.md")
+	path := filepath.Join("..", "..", "docs", "cli-reference.md")
 	body, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("read %s: %v", path, err)
@@ -29,7 +29,7 @@ func TestCLIReferenceDocumentsSessionCompare(t *testing.T) {
 }
 
 func TestCLIReferenceDocumentsSessionExport(t *testing.T) {
-	path := filepath.Join("..", "..", "pages", "src", "content", "docs", "en", "cli-reference.md")
+	path := filepath.Join("..", "..", "docs", "cli-reference.md")
 	body, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("read %s: %v", path, err)
@@ -67,7 +67,7 @@ func TestCLIReferenceUsesSubtaskUnit(t *testing.T) {
 
 	for _, pin := range pins {
 		t.Run(pin.locale, func(t *testing.T) {
-			path := filepath.Join("..", "..", "pages", "src", "content", "docs", pin.locale, "cli-reference.md")
+			path := filepath.Join("..", "..", "docs", "cli-reference.md")
 			raw, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatalf("read %s: %v", path, err)
@@ -104,7 +104,7 @@ func firstLineContaining(body, marker string) (string, bool) {
 }
 
 func TestCLIReferenceDocumentsSessionRm(t *testing.T) {
-	path := filepath.Join("..", "..", "pages", "src", "content", "docs", "en", "cli-reference.md")
+	path := filepath.Join("..", "..", "docs", "cli-reference.md")
 	body, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("read %s: %v", path, err)

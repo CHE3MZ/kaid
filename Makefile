@@ -33,8 +33,8 @@ endef
 build:
 	$(GO) build -ldflags "$(LD_FLAGS)" -o $(DIST_DIR)/$(BINARY_NAME)$(EXE) ./cmd/opencodereview
 
-# pages/go.mod puts the docs site in its own module, so `go list ./...` skips
-# that subtree. The standalone frontend has no Go packages.
+# Nested modules such as acp/go.mod are not descended into by `go list ./...`.
+# The standalone frontend has no Go packages.
 PACKAGES := $(shell $(GO) list ./...)
 
 test:

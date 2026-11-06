@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://open-codereview.ai">
+  <a href="https://che3mz.github.io/kaid/">
     <img src="assets/logo-core.svg" alt="OpenCodeReview logo" width="180" />
   </a>
   <h1>OpenCodeReview</h1>
@@ -23,7 +23,7 @@ Open Code Review is an AI-powered code review CLI tool. It originated as Alibaba
 
 It reads Git diffs, sends changed files to a configurable LLM via an agent with tool-use capabilities, and generates structured review comments with line-level precision. The agent can read full file contents, search the codebase, inspect other changed files for context, and produce deep reviews — not just surface-level diff feedback. Beyond diff review, `ocr scan` reviews entire files for auditing unfamiliar codebases or directories that have no meaningful diff.
 
-Visit the [official website](https://open-codereview.ai) for more details.
+Visit the [official website](https://che3mz.github.io/kaid/) for more details.
 
 ## Benchmark
 
@@ -95,13 +95,13 @@ irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
 
 After installation, the `ocr` command is available globally.
 
-For other installation methods (GitHub Release binary, from source), see [Installation](https://open-codereview.ai/docs/installation).
+For other installation methods (GitHub Release binary, from source), see [Installation](https://che3mz.github.io/kaid/installation/).
 
 #### Quick Start
 
 **1. Configure LLM**
 
-You must configure an LLM before reviewing code, unless you use [Delegation Mode](https://open-codereview.ai/docs/delegate).
+You must configure an LLM before reviewing code, unless you use [Delegation Mode](https://che3mz.github.io/kaid/integrations/delegate/).
 
 ```bash
 ocr config provider          # Select a built-in provider or add a custom one
@@ -112,7 +112,7 @@ ocr config model             # Pick a model for the active provider
 
 The interactive UI guides you through provider selection, API key entry, and model configuration, then automatically tests connectivity.
 
-For CLI setup, environment variables, custom providers, and other advanced configuration, see [Configuration](https://open-codereview.ai/docs/configuration).
+For CLI setup, environment variables, custom providers, and other advanced configuration, see [Configuration](https://che3mz.github.io/kaid/configuration/).
 
 **2. Review**
 
@@ -148,21 +148,21 @@ ocr delegate rule src/main.go src/handler.go
 
 ## Documentation
 
-Full documentation lives at **[open-codereview.ai/docs](https://open-codereview.ai/docs)**:
+Full documentation lives at **[che3mz.github.io/kaid](https://che3mz.github.io/kaid/)**:
 
-- [Quickstart](https://open-codereview.ai/docs/quickstart) — install and run your first review
-- [Installation](https://open-codereview.ai/docs/installation) — all platforms and installation methods
-- [CLI Reference](https://open-codereview.ai/docs/cli-reference) — every command and flag
-- [Review Rules](https://open-codereview.ai/docs/review-rules) — customize review rules with path filtering and targeting
-- [Configuration](https://open-codereview.ai/docs/configuration) — config keys and environment variables
-- [MCP Server](https://open-codereview.ai/docs/mcp) — extend the review agent with external tools
+- [Quickstart](https://che3mz.github.io/kaid/quickstart/) — install and run your first review
+- [Installation](https://che3mz.github.io/kaid/installation/) — all platforms and installation methods
+- [CLI Reference](https://che3mz.github.io/kaid/cli-reference/) — every command and flag
+- [Review Rules](https://che3mz.github.io/kaid/review-rules/) — customize review rules with path filtering and targeting
+- [Configuration](https://che3mz.github.io/kaid/configuration/) — config keys and environment variables
+- [MCP Server](https://che3mz.github.io/kaid/mcp/) — extend the review agent with external tools
 - Review Execution Modes — choose which LLM performs the review
-  - [Default (OCR-managed)](https://open-codereview.ai/docs/configuration) — OCR runs the review using its configured LLM
-  - [Delegation Mode](https://open-codereview.ai/docs/delegate) — your coding agent runs the review using its own LLM; no OCR API key required
-- [CI/CD Integration](https://open-codereview.ai/docs/cicd) — GitHub Actions, GitLab CI, GitFlic CI, and Gerrit integration
-- [Session Viewer](https://open-codereview.ai/docs/viewer) — browse and replay review sessions in browser, mark comments as fixed or ignored and hide them while you work through the findings
-- [Telemetry](https://open-codereview.ai/docs/telemetry) — OpenTelemetry integration for observability
-- [FAQ](https://open-codereview.ai/docs/faq) — common questions and troubleshooting
+  - [Default (OCR-managed)](https://che3mz.github.io/kaid/configuration/) — OCR runs the review using its configured LLM
+  - [Delegation Mode](https://che3mz.github.io/kaid/integrations/delegate/) — your coding agent runs the review using its own LLM; no OCR API key required
+- [CI/CD Integration](https://che3mz.github.io/kaid/integrations/ci/) — GitHub Actions, GitLab CI, GitFlic CI, and Gerrit integration
+- [Session Viewer](https://che3mz.github.io/kaid/viewer/) — browse and replay review sessions in browser, mark comments as fixed or ignored and hide them while you work through the findings
+- [Telemetry](https://che3mz.github.io/kaid/telemetry/) — OpenTelemetry integration for observability
+- [FAQ](https://che3mz.github.io/kaid/faq/) — common questions and troubleshooting
 
 ## Contributing
 
