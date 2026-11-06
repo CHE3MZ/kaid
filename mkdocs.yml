@@ -2,31 +2,32 @@ site_name: Kaid
 site_description: Open source AI code review agent.
 site_author: CHE3MZ
 site_url: https://che3mz.github.io/kaid/
-repo_url: https://github.com/che3mz/kaid
+repo_url: https://github.com/CHE3MZ/kaid
+edit_uri: edit/master/docs/
 
 nav:
-  - Home:
-    - Kaid: index.md
-    - FAQ: faq.md
-  - Docs:
-    - Installation: installation.md
-    - Quickstart: quickstart.md
-    - CLI Reference: cli-reference.md
-    - Configuration: configuration.md
-    - Architecture: architecture.md
-    - Tools: tools.md
-    - MCP: mcp.md
-    - viewer: viewer.md
-    - Review Rules: review-rules.md
-    - Telemetry: telemetry.md
-    - Chatgpt: chatgpt-preview.md
+  - Home: index.md
+  - Getting started:
+      - Installation: installation.md
+      - Quickstart: quickstart.md
+  - Guide:
+      - CLI Reference: cli-reference.md
+      - Configuration: configuration.md
+      - Architecture: architecture.md
+      - Tools: tools.md
+      - Review Rules: review-rules.md
+      - MCP servers: mcp.md
+      - Session viewer: viewer.md
+      - Telemetry: telemetry.md
+      - ChatGPT preview: chatgpt-preview.md
   - Integrations:
-    - ci: integrations/ci.md
-    - acp: integrations/acp.md
-    - delegate: integrations/delegate.md
+      - CI/CD: integrations/ci.md
+      - ACP: integrations/acp.md
+      - Delegation: integrations/delegate.md
+  - FAQ: faq.md
 
 theme:
-  name: "material"
+  name: material
   language: en
   logo: assets/icon.png
   favicon: assets/icon.png
@@ -56,25 +57,73 @@ theme:
         name: Switch to system preference
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - toc.follow
     - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
     - search.suggest
     - search.highlight
+    - search.share
 
 extra_css:
   - assets/stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - path: javascripts/mermaid.js
+    type: module
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/CHE3MZ/kaid
+      name: Kaid on GitHub
+
 markdown_extensions:
+  - abbr
   - admonition
   - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+      toc_depth: 3
+      title: On this page
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
-  - toc:
-      permalink: true
-  - footnotes
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde

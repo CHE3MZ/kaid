@@ -165,41 +165,41 @@ provider. Custom providers retain their existing `--model` validation rules.
 
 ### Modes
 
-#### Workspace mode (default)
+=== "Workspace (default)"
 
-```bash
-ocr review
-```
+    ```bash
+    ocr review
+    ```
 
-OCR assembles the working-tree changes from two git commands:
+    OCR assembles the working-tree changes from two git commands:
 
-- tracked changes via `git diff HEAD` (staged + unstaged combined against
-  `HEAD`; if that comes back empty, OCR falls back to `git diff --staged`)
-- untracked files via `git ls-files --others --exclude-standard`, read
-  from disk and treated as full-file additions
+    - tracked changes via `git diff HEAD` (staged + unstaged combined against
+      `HEAD`; if that comes back empty, OCR falls back to `git diff --staged`)
+    - untracked files via `git ls-files --others --exclude-standard`, read
+      from disk and treated as full-file additions
 
-This is what you usually want pre-commit. Stage selectively if you want
-narrower scope.
+    This is what you usually want pre-commit. Stage selectively if you want
+    narrower scope.
 
-#### Range mode
+=== "Range"
 
-```bash
-ocr review --from main --to feature-branch
-```
+    ```bash
+    ocr review --from main --to feature-branch
+    ```
 
-OCR computes `merge-base(main, feature-branch)..feature-branch` so you only
-see the diff *introduced by* the feature branch — not unrelated changes
-that landed on `main` since branching.
+    OCR computes `merge-base(main, feature-branch)..feature-branch` so you only
+    see the diff *introduced by* the feature branch - not unrelated changes
+    that landed on `main` since branching.
 
-#### Commit mode
+=== "Commit"
 
-```bash
-ocr review --commit abc123
-ocr review -c abc123
-```
+    ```bash
+    ocr review --commit abc123
+    ocr review -c abc123
+    ```
 
-Reviews the diff produced by `git show abc123` (i.e., the changes that
-single commit introduced).
+    Reviews the diff produced by `git show abc123` (i.e., the changes that
+    single commit introduced).
 
 ### Resuming interrupted reviews
 
@@ -353,11 +353,14 @@ envelope instead so callers can distinguish "no changes" from "no findings":
 | Code | Meaning |
 |---|---|
 | `0` | Review completed (possibly with zero comments, possibly with non-fatal warnings). |
-| `1` | Fatal error — bad flags, can't resolve LLM endpoint, all per-group sub-agents failed, etc. The error text is printed to stderr. |
+| `1` | Fatal error - bad flags, can't resolve LLM endpoint, all per-group sub-agents failed, etc. The error text is printed to stderr. |
 
-Non-fatal warnings (a single sub-agent failed, a file exceeded the token
-threshold, etc.) are printed inline; in JSON mode they're added to the
-`warnings` array.
+!!! warning "Exit codes are part of the CI contract"
+
+    Non-fatal warnings (a single sub-agent failed, a file exceeded the token
+    threshold, etc.) are printed inline; in JSON mode they're added to the
+    `warnings` array. They do not change the exit code. Treat `1` as "the
+    review could not run", not "the review found problems".
 
 ## `ocr scan`
 
@@ -564,7 +567,7 @@ Rule:
 ```
 
 Useful for debugging "why isn't my custom rule firing?" — see
-[Review Rules](../review-rules/) for the full priority story.
+[Review Rules](review-rules.md) for the full priority story.
 
 ## `ocr config`
 
@@ -593,7 +596,7 @@ ocr config model                           Interactive model selection
   arguments; use `ocr config set model <name>` for non-interactive
   setup).
 
-See [Configuration](../configuration/) for the full key reference,
+See [Configuration](configuration.md) for the full key reference,
 schemas, and examples.
 
 
@@ -602,7 +605,7 @@ schemas, and examples.
 
 Sign in with ChatGPT is the default for `ocr auth login`, `status` and `logout`. Explicit `--provider chatgpt` remains supported.
 
-Use the documented Sign in with ChatGPT flow with the `chatgpt` provider. See the [ChatGPT preview guide](../chatgpt-preview/).
+Use the documented Sign in with ChatGPT flow with the `chatgpt` provider. See the [ChatGPT preview guide](chatgpt-preview.md).
 
 ```bash
 ocr auth login --provider chatgpt
@@ -615,7 +618,7 @@ ocr auth logout --provider chatgpt --account <saved-client-id>
 ocr llm models
 ```
 
-`ocr auth` accepts `--provider chatgpt` and `--account <client-id>`; `login` also accepts `--no-browser`, `--new-account` and `--enable-plan`. ChatGPT does not support `--device`. `--enable-plan` requests consent for a saved registration and cannot be combined with `--new-account`. The model list is account-specific; an explicit model is accepted even if the list omits it. This provider accepts `extra_body` only for `reasoning`, `text` and `prompt_cache_key`. See the [ChatGPT preview guide](../chatgpt-preview/) for account handling, permissions and restrictions.
+`ocr auth` accepts `--provider chatgpt` and `--account <client-id>`; `login` also accepts `--no-browser`, `--new-account` and `--enable-plan`. ChatGPT does not support `--device`. `--enable-plan` requests consent for a saved registration and cannot be combined with `--new-account`. The model list is account-specific; an explicit model is accepted even if the list omits it. This provider accepts `extra_body` only for `reasoning`, `text` and `prompt_cache_key`. See the [ChatGPT preview guide](chatgpt-preview.md) for account handling, permissions and restrictions.
 
 ## `ocr llm`
 
@@ -690,7 +693,7 @@ Examples:
 
 Starts an embedded HTTP server that reads
 `~/.opencodereview/sessions/...` and renders past review sessions in a
-browser-friendly UI. See [Session Viewer](../viewer/).
+browser-friendly UI. See [Session Viewer](viewer.md).
 
 `--open=auto` skips the browser when stdout is not a terminal, when
 `SSH_CONNECTION` is set with no display forwarded, or when Linux has neither
@@ -812,6 +815,11 @@ Add a line to your PowerShell profile that dot-sources `ocr.ps1`.
 
 ## See Also
 
-- [QuickStart](../quickstart/) — install and run your first review.
-- [Configuration](../configuration/) — env vars and config keys behind the flags.
-- [Review Rules](../review-rules/) — the `--rule` flag and rule resolution.
+- [Quickstart](quickstart.md) - install and run your first review.
+- [Configuration](configuration.md) - env vars and config keys behind the flags.
+- [Review Rules](review-rules.md) - the `--rule` flag and rule resolution.
+
+*[CI]: Continuous Integration
+*[JSON]: JavaScript Object Notation
+*[LLM]: Large Language Model
+*[TUI]: Terminal User Interface

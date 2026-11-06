@@ -2,6 +2,13 @@
 title: Sign in with ChatGPT preview
 ---
 
+!!! warning "Preview feature"
+
+    This is an optional preview for local, single-user use. Do not use it for
+    pooled or hosted resale, shared CI with personal credentials, or as a
+    fallback to API billing. Account, workspace, region, and model eligibility
+    are determined by OpenAI, and availability is not guaranteed.
+
 OpenCodeReview can use eligible ChatGPT plan usage through OpenAI's public Responses API. This optional preview is available in the open-source CLI. OpenCodeReview does not charge a separate subscription for it. Account, workspace, region and model eligibility are determined by OpenAI.
 
 The `chatgpt` provider uses the documented Sign in with ChatGPT flow. Sign in with ChatGPT is the default for `ocr auth login`, `status` and `logout`. Explicit `--provider chatgpt` remains supported.
@@ -82,4 +89,12 @@ Preview request fields are constrained to OpenAI's supported subset. `extra_body
 
 See OpenAI's [SIWC open-source overview](https://developers.openai.com/siwc/token-sharing-open-source), [sign-in contract](https://developers.openai.com/siwc/token-sharing-open-source/sign-in) and [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations) for current requirements.
 
-See [CLI Reference](../cli-reference/) for the `ocr auth` and `ocr llm models` commands, and [Configuration](../configuration/) for provider settings.
+See [CLI Reference](cli-reference.md) for the `ocr auth` and `ocr llm models` commands, and [Configuration](configuration.md) for provider settings.
+
+*[ACL]: Access Control List
+*[API]: Application Programming Interface
+*[CLI]: Command-Line Interface
+*[JWKS]: JSON Web Key Set
+*[OAuth]: Open Authorization
+*[PKCE]: Proof Key for Code Exchange
+*[SIWC]: Sign in with ChatGPT

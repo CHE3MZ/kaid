@@ -6,7 +6,6 @@ dist/
 coverage.out
 coverage.html
 
-pages/package-lock.json
 scripts/hooks/
 scripts/publish/.env.internal
 

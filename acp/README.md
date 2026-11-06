@@ -97,8 +97,8 @@ the binary is newer than the active Go toolchain. Use a compatible
 with `go list ./...`, which does not descend into a nested module. The root CLI CI job therefore does not build or test this
 module.
 
-`.github/workflows/acp-ci.yml` covers it instead — a dedicated workflow
-for the nested module, the same idea as `pages-ci.yml` for `pages/`.
+`.github/workflows/acp-ci.yml` covers it instead - a dedicated workflow
+for the nested module.
 Linux CI runs the license, English-only, formatting, line-ending, `go.mod`
 tidy, vet, staticcheck, coverage and govulncheck gates in a `golang:1.26.10`
 container, builds the adapter and runs the pinned official Python SDK smoke

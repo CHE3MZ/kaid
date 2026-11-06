@@ -7,9 +7,15 @@ sidebar:
 The config file lives at `~/.opencodereview/config.json`. You have three ways
 to edit it:
 
-- **Interactive TUI** — `ocr config provider` / `ocr config model`, with guided menus.
-- **Command line** — `ocr config set <key> <value>`, ideal for scripts and CI.
-- **Manual edit (not recommended)** — the JSON file directly (it gets reformatted on the next `ocr config set` write).
+- **Interactive TUI** - `ocr config provider` / `ocr config model`, with guided menus.
+- **Command line** - `ocr config set <key> <value>`, ideal for scripts and CI.
+- **Manual edit (not recommended)** - the JSON file directly.
+
+!!! warning "Avoid editing the JSON by hand"
+
+    A manual edit is reformatted on the next `ocr config set` write. Use the
+    CLI so the file stays valid and you get validation errors while the value
+    is still in front of you.
 
 ## Configuring a model
 
@@ -30,10 +36,15 @@ ocr config model
 Write to the same config with `ocr config set`:
 
 ```bash
-ocr config set provider                    anthropic
-ocr config set model                       claude-opus-4-6
-ocr config set providers.anthropic.api_key sk-ant-xxxxxxxxxx
+ocr config set provider                    anthropic          # (1)!
+ocr config set model                       claude-opus-4-6    # (2)!
+ocr config set providers.anthropic.api_key sk-ant-xxxxxxxxxx  # (3)!
 ```
+
+1. Select a built-in provider preset, or a custom provider you defined.
+2. Pin the model slug. Built-in lists are suggestions, not restrictions.
+3. Store the credential. If omitted, OCR falls back to the provider's
+   environment variable.
 
 ### Built-in providers
 
@@ -78,7 +89,7 @@ the model when the request is sent. Custom providers retain their existing
 
 ## Sign in with ChatGPT preview
 
-This preview adds the `chatgpt` built-in provider for the public Responses API. It has no API-key environment variable. See the [ChatGPT preview guide](../chatgpt-preview/) for sign-in, consent and usage restrictions.
+This preview adds the `chatgpt` built-in provider for the public Responses API. It has no API-key environment variable. See the [ChatGPT preview guide](chatgpt-preview.md) for sign-in, consent and usage restrictions.
 
 Configure the provider and optional supported request fields with `ocr config set`. Choose a model from `ocr llm models` or set an explicit model slug:
 
@@ -223,7 +234,7 @@ Ollama ignores the API key, but custom providers require a non-empty
 `api_key` (there is no environment-variable fallback for them), so set
 any placeholder value. The model itself must support native tool
 calling — see
-["No tool calls parsed" (local models / Ollama)](../faq/#no-tool-calls-parsed-local-models-ollama)
+["No tool calls parsed" (local models / Ollama)](faq.md#no-tool-calls-parsed-local-models-ollama)
 in the FAQ before picking one.
 
 ### Timeouts
@@ -460,5 +471,14 @@ ocr config set language English
 
 ## See Also
 
-- [QuickStart](../quickstart/) — minimal setup and first review.
-- [CLI Reference](../cli-reference/) — every flag the review command accepts.
+- [Quickstart](quickstart.md) - minimal setup and first review.
+- [CLI Reference](cli-reference.md) - every flag the review command accepts.
+
+*[API]: Application Programming Interface
+*[AWS]: Amazon Web Services
+*[CI]: Continuous Integration
+*[CLI]: Command-Line Interface
+*[JSON]: JavaScript Object Notation
+*[LLM]: Large Language Model
+*[TUI]: Terminal User Interface
+*[URL]: Uniform Resource Locator

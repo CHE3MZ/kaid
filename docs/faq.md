@@ -9,6 +9,12 @@ If your problem isn't here, open a
 [GitHub issue](https://github.com/CHE3MZ/kaid/issues) with
 the steps you ran and the full output.
 
+!!! tip "Search before you scroll"
+
+    Use the search box in the header to jump straight to an error string or
+    flag name. The page is grouped by symptom, so the fastest path is usually
+    to search for the exact message you see in your terminal.
+
 ## Configuration & startup
 
 ### `no valid LLM endpoint configured`
@@ -19,7 +25,7 @@ no valid LLM endpoint configured; one of OCR_LLM_URL/OCR_LLM_TOKEN/OCR_LLM_MODEL
 ANTHROPIC_MODEL must be set
 ```
 
-OCR ran the full endpoint-resolution chain ([Configuration](../configuration/#reuse-existing-environment-variables))
+OCR ran the full endpoint-resolution chain ([Configuration](configuration.md#reuse-existing-environment-variables))
 and didn't find a complete `(URL, token, model)` triple. Either:
 
 - Run `ocr config set llm.url …` / `llm.auth_token …` / `llm.model …`
@@ -87,7 +93,7 @@ Pass: the response contains a structured `tool_calls` array naming
 
 If the model *does* support tools but responses are slow on local
 hardware, raise the LLM timeout instead — see
-[Timeouts](../configuration/#timeouts).
+[Timeouts](configuration.md#timeouts).
 
 ## Filtering & rules
 
@@ -106,7 +112,7 @@ assets/logo.png         binary    (excluded: unsupported_ext)
 ```
 
 The exclusion reasons map to gates in the
-[file filter](../review-rules/#how-files-are-filtered):
+[file filter](review-rules.md#how-files-are-filtered):
 
 | Reason | Fix |
 |---|---|
@@ -145,7 +151,7 @@ fails to match `tsx`.
 
 ### A file shows zero comments — was it actually reviewed?
 
-Open the [Session Viewer](../viewer/) (`ocr viewer`), find the session,
+Open the [Session Viewer](viewer.md) (`ocr viewer`), find the session,
 and look at the `main_task` lane of the group that contains the file
 (groups are keyed by their file paths, so a file reviewed on its own
 appears under its own path):
@@ -153,7 +159,7 @@ appears under its own path):
 - Tool calls present + ends in `task_done` → reviewed cleanly.
 - Tool calls present + ends mid-loop → look for an error card.
 - No `main_task` cards at all → the file was filtered out before review;
-  see [Filtering & rules](#filtering--rules) above.
+  see [Filtering & rules](#filtering-rules) above.
 
 ### Comments have `start_line: 0` and `end_line: 0`
 
@@ -317,7 +323,7 @@ also recorded as metrics. Watch `ocr.llm.tokens_used` (counter, labelled `model`
 `status`), and `ocr.llm.request_duration_seconds` (histogram, labelled
 `model`). The console exporter prints these aggregates inline. For
 dashboards, switch to the OTLP exporter and ship to your metrics
-stack — see [Telemetry](../telemetry/).
+stack — see [Telemetry](telemetry.md).
 
 ### Why are my reviews so expensive?
 
@@ -369,7 +375,7 @@ If telemetry is enabled, the `content_logging` flag is plumbed through
 the config layer but currently gates **no** code path — prompt and
 response content is never exported to your collector regardless of the
 flag's value. Treat it as reserved. Leave it `false` in production. See
-[Telemetry](../telemetry/#content-logging) for details.
+[Telemetry](telemetry.md#content-logging) for details.
 
 ### Can I redact secrets before they're sent to the LLM?
 
@@ -417,7 +423,14 @@ and per-user rules.
 
 ## See Also
 
-- [Configuration](../configuration/) — LLM endpoint resolution and config keys.
-- [Review Rules](../review-rules/) — the file filter and rule resolution chain.
-- [Session Viewer](../viewer/) — inspect past review sessions.
-- [Telemetry](../telemetry/) — token usage and LLM metrics.
+- [Configuration](configuration.md) - LLM endpoint resolution and config keys.
+- [Review Rules](review-rules.md) - the file filter and rule resolution chain.
+- [Session Viewer](viewer.md) - inspect past review sessions.
+- [Telemetry](telemetry.md) - token usage and LLM metrics.
+
+*[CI]: Continuous Integration
+*[JSONL]: JSON Lines
+*[LLM]: Large Language Model
+*[OCR]: Open Code Review
+*[TUI]: Terminal User Interface
+*[VCS]: Version Control System

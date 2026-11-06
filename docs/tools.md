@@ -389,7 +389,7 @@ always read at least 30 lines around the change."
 
 ## See Also
 
-- [Architecture](../architecture/) — how the agent loop drives tools.
-- [Review Rules](../review-rules/) — what the LLM is told to focus on.
-- [Session Viewer](../viewer/) — see exactly which tools fired in past
+- [Architecture](architecture.md) — how the agent loop drives tools.
+- [Review Rules](review-rules.md) — what the LLM is told to focus on.
+- [Session Viewer](viewer.md) — see exactly which tools fired in past
   reviews.

@@ -9,6 +9,11 @@ produces structured spans, metrics, and events. Wired up to a collector,
 the data is enough to answer "what did the agent spend time on?",
 "which models cost what?", and "why did this run fail?".
 
+!!! abstract "Opt-in by default"
+
+    Telemetry is disabled until you enable it. Nothing is exported to a
+    collector unless `telemetry.enabled` or `OCR_ENABLE_TELEMETRY` is set.
+
 ## Overview
 
 Telemetry is **off by default**. Once enabled, OCR exports:
@@ -203,17 +208,19 @@ gate any code path that emits prompt content. Treat the flag as
 reserved.
 
 If you need to inspect what was sent to or returned from the LLM, use
-the local JSONL transcripts that the [Session Viewer](../viewer/)
+the local JSONL transcripts that the [Session Viewer](viewer.md)
 reads. Those live entirely on disk under `~/.opencodereview/` and are
 never shipped to the collector.
 
-For deeper debugging, set `OCR_RAW_LOGGING=1` to capture the raw
-request and response bodies of every LLM call in
-`~/.opencodereview/raw/` — more detailed debugging information than
-the session transcripts. Off by default. With streaming enabled, the
-capture reads the entire response body before handing it on to the
-rest of the processing. Capture redacts headers but records
-request and response bodies as-is.
+!!! warning "Raw logs can contain source code"
+
+    For deeper debugging, set `OCR_RAW_LOGGING=1` to capture the raw
+    request and response bodies of every LLM call in
+    `~/.opencodereview/raw/` - more detailed debugging information than
+    the session transcripts. Off by default. With streaming enabled, the
+    capture reads the entire response body before handing it on to the
+    rest of the processing. Capture redacts headers but records request and
+    response bodies as-is.
 
 ## Recipes
 
@@ -316,7 +323,13 @@ run that's:
 - The total span count depends on the reviewed groups, review rounds,
   LLM requests, and tool executions, rather than file count alone.
 
-The export is **batched and asynchronous** — telemetry doesn't block
+The dominant term is groups times rounds:
+
+\[
+N_{\text{spans}} \propto G \times R
+\]
+
+The export is **batched and asynchronous** - telemetry doesn't block
 the review loop. If the collector is unreachable, OCR logs a warning
 and continues; the review still produces its normal output.
 
@@ -328,13 +341,19 @@ and continues; the review still produces its normal output.
 | OTLP works locally, fails in prod | Check that the protocol matches the collector. The default is gRPC, and many managed backends accept OTLP over HTTP only — set `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf` and use the HTTP port (`4318`, not `4317`). |
 | Nothing arrives, no error | The exporter is created lazily, so a wrong endpoint fails silently at export time rather than at startup. Check the collector's access log for the path being requested: for the HTTP protocols the endpoint is a base URL and the signal path is appended, so `http://host:4318` posts to `http://host:4318/v1/traces`. |
 | Spans show but no metrics | Some collectors only enable the traces pipeline by default; add a `metrics` pipeline in the config. |
-| Prompts missing from spans | OCR never attaches prompt content to telemetry — see [Content logging](#content-logging). Inspect transcripts via [Session Viewer](../viewer/) instead. |
+| Prompts missing from spans | OCR never attaches prompt content to telemetry — see [Content logging](#content-logging). Inspect transcripts via [Session Viewer](viewer.md) instead. |
 
 ## See Also
 
-- [Configuration](../configuration/) — full key reference for the
+- [Configuration](configuration.md) — full key reference for the
   `telemetry.*` namespace.
-- [Architecture](../architecture/) — what each span actually
+- [Architecture](architecture.md) — what each span actually
   measures.
-- [OpenTelemetry docs](https://opentelemetry.io/docs/) — collector
+- [OpenTelemetry docs](https://opentelemetry.io/docs/) - collector
   setup and exporters.
+
+*[OTel]: OpenTelemetry
+*[OTLP]: OpenTelemetry Protocol
+*[gRPC]: gRPC Remote Procedure Call
+*[JSONL]: JSON Lines
+*[LLM]: Large Language Model

@@ -19,19 +19,20 @@ ocr viewer --open=never          # just print the URL
 ocr viewer --open=always         # force it when auto declines (piped output, WSL)
 ```
 
-The default address is `localhost:5483`. The server holds the foreground
-— `Ctrl+C` stops it. Sessions are scanned lazily from
+The default address is `localhost:5483`. The server holds the foreground -
+press ++ctrl+c++ to stop it. Sessions are scanned lazily from
 `~/.opencodereview/sessions/` on each request, so a review running in
 another terminal shows up the moment its JSONL file appears.
 
-> **DNS-rebinding protection.** The viewer checks the `Host` header
-> against a loopback allowlist (`localhost`, `127.0.0.1`, `::1`). A
-> concrete bind host (e.g. `--addr 192.168.1.10:5483`) is added
-> automatically, but **wildcard** binds (`:3000`, `0.0.0.0`, `::`) are
-> not — reaching the UI from a LAN IP or hostname then returns
-> `forbidden host`. To expose a wildcard bind, set
-> `OCR_VIEWER_ALLOWED_HOSTS` to a comma-separated list of allowed
-> hostnames (e.g. `OCR_VIEWER_ALLOWED_HOSTS=box.local,192.168.1.10`).
+!!! warning "DNS-rebinding protection"
+
+    The viewer checks the `Host` header against a loopback allowlist
+    (`localhost`, `127.0.0.1`, `::1`). A concrete bind host (e.g.
+    `--addr 192.168.1.10:5483`) is added automatically, but **wildcard** binds
+    (`:3000`, `0.0.0.0`, `::`) are not - reaching the UI from a LAN IP or
+    hostname then returns `forbidden host`. To expose a wildcard bind, set
+    `OCR_VIEWER_ALLOWED_HOSTS` to a comma-separated list of allowed hostnames
+    (e.g. `OCR_VIEWER_ALLOWED_HOSTS=box.local,192.168.1.10`).
 
 ## Opening the browser
 
@@ -287,7 +288,7 @@ either:
   in CI and run with a temporary `HOME` so the JSONL never persists.
 
 The OpenTelemetry exporter is a separate concern — see
-[Telemetry](../telemetry/) for how to keep prompt content out of
+[Telemetry](telemetry.md) for how to keep prompt content out of
 exported traces.
 
 ## When the viewer is not the right tool
@@ -300,7 +301,13 @@ exported traces.
 
 ## See Also
 
-- [Architecture](../architecture/) — what those five task types
+- [Architecture](architecture.md) - what those five task types
   actually do under the hood.
-- [Tools](../tools/) — the tool calls you'll see in `main_task`
+- [Tools](tools.md) - the tool calls you'll see in `main_task`
   cards.
+
+*[CI]: Continuous Integration
+*[JSONL]: JSON Lines
+*[LAN]: Local Area Network
+*[UI]: User Interface
+*[WSL]: Windows Subsystem for Linux

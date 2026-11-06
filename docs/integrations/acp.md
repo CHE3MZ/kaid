@@ -4,15 +4,32 @@ sidebar:
   order: 6
 ---
 
-**Experimental feature:** The ACP adapter is currently unstable and is only supported when compiled locally from source. Update the source and rebuild when upgrading.
+!!! warning "Experimental feature"
+
+    The ACP adapter is currently unstable and is only supported when compiled
+    locally from source. Update the source and rebuild when upgrading.
 
 ## Prerequisites {#prerequisites}
 
-- Install the [OCR CLI](../../installation/), configure the [review model](../../configuration/), and check the connection with `ocr llm test`.
+- Install the [OCR CLI](../installation.md), configure the [review model](../configuration.md), and check the connection with `ocr llm test`.
 - Prepare a source checkout containing `acp/`, Git, and Go 1.26.10+ to build the adapter. Building the OCR CLI from source requires Go 1.26.10+.
 - Use a client that supports ACP v1 stdio and custom agent launch commands.
 
 The adapter and OCR CLI are built separately. The instructions below use a local build.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as ACP client
+    participant ACP as ocr-acp
+    participant OCR as ocr CLI
+
+    Client->>ACP: /review or natural-language request
+    ACP->>OCR: delegate preview / rule / diff
+    OCR-->>ACP: files, rules, and diffs
+    ACP->>ACP: review with parser model
+    ACP-->>Client: results and progress
+```
 
 ## Build and connect your client {#build-and-connect-your-client}
 
@@ -160,6 +177,11 @@ The adapter currently uses local stdio transport. HTTP, multiple workspace roots
 
 ## See also {#see-also}
 
-- [Configuration](../../configuration/) — OCR review model and provider settings.
-- [CLI Reference](../../cli-reference/) — details for review and scan options.
-- [ACP Introduction](https://agentclientprotocol.com/get-started/introduction) — the official Agent Client Protocol introduction.
+- [Configuration](../configuration.md) - OCR review model and provider settings.
+- [CLI Reference](../cli-reference.md) - details for review and scan options.
+- [ACP Introduction](https://agentclientprotocol.com/get-started/introduction) - the official Agent Client Protocol introduction.
+
+*[ACP]: Agent Client Protocol
+*[CLI]: Command-Line Interface
+*[OCR]: Open Code Review
+*[stdio]: Standard Input/Output

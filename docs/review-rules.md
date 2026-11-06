@@ -482,6 +482,6 @@ put the catch-all rule in only one place.
 
 ## See Also
 
-- [CLI Reference](../cli-reference/) — `ocr review --rule`, `--preview`, and `ocr rules check`.
-- [Configuration](../configuration/) — config file locations and the layered resolution chain.
-- [Architecture](../architecture/) — how the resolved rule feeds the agent prompt.
+- [CLI Reference](cli-reference.md) — `ocr review --rule`, `--preview`, and `ocr rules check`.
+- [Configuration](configuration.md) — config file locations and the layered resolution chain.
+- [Architecture](architecture.md) — how the resolved rule feeds the agent prompt.

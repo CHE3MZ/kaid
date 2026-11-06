@@ -6,17 +6,35 @@ sidebar:
 
 There are four supported ways to install the `ocr` CLI.
 
+!!! tip "Which method should I use?"
+
+    - **Install script** - fastest path for CI base images and headless
+      machines. It verifies the release checksum.
+    - **Release binary** - no shell pipeline; download the file for your
+      platform directly.
+    - **`go install`** - you already have Go and want the latest module
+      version.
+    - **Build from source** - you are hacking on Kaid or need a platform
+      without a pre-built binary.
+
 ## Install script (curl | sh)
 
 A convenience installer that wraps the GitHub Release binary download
-(with checksum verification) — handy for CI base images and headless
-machines:
+(with checksum verification):
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
-```
+=== "macOS / Linux"
 
-It honours three environment variables:
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+    ```
+
+=== "Windows (PowerShell 5.1+)"
+
+    ```powershell
+    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
+    ```
+
+Both installers honour three environment variables:
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -24,7 +42,9 @@ It honours three environment variables:
 | `OCR_VERSION` | latest release | Pin a specific release tag (e.g. `v1.2.3`). |
 | `OCR_GITHUB_MIRROR` | *(unset)* | Download the release binary and its checksum through a GitHub mirror domain (e.g. `gh-proxy.com`). |
 
-The script supports `darwin` and `linux` on `amd64` / `arm64`.
+The shell script supports `darwin` and `linux` on `amd64` / `arm64`. The
+PowerShell installer supports Windows on `amd64` / `arm64` and defaults to
+`%LOCALAPPDATA%\Programs\ocr`; set `$env:OCR_INSTALL_DIR` to change it.
 
 #### Using a GitHub mirror
 
@@ -50,25 +70,14 @@ directly, not the mirror. To skip version resolution entirely, pin a version:
 export OCR_VERSION='v1.2.3'
 ```
 
-> **Security note:** The mirror is a third-party service, so when
-> `OCR_GITHUB_MIRROR` is set both the binary and its `sha256sum.txt` are
-> downloaded from it. A malicious mirror can therefore serve a tampered
-> binary together with a matching checksum; the integrity guarantee does not
-> apply in mirror mode. Verify the downloaded file against the upstream
-> `sha256sum.txt` on the
-> [releases page](https://github.com/CHE3MZ/kaid/releases)
-> if you cannot trust the mirror.
+!!! warning "Mirror mode weakens integrity checks"
 
-On Windows (PowerShell 5.1+), use the PowerShell installer instead:
-
-```powershell
-irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
-```
-
-It honours the same `OCR_INSTALL_DIR`, `OCR_VERSION`, and
-`OCR_GITHUB_MIRROR` variables (set via `$env:OCR_INSTALL_DIR` /
-`$env:OCR_VERSION` / `$env:OCR_GITHUB_MIRROR`). The default
-install location is `%LOCALAPPDATA%\Programs\ocr`.
+    The mirror is a third-party service. When `OCR_GITHUB_MIRROR` is set, both
+    the binary and its `sha256sum.txt` are downloaded from it, so a malicious
+    mirror can serve a tampered binary together with a matching checksum. If
+    you cannot trust the mirror, verify the downloaded file against the
+    upstream `sha256sum.txt` on the
+    [releases page](https://github.com/CHE3MZ/kaid/releases).
 
 ## GitHub Release binary
 
@@ -220,8 +229,15 @@ PowerShell, and persistent setup instructions.
 OCR never writes outside `~/.opencodereview/` (besides the transient binary
 download via the install script). Removing the directory is a clean uninstall.
 
-## See Also
+## Next steps
 
-- [QuickStart](../quickstart/) — configure an LLM and run your first review.
-- [Configuration](../configuration/) — every env var and config key OCR honors.
-- [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md) — build from source, run tests, and hack on OCR.
+[Quickstart :material-rocket-launch:](quickstart.md){ .md-button .md-button--primary }
+[Configuration :material-cog:](configuration.md){ .md-button }
+
+- [Quickstart](quickstart.md) - configure an LLM and run your first review.
+- [Configuration](configuration.md) - every env var and config key OCR honors.
+- [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md) - build from source, run tests, and hack on OCR.
+
+*[CI]: Continuous Integration
+*[CLI]: Command-Line Interface
+*[JSONL]: JSON Lines

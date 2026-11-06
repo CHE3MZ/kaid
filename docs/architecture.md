@@ -9,6 +9,13 @@ you press Enter to the JSON that lands in your terminal. The goal is to
 give you enough mental model to debug behaviour, tune flags, and read
 the source code with confidence.
 
+!!! note "Reading order"
+
+    Start with the [high-level pipeline](#high-level-pipeline), then follow
+    the sections in order. If you are tuning cost or debugging a skipped
+    file, jump straight to [token budget guards](#token-budget-guards) and
+    [the five-gate file filter](#the-five-gate-file-filter).
+
 ## High-level pipeline
 
 ```mermaid
@@ -95,7 +102,7 @@ The difference is user-visible. Preview reports the first as
 reports the second as `default_path`, which an `include` rule can override.
 
 Run `ocr review --preview` to see the full filter result without spending
-a token. See [Review Rules](../review-rules/#how-files-are-filtered) for
+a token. See [Review Rules](review-rules.md#how-files-are-filtered) for
 the full algorithm.
 
 ## Semantic file grouping
@@ -164,7 +171,7 @@ in the main prompt.
 The main loop assembles the `MAIN_TASK` prompt and runs a tool-use
 conversation with the model. The full tool set adds **`task_done`**,
 **`code_comment`**, and **`file_read`** to the plan-phase tools — see
-[Tools](../tools/) for the full catalogue.
+[Tools](tools.md) for the full catalogue.
 
 ```
 loop up to MAX_TOOL_REQUEST_TIMES (default 100):
@@ -317,9 +324,15 @@ if countMessagesTokens(messages) > tokenLimit {
 }
 ```
 
+In other words, the guard trips when the message tokens exceed
+
+\[
+\text{tokens} > \frac{4}{5}\,\text{MaxTokens}.
+\]
+
 This catches monstrous diffs (auto-generated lock files, refactors
 touching thousands of lines) before they cost a request. The skipped
-group is reported as a non-fatal warning in stdout and added to the JSON
+group is reported as ==non-fatal== warning in stdout and added to the JSON
 `warnings` array.
 
 A second check runs in `selectFiles`: if the diff alone exceeds
@@ -368,7 +381,7 @@ The template itself isn't a CLI override — to change prompts you edit
 [`task_template.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json)
 and rebuild. The `--tools` flag is a *tool-registry* override (it
 swaps the JSON consumed by `internal/config/toolsconfig`), not a
-template override — see [Tools](../tools/#customizing-tools).
+template override — see [Tools](tools.md#customizing-tools).
 
 > **Placeholder syntax caveat.** All the placeholders above use
 > double-brace `{{…}}` syntax *except* `RE_LOCATION_TASK`, which
@@ -390,7 +403,7 @@ The repo path is **not** base64-encoded; `encodeRepoPath` (in
 Each line is one event: prompt sent, LLM response, tool call, tool
 result, comment emitted, etc. The Web UI (`ocr viewer`) reads these
 files directly — there's no database, just append-only logs. See
-[Session Viewer](../viewer/) for the UI tour and event schema.
+[Session Viewer](viewer.md) for the UI tour and event schema.
 
 ## Telemetry
 
@@ -403,7 +416,7 @@ short-lived `event.<name>` span at each decision point (`plan.skipped`,
 LLM requests and tool calls emit spans and are also recorded in metrics. Prompt and
 response content is **never** attached to telemetry; the
 `OCR_CONTENT_LOGGING` flag is plumbed but currently dead. See
-[Telemetry](../telemetry/) for the full schema.
+[Telemetry](telemetry.md) for the full schema.
 
 ## What's *not* automated
 
@@ -451,6 +464,11 @@ See [AGENTS.md](https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md) for build 
 
 ## See Also
 
-- [Tools](../tools/) — the six tools the agent loop calls.
-- [Review Rules](../review-rules/) — how per-file rule text is resolved.
-- [Session Viewer](../viewer/) — inspect the transcripts this pipeline writes.
+- [Tools](tools.md) - the six tools the agent loop calls.
+- [Review Rules](review-rules.md) - how per-file rule text is resolved.
+- [Session Viewer](viewer.md) - inspect the transcripts this pipeline writes.
+
+*[LLM]: Large Language Model
+*[JSONL]: JSON Lines
+*[OTel]: OpenTelemetry
+*[XML]: Extensible Markup Language

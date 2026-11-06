@@ -1,6 +1,9 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Copyright 2026 alibaba/open-code-review Contributors */
+
 /* Header */
 :root {
-    --kaid-primary: #EF5552;
+    --kaid-primary: #356ba7;
     --md-primary-fg-color: var(--kaid-primary);
     --md-primary-fg-color--dark: var(--kaid-primary);
     --md-primary-fg-color--light: var(--kaid-primary);

@@ -7,7 +7,7 @@ sidebar:
 Run OCR on every Pull Request or Merge Request. The upstream repo
 ships two ready-made pipelines you copy and configure — one for
 GitHub Actions, one for GitLab CI. Both are thin wrappers around the
-core command documented in the [CLI Reference](../cli-reference/#json).
+core command documented in the [CLI Reference](../cli-reference.md#json).
 
 ## How CI/CD integration works
 
@@ -37,7 +37,7 @@ implementations of it:
 
    `--format json` gives a parseable payload; `--audience agent`
    suppresses progress lines. See the
-   [JSON output](../cli-reference/#json) for the envelope every
+   [JSON output](../cli-reference.md#json) for the envelope every
    recipe consumes.
 5. **Parse the JSON** and walk `comments[]`.
 6. **Post comments back** to the PR / MR via the provider's review
@@ -46,13 +46,30 @@ implementations of it:
    posting step also falls back to a plain summary comment if the
    inline-batch API rejects the request.
 
-Two kinds of credentials are always in play: the **LLM credentials**
-OCR uses to generate findings, and a **PR/MR write token** the
-posting step uses to comment back. The GitHub recipe gets the latter
-for free via `GITHUB_TOKEN`; GitLab recommends an explicit
-`GITLAB_API_TOKEN`, but the built-in `CI_JOB_TOKEN` is used as a
-fallback for fork MRs (it can post discussions via `/discussions`) —
-a dedicated token is recommended for reliability.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CI as CI runner
+    participant OCR as ocr CLI
+    participant LLM as LLM endpoint
+    participant SCM as GitHub / GitLab
+
+    CI->>OCR: install and configure
+    CI->>OCR: ocr review --format json --audience agent
+    OCR->>LLM: review requests
+    LLM-->>OCR: findings
+    OCR-->>CI: JSON envelope
+    CI->>SCM: post inline review comments
+```
+
+!!! tip "Two credential types"
+
+    The **LLM credentials** let OCR generate findings. The **PR/MR write
+    token** lets the posting step comment back. The GitHub recipe gets the
+    latter for free via `GITHUB_TOKEN`; GitLab recommends an explicit
+    `GITLAB_API_TOKEN`, but the built-in `CI_JOB_TOKEN` is used as a fallback
+    for fork MRs (it can post discussions via `/discussions`) - a dedicated
+    token is recommended for reliability.
 
 ## GitHub Actions
 
@@ -100,11 +117,13 @@ Set under **Settings → Secrets and variables → Actions**:
 `GITHUB_TOKEN` is auto-provided; the workflow declares
 `pull-requests: write` so it can post review comments.
 
-> The workflow also runs
-> `ocr config set llm.extra_body '{"thinking": {"type": "disabled"}}'`
-> at startup, which turns off thinking-mode requests for
-> compatibility across LLM providers that don't support that field.
-> Remove the line if your provider needs thinking-mode left on.
+!!! note "Thinking mode is disabled by default"
+
+    The workflow also runs
+    `ocr config set llm.extra_body '{"thinking": {"type": "disabled"}}'` at
+    startup, which turns off thinking-mode requests for compatibility across
+    LLM providers that don't support that field. Remove the line if your
+    provider needs thinking mode left on.
 
 ### Action inputs
 
@@ -146,7 +165,7 @@ All of the following are edits to the workflow file you just copied
 #### Background context
 
 `--background` is the single highest-leverage flag — see the
-[tips that apply to every pattern](../#tips-that-apply-to-every-pattern).
+[tips that apply to every pattern](../index.md#tips-that-apply-to-every-pattern).
 Feed the PR title (works especially well when titles follow a
 semantic convention like `feat(auth): add OAuth2 support`):
 
@@ -185,7 +204,7 @@ Pass a project-specific rule file with `--rule`:
       --to "origin/$HEAD_REF"
 ```
 
-See [Review Rules](../../review-rules/) for the schema.
+See [Review Rules](../review-rules.md) for the schema.
 
 #### Concurrency
 
@@ -431,7 +450,7 @@ script:
       --to "${CI_COMMIT_SHA}"
 ```
 
-See [Review Rules](../../review-rules/) for the rule schema.
+See [Review Rules](../review-rules.md) for the rule schema.
 
 #### Pin the OCR version
 
@@ -530,7 +549,16 @@ script:
 
 ## See Also
 
-- [CLI Reference](../cli-reference/#json) — the JSON output shape both pipelines
+- [CLI Reference](../cli-reference.md#json) - the JSON output shape both pipelines
   consume, useful when writing your own CI script from scratch.
-- [Configuration](../../configuration/) — every env var and config
+- [Configuration](../configuration.md) - every env var and config
   key OCR honors.
+
+*[API]: Application Programming Interface
+*[CD]: Continuous Delivery
+*[CI]: Continuous Integration
+*[JSON]: JavaScript Object Notation
+*[LLM]: Large Language Model
+*[MR]: Merge Request
+*[PR]: Pull Request
+*[SARIF]: Static Analysis Results Interchange Format

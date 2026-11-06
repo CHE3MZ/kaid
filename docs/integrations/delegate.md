@@ -8,6 +8,28 @@ OCR handles deterministic engineering (file selection, rule resolution)
 while the host agent performs the actual code review using its own LLM
 capabilities. No LLM endpoint is required on the OCR side.
 
+!!! tip "No model configuration required"
+
+    Delegation mode never calls an LLM from the Kaid side. The host agent
+    supplies both the model and the review reasoning, so you do not need to run
+    `ocr config provider` or set `OCR_LLM_*` variables.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Host as Host agent
+    participant OCR as ocr delegate
+
+    Host->>OCR: preview
+    OCR-->>Host: reviewable files + exclusions
+    Host->>OCR: rule <paths>
+    OCR-->>Host: rules grouped by content
+    Host->>OCR: diff <paths>
+    OCR-->>Host: diffs and metadata
+    Host->>Host: review with its own model
+    Host-->>Host: render findings
+```
+
 ## When to use delegation mode
 
 Delegation mode is designed for subscription-based AI coding agents where you
@@ -145,3 +167,12 @@ Classify each finding by severity:
 | `--exclude <patterns>` | Comma-separated exclude patterns |
 | `-b, --background <text>` | Business context |
 | `-B, --background-file <path>` | Business context from Markdown file (takes precedence over `-b`) |
+
+## See Also
+
+- [CLI Reference](../cli-reference.md) - the `ocr delegate` sub-commands and global flags.
+- [Review Rules](../review-rules.md) - how `ocr delegate rule` resolves per-file text.
+- [ACP](acp.md) - the editor-facing adapter that can drive delegation workflows.
+
+*[LLM]: Large Language Model
+*[OCR]: Open Code Review

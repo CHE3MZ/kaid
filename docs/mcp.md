@@ -7,7 +7,7 @@ sidebar:
 OCR can act as a **Model Context Protocol (MCP) client**. You point it at
 one or more external MCP servers, and the tools those servers expose
 become available to the review agent — right alongside the
-[built-in tools](../tools/) like `file_read` and `code_search`.
+[built-in tools](tools.md) like `file_read` and `code_search`.
 
 ## When to use it
 
@@ -26,57 +26,59 @@ cover it — MCP is for reaching beyond the checkout.
 
 ## Configuration
 
-#### Adding a local MCP server
+=== "Local server"
 
-The `ocr config set` command writes these fields non-interactively. Array
-fields (`args`, `env`, `tools`) take a JSON array string:
+    The `ocr config set` command writes these fields non-interactively. Array
+    fields (`args`, `env`, `tools`) take a JSON array string:
 
-```bash
-# Minimal: just a command
-ocr config set mcp_servers.docs.command npx
+    ```bash
+    # Minimal: just a command
+    ocr config set mcp_servers.docs.command npx
 
-# Arguments
-ocr config set mcp_servers.docs.args '["-y", "@acme/docs-mcp-server"]'
+    # Arguments
+    ocr config set mcp_servers.docs.args '["-y", "@acme/docs-mcp-server"]'
 
-# Restrict which tools are exposed to the reviewer
-ocr config set mcp_servers.docs.tools '["search_docs", "get_page"]'
+    # Restrict which tools are exposed to the reviewer
+    ocr config set mcp_servers.docs.tools '["search_docs", "get_page"]'
 
-# A setup command to run before the server starts
-ocr config set mcp_servers.docs.setup "npm install -g @acme/docs-mcp-server"
+    # A setup command to run before the server starts
+    ocr config set mcp_servers.docs.setup "npm install -g @acme/docs-mcp-server"
 
-# Environment variables (KEY=VALUE entries)
-ocr config set mcp_servers.docs.env '["DOCS_TOKEN=secret", "DOCS_REGION=eu"]'
-```
+    # Environment variables (KEY=VALUE entries)
+    ocr config set mcp_servers.docs.env '["DOCS_TOKEN=secret", "DOCS_REGION=eu"]'
+    ```
 
-#### Adding a remote MCP server
+=== "Remote server"
 
-For servers that support **Streamable HTTP**, set `type` to `remote` and
-provide a `url` instead of a local command. Setting only `url` is not
-enough: the default type is `stdio`.
+    For servers that support **Streamable HTTP**, set `type` to `remote` and
+    provide a `url` instead of a local command. Setting only `url` is not
+    enough: the default type is `stdio`.
 
-Use a new server name so these commands do not overwrite an existing
-connection:
+    Use a new server name so these commands do not overwrite an existing
+    connection:
 
-```bash
-ocr config set mcp_servers.search.type remote
-ocr config set mcp_servers.search.url https://mcp.example.com/mcp
-ocr config set mcp_servers.search.tools '["search", "fetch"]'
-```
+    ```bash
+    ocr config set mcp_servers.search.type remote
+    ocr config set mcp_servers.search.url https://mcp.example.com/mcp
+    ocr config set mcp_servers.search.tools '["search", "fetch"]'
+    ```
 
-These commands save the connection in your user config. On the next
-review, OCR connects and makes `search` and `fetch` available to the
-agent alongside the built-in tools. The tool allowlist keeps any
-additional tools the server might offer out of the review. Other
-configured servers and your review settings are unchanged.
+    These commands save the connection in your user config. On the next
+    review, OCR connects and makes `search` and `fetch` available to the
+    agent alongside the built-in tools. The tool allowlist keeps any
+    additional tools the server might offer out of the review. Other
+    configured servers and your review settings are unchanged.
 
-Once configured, the agent can call these tools during reviews without
-asking before each call. Tool arguments — search queries, requested URLs,
-and any context the agent includes — leave your machine and reach whoever
-operates the endpoint. Because this is user configuration, it applies
-across repositories: enable it only where external requests are allowed,
-and do not include secrets, private code, or internal URLs in requests.
-Review the operator's privacy policy and terms before connecting a
-third-party service.
+!!! warning "Remote tools can receive repository context"
+
+    Once configured, the agent can call these tools during reviews without
+    asking before each call. Tool arguments - search queries, requested URLs,
+    and any context the agent includes - leave your machine and reach whoever
+    operates the endpoint. Because this is user configuration, it applies
+    across repositories: enable it only where external requests are allowed,
+    and do not include secrets, private code, or internal URLs in requests.
+    Review the operator's privacy policy and terms before connecting a
+    third-party service.
 
 #### Removing an MCP server
 
@@ -166,6 +168,13 @@ without its tools.
 
 ## See also
 
-- [Tools](../tools/) — the six built-in tools MCP tools sit beside.
-- [Configuration](../configuration/) — the full config file and every key.
-- [CLI Reference](../cli-reference/) — `ocr config` and the review flags.
+- [Tools](tools.md) - the six built-in tools MCP tools sit beside.
+- [Configuration](configuration.md) - the full config file and every key.
+- [CLI Reference](cli-reference.md) - `ocr config` and the review flags.
+
+*[HTTP]: Hypertext Transfer Protocol
+*[JSON]: JavaScript Object Notation
+*[MCP]: Model Context Protocol
+*[OCR]: Open Code Review
+*[stdio]: Standard Input/Output
+*[URL]: Uniform Resource Locator
