@@ -172,7 +172,6 @@ Classify each finding by severity:
 
 - [CLI Reference](../cli-reference.md) - the `ocr delegate` sub-commands and global flags.
 - [Review Rules](../review-rules.md) - how `ocr delegate rule` resolves per-file text.
-- [ACP](acp.md) - the editor-facing adapter that can drive delegation workflows.
 
 *[LLM]: Large Language Model
 *[OCR]: Open Code Review

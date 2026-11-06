@@ -33,7 +33,6 @@ endef
 build:
 	$(GO) build -ldflags "$(LD_FLAGS)" -o $(DIST_DIR)/$(BINARY_NAME)$(EXE) ./cmd/opencodereview
 
-# Nested modules such as acp/go.mod are not descended into by `go list ./...`.
 # The standalone frontend has no Go packages.
 PACKAGES := $(shell $(GO) list ./...)
 

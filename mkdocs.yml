@@ -22,7 +22,6 @@ nav:
       - ChatGPT preview: chatgpt-preview.md
   - Integrations:
       - CI/CD: integrations/ci.md
-      - ACP: integrations/acp.md
       - Delegation: integrations/delegate.md
   - FAQ: faq.md
 
