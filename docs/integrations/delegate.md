@@ -53,7 +53,7 @@ Use delegation mode when:
 The `ocr` CLI must be installed:
 
 ```bash
-which ocr || curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+which ocr || curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
 ```
 
 No LLM configuration (`ocr config set …` or environment variables) is

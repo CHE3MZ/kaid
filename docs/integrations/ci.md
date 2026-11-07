@@ -19,7 +19,7 @@ implementations of it:
    merge request, or a manual `/open-code-review` comment kicks off
    the job.
 2. **Install `ocr`** in the runner, typically
-   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`. The runner is
+   `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh`. The runner is
    ephemeral, so this happens on every run.
 3. **Configure the LLM** from CI secrets via `ocr config set`
    (endpoint, token, model). There is no persisted
@@ -84,7 +84,7 @@ The upstream workflow lives at
   (`pull_request_target` is used instead of `pull_request` so that
   secrets are available even for PRs opened from forks; OCR only reads
   the diff and does not execute code from the PR.)
-- Installs OCR via `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh`,
+- Installs OCR via `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh`,
   writes config with `ocr config set`, then runs the core command in
   branch-range mode.
 - Parses the JSON envelope and posts each finding as an inline review
@@ -256,7 +256,7 @@ The default workflow installs the latest published version. To pin:
 
 ```yaml
 - name: Install OpenCodeReview
-  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### Post under a GitHub App identity
@@ -456,7 +456,7 @@ See [Review Rules](../review-rules.md) for the rule schema.
 
 ```yaml
 script:
-  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.0.0 sh
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.0.0 sh
 ```
 
 #### Avoid re-reviewing on every push

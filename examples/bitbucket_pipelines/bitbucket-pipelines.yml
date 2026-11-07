@@ -43,7 +43,7 @@ definitions:
               : "${BITBUCKET_API_TOKEN_EMAIL:?BITBUCKET_API_TOKEN_EMAIL is required with BITBUCKET_API_TOKEN}"
             fi
 
-          - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+          - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
 
           - |
             ocr config set llm.url "$OCR_LLM_URL"

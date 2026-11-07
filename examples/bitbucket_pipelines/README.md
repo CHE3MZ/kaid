@@ -135,7 +135,7 @@ For reproducible builds, replace the install command with a version validated
 by your team:
 
 ```yaml
-- curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR=/usr/local/bin sh
+- curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR=/usr/local/bin sh
 ```
 
 ### Use an Anthropic endpoint

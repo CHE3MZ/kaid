@@ -25,13 +25,13 @@ A convenience installer that wraps the GitHub Release binary download
 === "macOS / Linux"
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
     ```
 
 === "Windows (PowerShell 5.1+)"
 
     ```powershell
-    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
+    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 | iex
     ```
 
 Both installers honour three environment variables:

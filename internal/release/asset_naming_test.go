@@ -37,8 +37,8 @@ func TestInstallScriptsUseFork(t *testing.T) {
 		prefix   string
 		checksum string
 	}{
-		{"install.sh", `REPO="CHE3MZ/kaid"`, `ASSET_PREFIX="opencodereview"`, "sha256sum.txt"},
-		{"install.ps1", "$Repo = 'CHE3MZ/kaid'", "$AssetPrefix = 'opencodereview'", "sha256sum.txt"},
+		{"scripts/install.sh", `REPO="CHE3MZ/kaid"`, `ASSET_PREFIX="opencodereview"`, "sha256sum.txt"},
+		{"scripts/install.ps1", "$Repo = 'CHE3MZ/kaid'", "$AssetPrefix = 'opencodereview'", "sha256sum.txt"},
 	} {
 		t.Run(tc.path, func(t *testing.T) {
 			script := loadFile(t, tc.path)
@@ -52,21 +52,21 @@ func TestInstallScriptsUseFork(t *testing.T) {
 }
 
 func TestInstallScriptsBuildAssetNames(t *testing.T) {
-	sh := loadFile(t, "install.sh")
+	sh := loadFile(t, "scripts/install.sh")
 	if !strings.Contains(sh, `asset="${ASSET_PREFIX}-${os}-${arch}"`) {
 		t.Error("install.sh does not build asset names from the prefix, OS, and architecture")
 	}
-	ps1 := loadFile(t, "install.ps1")
+	ps1 := loadFile(t, "scripts/install.ps1")
 	if !strings.Contains(ps1, `$asset = "$AssetPrefix-$os-$arch.exe"`) {
 		t.Error("install.ps1 does not build asset names from the prefix, OS, and architecture")
 	}
 }
 
 func TestReleaseURLsUseHTTPS(t *testing.T) {
-	if !strings.Contains(loadFile(t, "install.sh"), `base="https://github.com/$REPO/releases/download/$VERSION"`) {
+	if !strings.Contains(loadFile(t, "scripts/install.sh"), `base="https://github.com/$REPO/releases/download/$VERSION"`) {
 		t.Error("install.sh should download releases over HTTPS")
 	}
-	if !strings.Contains(loadFile(t, "install.ps1"), `$base = "https://github.com/$Repo/releases/download/$Version"`) {
+	if !strings.Contains(loadFile(t, "scripts/install.ps1"), `$base = "https://github.com/$Repo/releases/download/$Version"`) {
 		t.Error("install.ps1 should download releases over HTTPS")
 	}
 }
@@ -174,7 +174,7 @@ func releasePlatforms() []releasePlatform {
 func installAssetPrefix(t *testing.T) string {
 	t.Helper()
 	re := regexp.MustCompile(`ASSET_PREFIX="([^"]+)"`)
-	m := re.FindStringSubmatch(loadFile(t, "install.sh"))
+	m := re.FindStringSubmatch(loadFile(t, "scripts/install.sh"))
 	if m == nil {
 		t.Fatal("cannot find ASSET_PREFIX in install.sh")
 	}

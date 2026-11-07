@@ -97,13 +97,13 @@ without a reason.==
 === "macOS / Linux"
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
     ```
 
 === "Windows"
 
     ```powershell
-    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
+    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 | iex
     ```
 
 Then verify the binary and configure a model:

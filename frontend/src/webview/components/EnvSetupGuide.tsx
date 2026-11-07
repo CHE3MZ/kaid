@@ -6,7 +6,7 @@ import { CliStatus } from '../configStore';
 import { LogViewer } from './LogViewer';
 import { useT } from '../I18nProvider';
 
-export const OCR_INSTALL_CMD = 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh';
+export const OCR_INSTALL_CMD = 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh';
 
 const CHECK_ITEMS = [
   { key: 'ocr', label: 'ocr CLI' },

@@ -26,7 +26,7 @@ stages:
             step: Shell
             name: Install open-code-review CLI
             with:
-              run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+              run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
 
           run_review_step:
             step: Shell

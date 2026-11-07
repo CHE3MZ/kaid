@@ -14,13 +14,13 @@ Get your first code review running in a few minutes.
 === "macOS / Linux"
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+    curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
     ```
 
 === "Windows"
 
     ```powershell
-    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
+    irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 | iex
     ```
 
 Verify the binary:

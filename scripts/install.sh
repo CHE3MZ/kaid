@@ -4,9 +4,9 @@
 # Copyright 2026 CHE3MZ (kaid)
 
 # Install the ocr (Open Code Review) CLI from GitHub releases.
-#   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
 # Prefer to inspect first:
-#   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh -o install.sh
+#   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh -o install.sh
 #   less install.sh && sh install.sh
 # Env: OCR_INSTALL_DIR (default /usr/local/bin), OCR_VERSION (default latest),
 # OCR_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
@@ -24,7 +24,7 @@ main() {
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   case "$os" in
     darwin|linux) ;;
-    *) err "unsupported OS: $os (on Windows use: irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex)" ;;
+    *) err "unsupported OS: $os (on Windows use: irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 | iex)" ;;
   esac
 
   arch="$(uname -m)"

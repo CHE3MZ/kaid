@@ -84,13 +84,13 @@ The agent's strengths are concentrated where they matter most — dynamic decisi
 #### Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
 ```
 
 On Windows:
 
 ```powershell
-irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/install.ps1 | iex
+irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 | iex
 ```
 
 After installation, the `ocr` command is available globally.
