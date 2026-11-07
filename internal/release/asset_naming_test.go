@@ -127,47 +127,52 @@ func TestReleaseWorkflowUsesGoReleaser(t *testing.T) {
 	}
 }
 
-func TestMakefileBuildMatchesAssetNaming(t *testing.T) {
+func TestBuildScriptMatchesAssetNaming(t *testing.T) {
 	prefix := installAssetPrefix(t)
-	makefile := loadFile(t, "Makefile")
+	script := loadFile(t, "scripts/build.sh")
 
-	re := regexp.MustCompile(`-o\s+\$\(DIST_DIR\)/([^\s\\]+)`)
-	m := re.FindStringSubmatch(makefile)
+	re := regexp.MustCompile(`BINARY_NAME="([^"]+)"`)
+	m := re.FindStringSubmatch(script)
 	if m == nil {
-		t.Fatal("cannot find BUILD_PLATFORM -o pattern in Makefile")
+		t.Fatal("cannot find BINARY_NAME in scripts/build.sh")
 	}
-	outputTemplate := m[1]
-
+	if m[1] != prefix {
+		t.Errorf("scripts/build.sh builds %q, want asset prefix %q", m[1], prefix)
+	}
+	if !strings.Contains(script, `output="$DIST_DIR/$BINARY_NAME-$os-$arch$ext"`) {
+		t.Error("scripts/build.sh does not build the release asset name")
+	}
+	if !strings.Contains(script, `[ "$os" = "windows" ] && ext=".exe"`) {
+		t.Error("scripts/build.sh does not add .exe for Windows")
+	}
 	for _, p := range releasePlatforms() {
-		rendered := outputTemplate
-		rendered = strings.ReplaceAll(rendered, "$(BINARY_NAME)", prefix)
-		rendered = strings.ReplaceAll(rendered, "$(1)", p.os)
-		rendered = strings.ReplaceAll(rendered, "$(2)", p.arch)
-		rendered = strings.ReplaceAll(rendered, "$(3)", p.ext)
-		expected := p.asset(prefix)
-		if rendered != expected {
-			t.Errorf("Makefile produces %q, want %q", rendered, expected)
+		target := p.os + "/" + p.arch
+		if !strings.Contains(script, target) {
+			t.Errorf("scripts/build.sh does not build %s", target)
 		}
 	}
 }
 
 type releasePlatform struct {
 	os, arch string
-	ext      string
 }
 
 func (p releasePlatform) asset(prefix string) string {
-	return prefix + "-" + p.os + "-" + p.arch + p.ext
+	ext := ""
+	if p.os == "windows" {
+		ext = ".exe"
+	}
+	return prefix + "-" + p.os + "-" + p.arch + ext
 }
 
 func releasePlatforms() []releasePlatform {
 	return []releasePlatform{
-		{"linux", "amd64", ""},
-		{"linux", "arm64", ""},
-		{"darwin", "amd64", ""},
-		{"darwin", "arm64", ""},
-		{"windows", "amd64", ".exe"},
-		{"windows", "arm64", ".exe"},
+		{"linux", "amd64"},
+		{"linux", "arm64"},
+		{"darwin", "amd64"},
+		{"darwin", "arm64"},
+		{"windows", "amd64"},
+		{"windows", "arm64"},
 	}
 }
 

@@ -1,8 +1,9 @@
-.PHONY: test clean run help fmt vet check coverage \
+.PHONY: test coverage clean run help fmt vet check \
 	license-check license-add english-check
 
 GO       := go
 DIST_DIR := ./dist
+LOG_DIR  := ./logs
 
 # The standalone frontend has no Go packages.
 PACKAGES := ./...
@@ -10,20 +11,12 @@ PACKAGES := ./...
 test:
 	LC_ALL=C $(GO) test -v -race -count=1 $(PACKAGES)
 
-COVERAGE_THRESHOLD := 90
-
 coverage:
-	LC_ALL=C $(GO) test -count=1 -coverprofile=coverage.out $(PACKAGES)
-	$(GO) tool cover -func=coverage.out | grep total:
-	@COVERAGE=$$($(GO) tool cover -func=coverage.out | grep total: | awk '{print $$3}' | sed 's/%//'); \
-	if awk "BEGIN {exit !($$COVERAGE < $(COVERAGE_THRESHOLD))}"; then \
-		echo "FAIL: Coverage $${COVERAGE}% is below $(COVERAGE_THRESHOLD)% threshold"; \
-		exit 1; \
-	fi; \
-	echo "PASS: Coverage $${COVERAGE}% meets $(COVERAGE_THRESHOLD)% threshold"
+	sh scripts/ops/coverage.sh
 
 clean:
-	rm -rf $(DIST_DIR) coverage.out
+	rm -rf $(DIST_DIR)
+	rm -rf $(LOG_DIR)
 
 run:
 	$(GO) run ./cmd/opencodereview --staged
