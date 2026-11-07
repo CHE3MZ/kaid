@@ -465,7 +465,7 @@ kaid config set custom_providers.my-gateway.extra_headers "x-session-affinity={k
 it defaults to English when unset:
 
 ```bash
-kaid config set language 中文
+kaid config set language Chinese
 kaid config set language English
 ```
 

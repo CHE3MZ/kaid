@@ -3578,7 +3578,7 @@ function testCheckpointMarkerRoundTrip() {
     ckPayload(),
     ckPayload({ note: "contains --> a closing sequence" }),
     ckPayload({ note: "line one\nline two" }),
-    ckPayload({ note: "多字节 テキスト ✅" }), // allow-non-english: fixture proves the base64 round trip is byte-exact for a non-ASCII note
+    ckPayload({ note: "multibyte → ✅" }),
   ];
   for (const p of payloads) {
     const marker = buildCheckpointMarker(p);

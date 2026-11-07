@@ -75,11 +75,11 @@ func TestGitFailure(t *testing.T) {
 		}
 	})
 
-	// Git speaks the user's locale. #972 came from a Japanese-language Windows
-	// install, so truncating by bytes can land in the middle of a rune and turn
-	// a confusing error into an unreadable one.
+	// Git speaks the user's locale. #972 came from a localized Windows install,
+	// so truncating by bytes can land in the middle of a rune and turn a
+	// confusing error into an unreadable one.
 	t.Run("multibyte output survives truncation", func(t *testing.T) {
-		msg := strings.Repeat("致命的なエラーが発生しました。", 400) // allow-non-english: multibyte truncation fixture, mirrors the locale in #972
+		msg := strings.Repeat("fatal: unexpected error — retry now… ", 400)
 		err := gitFailure("git show", msg, baseErr)
 		got := err.Error()
 		if !utf8.ValidString(got) {
@@ -88,7 +88,7 @@ func TestGitFailure(t *testing.T) {
 		if strings.Contains(got, "�") {
 			t.Error("truncation left a replacement character mid-rune")
 		}
-		if !strings.HasSuffix(got, "。") { // allow-non-english: asserts the fixture's trailing rune is intact
+		if !strings.HasSuffix(got, "…") {
 			t.Errorf("error %q does not end on the original tail", got[len(got)-40:])
 		}
 	})
@@ -252,12 +252,12 @@ func TestGetDiff_CommitFailureSurfacesGitMessage(t *testing.T) {
 	}
 	// Anchor on the object name, not on git's prose. Git words this
 	// differently across versions ("bad object", "unknown revision",
-	// "ambiguous argument") and translates all of it: under zh_CN the line
-	// opens with 致命错误, so asserting "fatal:" would pass in CI's English // allow-non-english: names the translated prefix this assertion must not depend on
-	// container and fail for a translated developer. The SHA is the one part
-	// no locale rewrites, and its presence is what proves git's message came
-	// through at all. isNotGitRepoError pairs its English phrase with a
-	// locale-proof check for the same reason.
+	// "ambiguous argument") and translates all of it: under a non-English locale
+	// the line opens with a localized fatal prefix, so asserting "fatal:" would
+	// pass in CI's English container and fail for a translated developer. The
+	// SHA is the one part no locale rewrites, and its presence is what proves
+	// git's message came through at all. isNotGitRepoError pairs its English
+	// phrase with a locale-proof check for the same reason.
 	if !strings.Contains(got, missingSHA) {
 		t.Errorf("error %q carries no message from git; only the exit status survived", got)
 	}

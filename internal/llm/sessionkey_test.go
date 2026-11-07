@@ -68,7 +68,7 @@ func TestSessionTaskKey(t *testing.T) {
 		t.Error("different task types must produce different keys")
 	}
 	// Non-ASCII scopes must still yield a header-safe key.
-	for _, r := range SessionTaskKey("sess", "main_task", "文件/경로.go") { // allow-non-english: fixture exercises non-ASCII path hashing
+	for _, r := range SessionTaskKey("sess", "main_task", "→/☃.go") {
 		if r <= ' ' || r > '~' {
 			t.Errorf("SessionTaskKey produced non header-safe rune %q", r)
 		}

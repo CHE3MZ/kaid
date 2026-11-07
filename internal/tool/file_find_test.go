@@ -315,7 +315,7 @@ func TestFileFind_NonASCIIPath(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			p := NewFileFind(&FileReader{RepoDir: dir, Mode: tc.mode, Ref: tc.ref})
-			got, err := p.Execute(context.Background(), map[string]any{"query_name": "文件"}) // allow-non-english: fixture exercises non-ASCII query
+			got, err := p.Execute(context.Background(), map[string]any{"query_name": "→"})
 			if err != nil {
 				t.Fatal(err)
 			}

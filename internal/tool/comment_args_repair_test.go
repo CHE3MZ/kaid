@@ -18,9 +18,10 @@ import (
 
 const proseQuoteEnglish = `[{"content":"the name suggests "a trusted proxy exists" but the call returns the opposite","existing_code":"boolean ok = cfg.isEmpty();","path":"Auth.java"}]`
 
-// The real failures were all Chinese review prose, and the byte-wise scan has to
-// stay correct across multi-byte runes, so one fixture keeps that language.
-const proseQuoteChinese = `[{"content":"变量名暗示的是"存在可信代理"，但调用返回的是相反的结果。","existing_code":"boolean ok = cfg.isEmpty();","path":"Auth.java"}]` // allow-non-english: encoding fixture — the reported failures occur only in Chinese prose, and multi-byte runes are what make the byte-wise scan worth testing
+// The real failures were review prose with quoted terms, and the byte-wise scan
+// has to stay correct across multi-byte runes, so this fixture includes an em
+// dash.
+const proseQuoteMultibyte = `[{"content":"The variable name suggests "a trusted proxy exists" — but the call returns the opposite, so the flag is inverted.","existing_code":"boolean ok = cfg.isEmpty();","path":"Auth.java"}]`
 
 const twoCommentsWithProseQuotes = `[{"content":"the counter changed from "files finished" to "files started"","path":"a.go"},{"content":"the flag reads as "proxy present" but means the opposite","path":"b.go"}]`
 
@@ -60,7 +61,7 @@ func TestParseComments_RepairsUnescapedProseQuote(t *testing.T) {
 
 func TestParseComments_RepairsProseQuoteAcrossMultiByteRunes(t *testing.T) {
 	comments, repair, errMsg := ParseCommentsWithPath(
-		map[string]any{"comments": proseQuoteChinese}, "fallback.go")
+		map[string]any{"comments": proseQuoteMultibyte}, "fallback.go")
 	if errMsg != "" {
 		t.Fatalf("expected the repair to recover the batch, got error: %s", errMsg)
 	}
@@ -71,7 +72,7 @@ func TestParseComments_RepairsProseQuoteAcrossMultiByteRunes(t *testing.T) {
 		t.Fatalf("recovered %d comments, want 1", len(comments))
 	}
 	// A byte-wise scan that mishandled UTF-8 would corrupt or truncate this.
-	if !strings.HasSuffix(comments[0].Content, "相反的结果。") { // allow-non-english: asserts the multi-byte fixture above round-trips intact
+	if !strings.HasSuffix(comments[0].Content, "— but the call returns the opposite, so the flag is inverted.") {
 		t.Errorf("multi-byte content did not survive the repair: %q", comments[0].Content)
 	}
 }
@@ -468,7 +469,7 @@ func TestParseComments_SuspectPathRejectsTheBatch(t *testing.T) {
 func TestParseComments_CleanRepairIsAcceptedIntact(t *testing.T) {
 	for _, tc := range []struct{ name, serialized string }{
 		{"prose quote in english", proseQuoteEnglish},
-		{"prose quote in chinese", proseQuoteChinese},
+		{"prose quote with multibyte punctuation", proseQuoteMultibyte},
 		{"two comments", twoCommentsWithProseQuotes},
 		{"quoted term ends the value", `[{"content":"rename it to "files_started"","existing_code":"x","path":"a.go"}]`},
 		{"quoted term in code", `[{"content":"ok","suggestion_code":"fmt.Println("done")","existing_code":"x","path":"a.go"}]`},

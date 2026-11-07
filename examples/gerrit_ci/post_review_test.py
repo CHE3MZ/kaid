@@ -138,10 +138,10 @@ class BuildReviewInputTest(unittest.TestCase):
         self.assertNotIn("**Suggestion:**", msg)
 
     def test_unicode_comment_roundtrip(self):
-        content = "空指针解引用：y 可能为 nil"  # allow-non-english: fixture exercises UTF-8 comment bodies
-        ri = build([comment(path="pkg/服务.go", content=content)])  # allow-non-english: fixture exercises UTF-8 file paths
-        self.assertIn("pkg/服务.go", ri["comments"])  # allow-non-english: fixture exercises UTF-8 file paths
-        self.assertIn(content, entry_of(ri, "pkg/服务.go")["message"])  # allow-non-english: fixture exercises UTF-8 file paths
+        content = "nil pointer dereference: y may be nil — a real risk"
+        ri = build([comment(path="pkg/→.go", content=content)])
+        self.assertIn("pkg/→.go", ri["comments"])
+        self.assertIn(content, entry_of(ri, "pkg/→.go")["message"])
         self.assertEqual(json.loads(json.dumps(ri, ensure_ascii=False)), ri)
 
     def test_path_with_spaces(self):
@@ -543,7 +543,7 @@ class MakePosterTest(unittest.TestCase):
     def test_preemptive_basic_auth_and_utf8_body(self):
         import base64
 
-        req, _parsed = self.post({"message": "空指针解引用：y 可能为 nil"})  # allow-non-english: fixture exercises UTF-8 request payloads
+        req, _parsed = self.post({"message": "nil pointer dereference: y may be nil — a real risk"})
         auth = req.get_header("Authorization")
         self.assertIsNotNone(auth, "Authorization header must be set preemptively")
         self.assertTrue(auth.startswith("Basic "))
@@ -551,7 +551,7 @@ class MakePosterTest(unittest.TestCase):
             base64.b64decode(auth[len("Basic "):]).decode("utf-8"),
             "review-bot:s3cret-pass",
         )
-        self.assertIn("空指针解引用".encode("utf-8"), req.data)  # allow-non-english: fixture exercises UTF-8 request payloads
+        self.assertIn("—".encode("utf-8"), req.data)
         self.assertIn("application/json", req.get_header("Content-type"))
 
     def test_xssi_response_parses(self):

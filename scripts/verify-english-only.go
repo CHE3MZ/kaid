@@ -4,11 +4,11 @@
 //go:build ignore
 
 // Command verify-english-only fails when unapproved non-English text appears in
-// source files.
+// source files or Markdown documentation.
 //
-// Comments, identifiers and user-visible strings in this repository are
-// written in English. English is the only source language kept in the
-// repository.
+// Comments, identifiers, user-visible strings and Markdown documentation in
+// this repository are written in English. English is the only source language
+// kept in the repository.
 //
 // What it detects, and the one thing it cannot:
 //
@@ -24,7 +24,7 @@
 // Symbols are deliberately left alone: box drawing, arrows, emoji and maths
 // (─ → ≥ ≈ ×) are not letters and appear throughout the TUI output on purpose.
 //
-// Markdown is not scanned.
+// Markdown documentation is scanned as well.
 //
 // Run it directly (the build tag keeps it out of ./... so it does not affect
 // go vet, go build or the coverage threshold):
@@ -55,12 +55,12 @@ import (
 	"unicode"
 )
 
-// scannedExts lists the extensions treated as source files.
+// scannedExts lists the extensions treated as source or documentation files.
 var scannedExts = map[string]bool{
 	".go": true, ".kt": true, ".kts": true, ".ts": true, ".tsx": true,
 	".js": true, ".cjs": true, ".mjs": true, ".py": true, ".sh": true,
 	".ps1": true, ".css": true, ".html": true, ".yml": true,
-	".yaml": true, ".json": true,
+	".yaml": true, ".json": true, ".md": true,
 }
 
 // scannedNames lists extension-less files that are still source files.
@@ -239,7 +239,8 @@ func run() error {
 			fmt.Fprintf(os.Stderr, "  %s:%d: %q in %s\n", f.file, f.line, f.char, trim(f.text))
 		}
 		fmt.Fprintf(os.Stderr, `
-Source files are English-only: comments, identifiers and strings alike.
+Source files and Markdown documentation are English-only: comments, identifiers,
+strings and prose alike.
 If the non-English text is intentional — an encoding fixture — append a marker
 comment, including the reason, to that line:
 

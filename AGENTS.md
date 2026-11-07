@@ -38,7 +38,7 @@ kaid is an AI-powered code review CLI tool written in Go (module: `github.com/CH
 
 - **Comment sparingly, and only to explain "why".** Do not add comments that restate what the code already says (`// increment i`), narrate the change itself (`// newly added`, `// changed to fix ...` — that belongs in the commit message or PR description), quote pull request or issue numbers from the upstream repository, or leave TODO/placeholder chatter. A comment earns its place only when it captures intent, a non-obvious constraint, or a subtlety the code cannot express on its own.
 - After writing code, run `task check`. It formats and tidies in place, so there is no need to run `gofmt` or `go vet` separately.
-- **Source files are written in English** — comments, identifiers and strings alike. `task english-check` enforces this in CI. It flags any letter outside ASCII, whichever the writing system (Han, kana, Hangul, Cyrillic, and equally the diacritics that spell German or Vietnamese), plus combining accents and fullwidth punctuation (`：`, `（`), which is easy to leave behind in an otherwise English sentence. Symbols and emoji (`─ → ≥ ✅`) pass, since they are not letters. Prose spelled entirely in ASCII (`Loeschen der Datei`, or a romanised transcription) takes a dictionary to spot and stays a matter for review.
+- **Source files and Markdown documentation are written in English** — comments, identifiers, strings and prose alike. `task english-check` enforces this in CI. It flags any letter outside ASCII, whichever the writing system (Han, kana, Hangul, Cyrillic, and equally the diacritics that spell German or Vietnamese), plus combining accents and fullwidth punctuation (a fullwidth colon or parenthesis), which is easy to leave behind in an otherwise English sentence. Symbols and emoji (`─ → ≥ ✅`) pass, since they are not letters. Prose spelled entirely in ASCII (`Loeschen der Datei`, or a romanised transcription) takes a dictionary to spot and stays a matter for review.
 - **Two escape hatches for the exceptional case, narrower one preferred.** Append an `allow-non-english: <reason>` marker comment to the offending line — the right choice for a handful of lines, such as an encoding fixture, and it leaves the rest of the file protected. Only for a whole tree that is inherently non-English, add a prefix to `allowedPrefixes` in `scripts/verify-english-only.go`; that list records each exemption's reason.
 
 ## Provider Presets
@@ -58,4 +58,4 @@ do not edit it by hand:
 
 ## README
 
-- README.md is written in English.
+- README.md and all Markdown documentation are written in English.

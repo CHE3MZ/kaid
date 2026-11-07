@@ -1408,7 +1408,7 @@ def publish(result, diff_refs, poster, config, sleep=_sleep):
     summary_body += format_summary_comments(routed)
     summary_body += format_summary_comments(failed_comments)
     if not inline_items and stats["skipped"] > 0:
-        summary_body += "\n\n---\n\nℹ️ All inline comments overlapped with existing reviews; nothing new was posted."
+        summary_body += "\n\n---\n\nNote: All inline comments overlapped with existing reviews; nothing new was posted."
     summary_body += format_warnings(warnings)
     run_tag = config.get("run_tag", "0-0")
     full_body = wrap_summary_body(summary_body, run_tag)

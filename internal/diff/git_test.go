@@ -245,7 +245,7 @@ func initRepoWithNonASCIIChange(t *testing.T) (string, string) {
 	runGitTest(t, repo, "config", "commit.gpgsign", "false")
 	runGitTest(t, repo, "config", "core.quotepath", "true")
 
-	relPath := "src/café/(authenticated)/文件.ts" // allow-non-english: fixture exercises non-ASCII paths
+	relPath := "src/☃/(authenticated)/→.ts"
 	file := filepath.Join(repo, filepath.FromSlash(relPath))
 	if err := os.MkdirAll(filepath.Dir(file), 0o755); err != nil {
 		t.Fatalf("create non-ASCII path: %v", err)
@@ -317,7 +317,7 @@ func TestWorkspaceDiffPreservesNonASCIIUntrackedPath(t *testing.T) {
 	repo, trackedPath := initRepoWithNonASCIIChange(t)
 	runGitTest(t, repo, "checkout", "--", trackedPath)
 
-	untrackedPath := "src/café/(authenticated)/新增.ts" // allow-non-english: fixture exercises non-ASCII paths
+	untrackedPath := "src/☃/(authenticated)/✓.ts"
 	if err := os.WriteFile(filepath.Join(repo, filepath.FromSlash(untrackedPath)), []byte("untracked\n"), 0o644); err != nil {
 		t.Fatalf("write non-ASCII untracked file: %v", err)
 	}

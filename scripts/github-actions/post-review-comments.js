@@ -522,7 +522,7 @@ async function runPostReviewComments({
     summaryBody += formatCommentMarkdown(comment, error);
   }
   if (toSend.length === 0 && stats.skipped > 0) {
-    summaryBody += "\n\n---\n\nℹ️ All inline comments overlapped with existing reviews; nothing new was posted.";
+    summaryBody += "\n\n---\n\nNote: All inline comments overlapped with existing reviews; nothing new was posted.";
   }
   summaryBody += formatWarnings(warnings);
   summaryBody += rangeNote;

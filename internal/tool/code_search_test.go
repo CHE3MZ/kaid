@@ -761,7 +761,7 @@ func TestGitGrep_Timeout(t *testing.T) {
 
 // nonASCIIPath is committed by setupNonASCIIPathRepo. Git prints it as a
 // quoted octal escape unless core.quotepath is disabled.
-const nonASCIIPath = "src/café/文件.go" // allow-non-english: fixture exercises non-ASCII paths
+const nonASCIIPath = "src/☃/→.go"
 
 // setupNonASCIIPathRepo commits nonASCIIPath with core.quotepath forced on, so
 // tests do not depend on the user's global Git config, and returns the
