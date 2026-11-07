@@ -15,13 +15,13 @@ import (
 	"github.com/CHE3MZ/kaid/internal/llm"
 )
 
-const presetDeclaration = "export const PROVIDER_PRESETS: OcrProviderPreset[] ="
+const presetDeclaration = "export const PROVIDER_PRESETS: KaidProviderPreset[] ="
 
 const typeScriptWhitespace = `[\s\v\x{2028}\x{2029}\x{feff}\p{Zs}]`
 
 var presetPreamble = preambleSyntax{
 	declaration: regexp.MustCompile(`^import` + typeScriptWhitespace + `+type` + typeScriptWhitespace + `*\{` +
-		typeScriptWhitespace + `*OcrProviderPreset` + typeScriptWhitespace + `*\}` +
+		typeScriptWhitespace + `*KaidProviderPreset` + typeScriptWhitespace + `*\}` +
 		typeScriptWhitespace + `+from` + typeScriptWhitespace + `*(?:'\./providers'|"\./providers")`),
 	whitespace:      regexp.MustCompile(`^` + typeScriptWhitespace + `+`),
 	lineTerminators: "\r\n\u2028\u2029",
@@ -85,7 +85,7 @@ func decodePresets(data []byte) ([]preset, error) {
 		return nil, fmt.Errorf("missing PROVIDER_PRESETS declaration")
 	}
 	if !presetPreamble.matches(preamble) {
-		return nil, fmt.Errorf("expected an OcrProviderPreset import from './providers' before PROVIDER_PRESETS")
+		return nil, fmt.Errorf("expected a KaidProviderPreset import from './providers' before PROVIDER_PRESETS")
 	}
 	payload = bytes.TrimSuffix(bytes.TrimSpace(payload), []byte(";"))
 	decoder := json.NewDecoder(bytes.NewReader(payload))

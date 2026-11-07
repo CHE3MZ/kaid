@@ -2,8 +2,8 @@
 // Copyright 2026 alibaba/open-code-review Contributors
 
 // Package viewer provides a read-only WebUI for browsing session records
-// produced by open-code-review runs. It scans JSONL files under
-// $HOME/.opencodereview/sessions/, parses them, and exposes structured data.
+// produced by kaid runs. It scans JSONL files under
+// $HOME/.kaid/sessions/, parses them, and exposes structured data.
 package viewer
 
 import (
@@ -31,7 +31,7 @@ func SessionsRoot() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("resolve home dir: %w", err)
 	}
-	return filepath.Join(home, ".opencodereview", "sessions"), nil
+	return filepath.Join(home, ".kaid", "sessions"), nil
 }
 
 // RepoInfo represents a discovered repository from the sessions directory.

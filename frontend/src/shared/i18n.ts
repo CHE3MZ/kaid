@@ -48,8 +48,8 @@ const messages: Record<string, string> = {
     'view.config.close': 'Close',
     'view.config.step1': 'Environment Setup',
     'view.config.step2': 'Provider Config',
-    'view.config.checking': 'ocr checking…',
-    'view.config.notInstalled': 'ocr not installed',
+    'view.config.checking': 'kaid checking…',
+    'view.config.notInstalled': 'kaid not installed',
     'view.config.official': 'Official Provider',
     'view.config.custom': 'Custom Provider',
     'view.config.currentUse': 'Currently using',
@@ -80,14 +80,14 @@ const messages: Record<string, string> = {
     'view.config.authHeaderDefault': 'Default (Authorization)',
     'view.config.backToList': '← Back to list',
     'view.config.optional': '(optional)',
-    'view.config.ocrVersionTooltip': 'Open Code Review CLI Version',
+    'view.config.kaidVersionTooltip': 'kaid CLI Version',
 
     // ── EnvSetupGuide ──
-    'view.env.installing': 'Installing ocr CLI…',
+    'view.env.installing': 'Installing kaid CLI…',
     'view.env.checking': 'Checking, please wait…',
     'view.env.ready': 'Environment is ready. Continue to Provider Config.',
     'view.env.stepLead': 'Complete each step in order. Move to the next after each passes.',
-    'view.env.ocrHint': 'Install open-code-review globally in your terminal, or click "One-Click Install" below.',
+    'view.env.kaidHint': 'Install kaid globally in your terminal, or click "One-Click Install" below.',
     'view.env.oneClickInstall': 'One-Click Install',
     'view.env.redetect': 'Re-detect',
     'view.env.checkingStatus': 'Checking',
@@ -131,7 +131,7 @@ const messages: Record<string, string> = {
     'cmp.select.placeholder': 'Select',
 
     // ── Extension ──
-    'ext.commentController': 'Open Code Review',
+    'ext.commentController': 'kaid',
     'ext.configPanelTitle': 'Model Configuration',
     'ext.config.legacyDisplayName': 'Legacy LLM Endpoint',
     'ext.comment.threadLabel': 'Code Review',

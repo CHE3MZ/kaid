@@ -3,7 +3,7 @@
 
 import {
   CliResult, CliRunOptions, CommentSyncState, EnvCheckResult, FileChange, GitState, LogLine,
-  OcrConfig, ReviewMode, ReviewState,
+  KaidConfig, ReviewMode, ReviewState,
 } from './types';
 import { ConfigPanelFocus } from './configUtils';
 
@@ -31,19 +31,19 @@ export type WebviewToHost =
   | { type: 'commentAction'; index: number; action: 'apply' | 'discard' | 'falsePositive' };
 
 export type HostToWebview =
-  | { type: 'init'; config: OcrConfig | null; gitState: GitState }
+  | { type: 'init'; config: KaidConfig | null; gitState: GitState }
   | { type: 'gitState'; gitState: GitState }
   | { type: 'modeFiles'; mode: ReviewMode; files: FileChange[] }
   | { type: 'logLine'; line: LogLine }
   | { type: 'stateChange'; state: ReviewState; error?: string }
   | { type: 'reviewDone'; result: CliResult }
-  | { type: 'config'; config: OcrConfig | null }
+  | { type: 'config'; config: KaidConfig | null }
   | { type: 'commentSync'; comments: CommentSyncState[] };
 
 export type ConfigPanelHostToWebview =
-  | { type: 'configPanelInit'; config: OcrConfig | null; focus?: ConfigPanelFocus | null; env?: EnvCheckResult | null; skipEnvCheck?: boolean }
+  | { type: 'configPanelInit'; config: KaidConfig | null; focus?: ConfigPanelFocus | null; env?: EnvCheckResult | null; skipEnvCheck?: boolean }
   | { type: 'configPanelFocus'; focus?: ConfigPanelFocus | null }
-  | { type: 'config'; config: OcrConfig | null }
+  | { type: 'config'; config: KaidConfig | null }
   | { type: 'connectionResult'; ok: boolean; message?: string }
   | { type: 'cliStatus'; installed: boolean }
   | { type: 'environmentResult'; env: EnvCheckResult }

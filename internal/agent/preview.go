@@ -47,7 +47,7 @@ const (
 //
 // It builds none of the review runtime — no session, manifest, or runner — so
 // previewing cannot open session persistence. Going through New instead would
-// auto-create a session and leave an unfinalized JSONL file under the OCR home.
+// auto-create a session and leave an unfinalized JSONL file under the kaid home.
 func Preview(ctx context.Context, args Args) (*DiffPreview, error) {
 	return (&Agent{args: args}).preview(ctx)
 }

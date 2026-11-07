@@ -19,8 +19,8 @@
         return cell ? cell.textContent.trim().toLowerCase().includes(query) : false;
     };
 
-    const pagerApi = ocrPager({ table, pager, numbers, filter: matches });
-    ocrArrowScroll(document.querySelector(".repos-page .table-scroll"));
+    const pagerApi = kaidPager({ table, pager, numbers, filter: matches });
+    kaidArrowScroll(document.querySelector(".repos-page .table-scroll"));
 
     input.addEventListener("input", () => {
         query = input.value.trim().toLowerCase();

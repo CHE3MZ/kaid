@@ -183,7 +183,7 @@ func TestIsPathExcluded_AllowListGitignore(t *testing.T) {
 		// would readmit everything below the root.
 		{"build artifact at root", "coverage.out", true},
 		{"build artifact nested", "internal/diff/coverage.out", true},
-		{"binary at root", "ocr", true},
+		{"binary at root", "kaid", true},
 		{"unrelated yaml nested", "internal/testdata/fixture.yaml", true},
 	}
 	for _, tt := range tests {

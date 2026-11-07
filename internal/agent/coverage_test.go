@@ -972,7 +972,7 @@ func TestClassifyItemError(t *testing.T) {
 			if reason == "" {
 				t.Error("reason is empty; a static safe reason is required")
 			}
-			if errors.Is(tc.err, llm.ErrRequestTimeout) && !strings.Contains(reason, "OCR_LLM_TIMEOUT") {
+			if errors.Is(tc.err, llm.ErrRequestTimeout) && !strings.Contains(reason, "KAID_LLM_TIMEOUT") {
 				t.Errorf("request timeout reason = %q", reason)
 			}
 			if errors.Is(tc.err, context.DeadlineExceeded) && !errors.Is(tc.err, llm.ErrRequestTimeout) && !strings.Contains(reason, "--timeout") {

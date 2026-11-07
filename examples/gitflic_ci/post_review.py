@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 alibaba/open-code-review Contributors
 
-"""Post an OpenCodeReview result onto a GitFlic merge request.
+"""Post a kaid result onto a GitFlic merge request.
 
 This is the CI-layer "glue" for GitFlic, mirroring examples/gitlab_ci: it keeps
-platform-specific publishing out of the `ocr` binary and lives entirely in the
-pipeline. It reads the JSON emitted by `ocr review --format json` and posts it
+platform-specific publishing out of the `kaid` binary and lives entirely in the
+pipeline. It reads the JSON emitted by `kaid review --format json` and posts it
 onto the merge request as discussions:
 
   - one inline discussion per comment that maps onto the diff,
@@ -17,7 +17,7 @@ onto the merge request as discussions:
 GitFlic's Discussions API needs an *old-side* line even for a comment on the new
 side of the diff: an inline (code) discussion requires all four of
 newLine/oldLine/newPath/oldPath, otherwise GitFlic silently records a plain
-comment. `ocr review` only reports new-side positions, so this script computes
+comment. `kaid review` only reports new-side positions, so this script computes
 the old-side line itself by parsing the same merge-base diff the review ran on
 (`git diff merge-base(from, to)..to`).
 
@@ -39,7 +39,7 @@ from urllib.parse import quote
 # self-hosted instances (e.g. http://gitflic.example/rest-api).
 DEFAULT_API_URL = "https://api.gitflic.ru"
 
-# Context lines around each hunk; must match what `ocr review` diffs with so the
+# Context lines around each hunk; must match what `kaid review` diffs with so the
 # new-side line numbers in the comments align with the hunks parsed here.
 DIFF_CONTEXT_LINES = 3
 
@@ -259,7 +259,7 @@ def publish(result, diffs_by_path, post):
     comments = result.get("comments") or []
     if not comments:
         message = result.get("message") or "No comments generated. Looks good to me."
-        post({"message": "✅ **OpenCodeReview**: " + message})
+        post({"message": "✅ **kaid**: " + message})
         return {"inline": 0, "fallback": 0}
 
     inline = 0
@@ -306,12 +306,12 @@ def publish(result, diffs_by_path, post):
         inline += 1
 
     if failed:
-        note = "🔍 **OpenCodeReview** found issues that could not be posted inline:\n\n---\n\n"
+        note = "🔍 **kaid** found issues that could not be posted inline:\n\n---\n\n"
         for c in failed:
             note += format_comment_fallback(c) + "\n\n---\n\n"
         post({"message": note})
 
-    summary = "🔍 **OpenCodeReview** found **%d** issue(s) in this MR." % len(comments)
+    summary = "🔍 **kaid** found **%d** issue(s) in this MR." % len(comments)
     summary += "\n- ✅ %d posted as inline comment(s)" % inline
     summary += "\n- 📝 %d posted as summary (could not be placed inline)" % len(failed)
     warnings = result.get("warnings") or []
@@ -385,7 +385,7 @@ def _git(repo, *args):
 
 
 def load_diffs_by_path(repo, from_ref, to_ref):
-    """Build {new_path: FileDiff} for the merge-base diff `ocr review` ran on."""
+    """Build {new_path: FileDiff} for the merge-base diff `kaid review` ran on."""
     base = _git(repo, "merge-base", from_ref, to_ref).strip()
     out = _git(
         repo, "diff", "--no-ext-diff", "--no-textconv",
@@ -396,7 +396,7 @@ def load_diffs_by_path(repo, from_ref, to_ref):
 
 
 def load_review_result(path):
-    """Read the JSON produced by `ocr review --format json` (path '-' = stdin)."""
+    """Read the JSON produced by `kaid review --format json` (path '-' = stdin)."""
     if path == "-":
         data = sys.stdin.read()
     else:
@@ -415,7 +415,7 @@ def parse_args(argv):
     default_from = "origin/" + target if target else ""
 
     p = argparse.ArgumentParser(
-        description="Post `ocr review --format json` output onto a GitFlic merge request."
+        description="Post `kaid review --format json` output onto a GitFlic merge request."
     )
     p.add_argument("file", nargs="?", default="-",
                    help="review result JSON ('-' = stdin, default)")

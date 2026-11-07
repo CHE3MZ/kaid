@@ -150,7 +150,7 @@ func TestDispatchSubtasks_TokenBudgetStopsDispatch(t *testing.T) {
 	manifest := a.RunManifest()
 	// A budget stop that still covered files is a controlled coverage truncation:
 	// coverage alone derives the terminal state, so it reads partial (not failed)
-	// and `ocr review` exits 0.
+	// and `kaid review` exits 0.
 	if manifest == nil || manifest.TerminalState != session.StatePartial {
 		t.Fatalf("manifest terminal = %v, want partial", manifest)
 	}
@@ -176,7 +176,7 @@ func TestDispatchSubtasks_TokenBudgetStopsDispatch(t *testing.T) {
 // TestDispatchSubtasks_TokenBudgetBeforeFirstFileIsFailed pins the other side of
 // the exit-code boundary: when the budget is too small to admit even the first
 // file, nothing is covered, every selected item is swept to failed(budget), and
-// the manifest reads failed so `ocr review` exits non-zero. One covered file is
+// the manifest reads failed so `kaid review` exits non-zero. One covered file is
 // the entire difference between this and the partial/exit-0 case above — the
 // boundary is deliberate, so it gets its own guard.
 func TestDispatchSubtasks_TokenBudgetBeforeFirstFileIsFailed(t *testing.T) {

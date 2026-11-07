@@ -394,7 +394,7 @@ func TestPeekSessionUsesV1ManifestCoverage(t *testing.T) {
 	path := filepath.Join(dir, "manifest.jsonl")
 	writeJSONL(t, path,
 		`{"type":"session_start","timestamp":"2025-01-01T00:00:00Z","cwd":"/x","model":"m"}`,
-		`{"type":"session_end","duration_seconds":2,"files_reviewed":["legacy.go"],"run_manifest":{"schema_version":"ocr.run-manifest/v1","run_id":"run-1","operation":"review","terminal_state":"partial","repository":{},"input":{"mode":"workspace"},"execution":{},"coverage":{"selected":[{"item_id":"a","path":"a.go"},{"item_id":"b","path":"b.go"}],"completed":[{"item_id":"a","path":"a.go"}],"reused":[],"failed":[{"item_id":"b","path":"b.go","classification":"provider"}],"waived":[]},"elapsed_ms":2000}}`)
+		`{"type":"session_end","duration_seconds":2,"files_reviewed":["legacy.go"],"run_manifest":{"schema_version":"kaid.run-manifest/v1","run_id":"run-1","operation":"review","terminal_state":"partial","repository":{},"input":{"mode":"workspace"},"execution":{},"coverage":{"selected":[{"item_id":"a","path":"a.go"},{"item_id":"b","path":"b.go"}],"completed":[{"item_id":"a","path":"a.go"}],"reused":[],"failed":[{"item_id":"b","path":"b.go","classification":"provider"}],"waived":[]},"elapsed_ms":2000}}`)
 
 	s, err := peekSession(path)
 	if err != nil {
@@ -413,7 +413,7 @@ func TestPeekSessionUnknownManifestIsLegacy(t *testing.T) {
 	path := filepath.Join(dir, "future.jsonl")
 	writeJSONL(t, path,
 		`{"type":"session_start","timestamp":"2025-01-01T00:00:00Z"}`,
-		`{"type":"session_end","files_reviewed":["a.go"],"run_manifest":{"schema_version":"ocr.run-manifest/v2","terminal_state":"complete"}}`)
+		`{"type":"session_end","files_reviewed":["a.go"],"run_manifest":{"schema_version":"kaid.run-manifest/v2","terminal_state":"complete"}}`)
 	s, err := peekSession(path)
 	if err != nil {
 		t.Fatal(err)

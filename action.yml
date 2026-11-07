@@ -1,25 +1,25 @@
-name: OpenCodeReview PR Review
+name: kaid PR Review
 description: >-
   AI-powered GitHub PR review with inline comments, sticky summary, and
   incremental non-destructive posting.
-author: alibaba
+author: CHE3MZ
 branding:
   icon: eye
   color: green
 
 inputs:
   llm_url:
-    description: LLM API endpoint URL (mapped to env OCR_LLM_URL).
+    description: LLM API endpoint URL (mapped to env KAID_LLM_URL).
     required: true
   llm_auth_token:
-    description: LLM auth token (mapped to env OCR_LLM_TOKEN).
+    description: LLM auth token (mapped to env KAID_LLM_TOKEN).
     required: true
   llm_model:
-    description: Model name (mapped to env OCR_LLM_MODEL).
+    description: Model name (mapped to env KAID_LLM_MODEL).
     required: true
   llm_use_anthropic:
     description: >-
-      Selects the LLM protocol (mapped to env OCR_USE_ANTHROPIC). An explicitly supplied empty
+      Selects the LLM protocol (mapped to env KAID_USE_ANTHROPIC). An explicitly supplied empty
       string, true, 1, or yes selects Anthropic
       case-insensitively; every other value selects the OpenAI-compatible
       protocol, preserving the CLI environment contract. Ignored when
@@ -29,21 +29,21 @@ inputs:
     description: >-
       Explicit LLM protocol written to `llm.protocol`: anthropic, openai or
       openai-responses (case-insensitive). When set it wins over
-      llm_use_anthropic, which is mirrored from it the way `ocr config set
+      llm_use_anthropic, which is mirrored from it the way `kaid config set
       llm.protocol` mirrors the boolean. Leave empty to keep deriving the
-      protocol from llm_use_anthropic; an OCR_LLM_PROTOCOL variable in the
+      protocol from llm_use_anthropic; a KAID_LLM_PROTOCOL variable in the
       job or step environment is honoured the same way when this is empty.
     required: false
   llm_auth_header:
-    description: Custom auth header name (mapped to env OCR_LLM_AUTH_HEADER).
+    description: Custom auth header name (mapped to env KAID_LLM_AUTH_HEADER).
     required: false
   llm_extra_headers:
-    description: Extra headers "K=V,K=V" (mapped to env OCR_LLM_EXTRA_HEADERS).
+    description: Extra headers "K=V,K=V" (mapped to env KAID_LLM_EXTRA_HEADERS).
     required: false
   llm_extra_body:
     description: >-
       extra_body JSON for LLM requests. No env var exists for this, so it is
-      written via `ocr config set llm.extra_body`. The default disables
+      written via `kaid config set llm.extra_body`. The default disables
       thinking mode for compatibility with various LLM providers; override it
       with provider-specific JSON when a model needs different behavior. An
       explicit reasoning_effort key here wins over the llm_reasoning_effort
@@ -65,12 +65,12 @@ inputs:
     default: ''
   language:
     description: >-
-      Review output language, written via `ocr config set language`
+      Review output language, written via `kaid config set language`
       (e.g. English, Chinese). No env var exists for this.
     required: false
     default: 'English'
   llm_timeout:
-    description: LLM request timeout in seconds (mapped to env OCR_LLM_TIMEOUT).
+    description: LLM request timeout in seconds (mapped to env KAID_LLM_TIMEOUT).
     required: false
     default: '300'
   review_task_timeout:
@@ -81,29 +81,29 @@ inputs:
     description: GitHub token used to post review comments.
     required: false
     default: ${{ github.token }}
-  ocr_version:
+  kaid_version:
     description: Release tag for kaid, or `latest` (v1.9.6 or newer required).
     required: false
     default: latest
   review_concurrency:
-    description: Value passed to `ocr review --concurrency`.
+    description: Value passed to `kaid review --concurrency`.
     required: false
   background:
-    description: Value passed to `ocr review --background`.
+    description: Value passed to `kaid review --background`.
     required: false
   rule:
-    description: Path to a custom rules JSON file passed to `ocr review --rule`.
+    description: Path to a custom rules JSON file passed to `kaid review --rule`.
     required: false
   effort:
     description: >-
-      Review effort preset passed to `ocr review --effort`. One of: low,
+      Review effort preset passed to `kaid review --effort`. One of: low,
       medium, high (case-insensitive). Empty keeps the CLI default (the
-      configured value, or medium). Requires OpenCodeReview v1.10.0 or newer.
+      configured value, or medium). Requires kaid v1.10.0 or newer.
     required: false
     default: ''
   max_tokens_budget:
     description: >-
-      Total token cap passed to `ocr review --max-tokens-budget`. Base-10
+      Total token cap passed to `kaid review --max-tokens-budget`. Base-10
       integer; empty or 0 means unlimited. Checked before every LLM round:
       a group already over the cap gets one final round to submit findings,
       no further groups are dispatched, over-budget and skipped files are
@@ -113,11 +113,11 @@ inputs:
     default: ''
   stream_progress:
     description: >-
-      Stream live [ocr] review progress to the workflow log (human audience
+      Stream live [kaid] review progress to the workflow log (human audience
       on stderr) instead of staying silent until the run finishes. One of:
       true, false (case-insensitive); empty falls back to false. false
       (default) keeps the silent agent-audience run with stderr captured to
-      a log file. Requires OpenCodeReview v1.9.8 or newer when enabled.
+      a log file. Requires kaid v1.9.8 or newer when enabled.
     required: false
     default: 'false'
   upload_artifacts:
@@ -239,7 +239,7 @@ inputs:
     default: ''
 outputs:
   comments_total:
-    description: Total number of review comments generated by OCR.
+    description: Total number of review comments generated by kaid.
     value: ${{ steps.post.outputs.comments_total }}
   comments_inline:
     description: Number of inline comments successfully posted.
@@ -392,7 +392,7 @@ runs:
     - name: Checkout base
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        # Checkout the trusted base, not the PR head. OCR reviews the
+        # Checkout the trusted base, not the PR head. kaid reviews the
         # base-to-head diff from git objects; the head commit's blobs are
         # fetched separately so they are resolvable without materializing
         # untrusted PR files into the working tree.
@@ -446,7 +446,7 @@ runs:
         echo "REVIEW_TASK_TIMEOUT=$REVIEW_TASK_TIMEOUT_NUMBER" >> "$GITHUB_ENV"
 
         # Empty keeps the CLI default; otherwise one of the named presets.
-        # Normalized to lowercase so the Run step appends a value `ocr review
+        # Normalized to lowercase so the Run step appends a value `kaid review
         # --effort` accepts verbatim.
         NORMALIZED_EFFORT="$(printf '%s' "$EFFORT_INPUT" | tr '[:upper:]' '[:lower:]')"
         case "$NORMALIZED_EFFORT" in
@@ -477,7 +477,7 @@ runs:
 
         # Empty leaves the request body untouched; otherwise the union of the
         # OpenAI and GLM vocabularies, normalized to lowercase for the
-        # extra_body injection in the Configure OCR step (which uses node,
+        # extra_body injection in the Configure kaid step (which uses node,
         # guaranteed on PATH by the Actions runtime).
         NORMALIZED_LLM_REASONING_EFFORT="$(printf '%s' "$LLM_REASONING_EFFORT_INPUT" | tr '[:upper:]' '[:lower:]')"
         case "$NORMALIZED_LLM_REASONING_EFFORT" in
@@ -518,20 +518,20 @@ runs:
         esac
         echo "RESOLVE_OUTDATED=$NORMALIZED_RESOLVE_OUTDATED" >> "$GITHUB_ENV"
 
-    - name: Install OpenCodeReview
+    - name: Install kaid
       shell: bash
       env:
-        OCR_VERSION: ${{ inputs.ocr_version }}
-        OCR_REPOSITORY: ${{ github.action_repository }}
+        KAID_VERSION: ${{ inputs.kaid_version }}
+        KAID_REPOSITORY: ${{ github.action_repository }}
         # Keep the runtime fixed for the duration of the action instead of
         # letting it replace itself mid-run.
-        OCR_NO_UPDATE: "1"
+        KAID_NO_UPDATE: "1"
       run: |
         set -euo pipefail
 
         case "$(uname -s)" in
-          Linux) OCR_OS=linux ;;
-          Darwin) OCR_OS=darwin ;;
+          Linux) KAID_OS=linux ;;
+          Darwin) KAID_OS=darwin ;;
           *)
             echo "::error::Unsupported operating system: $(uname -s)"
             exit 1
@@ -539,49 +539,49 @@ runs:
         esac
 
         case "$(uname -m)" in
-          x86_64|amd64) OCR_ARCH=amd64 ;;
-          arm64|aarch64) OCR_ARCH=arm64 ;;
+          x86_64|amd64) KAID_ARCH=amd64 ;;
+          arm64|aarch64) KAID_ARCH=arm64 ;;
           *)
             echo "::error::Unsupported architecture: $(uname -m)"
             exit 1
             ;;
         esac
 
-        if [ -z "${OCR_VERSION}" ] || [ "${OCR_VERSION}" = "latest" ]; then
-          OCR_BASE_URL="https://github.com/${OCR_REPOSITORY}/releases/latest/download"
+        if [ -z "${KAID_VERSION}" ] || [ "${KAID_VERSION}" = "latest" ]; then
+          KAID_BASE_URL="https://github.com/${KAID_REPOSITORY}/releases/latest/download"
         else
-          case "${OCR_VERSION}" in
-            v*) OCR_TAG="${OCR_VERSION}" ;;
-            *) OCR_TAG="v${OCR_VERSION}" ;;
+          case "${KAID_VERSION}" in
+            v*) KAID_TAG="${KAID_VERSION}" ;;
+            *) KAID_TAG="v${KAID_VERSION}" ;;
           esac
-          OCR_BASE_URL="https://github.com/${OCR_REPOSITORY}/releases/download/${OCR_TAG}"
+          KAID_BASE_URL="https://github.com/${KAID_REPOSITORY}/releases/download/${KAID_TAG}"
         fi
 
-        OCR_INSTALL_DIR="${RUNNER_TEMP}/ocr-bin"
-        mkdir -p "${OCR_INSTALL_DIR}"
-        curl -fsSL "${OCR_BASE_URL}/opencodereview-${OCR_OS}-${OCR_ARCH}" -o "${OCR_INSTALL_DIR}/ocr"
-        chmod +x "${OCR_INSTALL_DIR}/ocr"
-        echo "${OCR_INSTALL_DIR}" >> "${GITHUB_PATH}"
-        export PATH="${OCR_INSTALL_DIR}:${PATH}"
+        KAID_INSTALL_DIR="${RUNNER_TEMP}/kaid-bin"
+        mkdir -p "${KAID_INSTALL_DIR}"
+        curl -fsSL "${KAID_BASE_URL}/kaid-${KAID_OS}-${KAID_ARCH}" -o "${KAID_INSTALL_DIR}/kaid"
+        chmod +x "${KAID_INSTALL_DIR}/kaid"
+        echo "${KAID_INSTALL_DIR}" >> "${GITHUB_PATH}"
+        export PATH="${KAID_INSTALL_DIR}:${PATH}"
 
-        echo "OpenCodeReview installed:"
-        OCR_VERSION_OUTPUT="$(ocr version 2>/dev/null)" || {
-          echo "::error::Unable to read the installed OpenCodeReview version"
+        echo "kaid installed:"
+        KAID_VERSION_OUTPUT="$(kaid version 2>/dev/null)" || {
+          echo "::error::Unable to read the installed kaid version"
           exit 1
         }
-        printf '%s\n' "$OCR_VERSION_OUTPUT"
-        OCR_VERSION_LINE="${OCR_VERSION_OUTPUT%%$'\n'*}"
-        if [[ ! "$OCR_VERSION_LINE" =~ ^open-code-review[[:space:]]+v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?([[:space:]]|$) ]]; then
-          echo "::error::Unable to parse the installed OpenCodeReview version; a stable release v1.9.6 or newer is required (prerelease versions are not supported)"
+        printf '%s\n' "$KAID_VERSION_OUTPUT"
+        KAID_VERSION_LINE="${KAID_VERSION_OUTPUT%%$'\n'*}"
+        if [[ ! "$KAID_VERSION_LINE" =~ ^kaid[[:space:]]+v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?([[:space:]]|$) ]]; then
+          echo "::error::Unable to parse the installed kaid version; a stable release v1.9.6 or newer is required (prerelease versions are not supported)"
           exit 1
         fi
-        OCR_VERSION_MAJOR=$((10#${BASH_REMATCH[1]}))
-        OCR_VERSION_MINOR=$((10#${BASH_REMATCH[2]}))
-        OCR_VERSION_PATCH=$((10#${BASH_REMATCH[3]}))
-        if (( OCR_VERSION_MAJOR < 1 )) ||
-          (( OCR_VERSION_MAJOR == 1 && OCR_VERSION_MINOR < 9 )) ||
-          (( OCR_VERSION_MAJOR == 1 && OCR_VERSION_MINOR == 9 && OCR_VERSION_PATCH < 6 )); then
-          echo "::error::Installed OpenCodeReview ${OCR_VERSION_LINE} is unsupported; v1.9.6 or newer is required"
+        KAID_VERSION_MAJOR=$((10#${BASH_REMATCH[1]}))
+        KAID_VERSION_MINOR=$((10#${BASH_REMATCH[2]}))
+        KAID_VERSION_PATCH=$((10#${BASH_REMATCH[3]}))
+        if (( KAID_VERSION_MAJOR < 1 )) ||
+          (( KAID_VERSION_MAJOR == 1 && KAID_VERSION_MINOR < 9 )) ||
+          (( KAID_VERSION_MAJOR == 1 && KAID_VERSION_MINOR == 9 && KAID_VERSION_PATCH < 6 )); then
+          echo "::error::Installed kaid ${KAID_VERSION_LINE} is unsupported; v1.9.6 or newer is required"
           exit 1
         fi
 
@@ -590,8 +590,8 @@ runs:
         # max_tokens_budget predates the v1.9.6 floor and llm_reasoning_effort
         # rides extra_body, so neither needs a gate.
         if [ -n "${EFFORT:-}" ] &&
-          (( OCR_VERSION_MAJOR < 1 || (OCR_VERSION_MAJOR == 1 && OCR_VERSION_MINOR < 10) )); then
-          echo "::error::The effort input requires OpenCodeReview v1.10.0 or newer"
+          (( KAID_VERSION_MAJOR < 1 || (KAID_VERSION_MAJOR == 1 && KAID_VERSION_MINOR < 10) )); then
+          echo "::error::The effort input requires kaid v1.10.0 or newer"
           exit 1
         fi
 
@@ -599,61 +599,61 @@ runs:
         # older releases stream_progress drops --audience agent and progress
         # lines interleave into the stdout JSON, corrupting the result file.
         if [ "${STREAM_PROGRESS:-false}" = "true" ] &&
-          (( OCR_VERSION_MAJOR < 1 || (OCR_VERSION_MAJOR == 1 && OCR_VERSION_MINOR < 9) ||
-             (OCR_VERSION_MAJOR == 1 && OCR_VERSION_MINOR == 9 && OCR_VERSION_PATCH < 8) )); then
-          echo "::error::The stream_progress input requires OpenCodeReview v1.9.8 or newer"
+          (( KAID_VERSION_MAJOR < 1 || (KAID_VERSION_MAJOR == 1 && KAID_VERSION_MINOR < 9) ||
+             (KAID_VERSION_MAJOR == 1 && KAID_VERSION_MINOR == 9 && KAID_VERSION_PATCH < 8) )); then
+          echo "::error::The stream_progress input requires kaid v1.9.8 or newer"
           exit 1
         fi
 
         # Resolved version (not the spec, which is usually "latest"). It feeds
-        # the checkpoint fingerprint so an OCR upgrade invalidates checkpoints
+        # the checkpoint fingerprint so a kaid upgrade invalidates checkpoints
         # taken by the previous version. The gate above already guarantees a
         # parseable line here; the resolve step still treats an empty version
         # as "fingerprint nothing" so a future gap can't silently narrow.
-        VERSION_ACTUAL="${OCR_VERSION_LINE//$'\r'/}"
-        echo "OCR_VERSION_ACTUAL=${VERSION_ACTUAL}" >> "$GITHUB_ENV"
+        VERSION_ACTUAL="${KAID_VERSION_LINE//$'\r'/}"
+        echo "KAID_VERSION_ACTUAL=${VERSION_ACTUAL}" >> "$GITHUB_ENV"
 
-    - name: Configure OCR
+    - name: Configure kaid
       env:
-        # Keep every ocr invocation on the install performed above; see the
-        # Install OpenCodeReview step for why self-update is disabled.
-        OCR_NO_UPDATE: "1"
-        OCR_LLM_URL: ${{ inputs.llm_url }}
-        OCR_LLM_MODEL: ${{ inputs.llm_model }}
-        OCR_USE_ANTHROPIC: ${{ inputs.llm_use_anthropic }}
-        OCR_LLM_PROTOCOL_INPUT: ${{ inputs.llm_protocol }}
-        OCR_LLM_AUTH_HEADER: ${{ inputs.llm_auth_header }}
-        OCR_EXTRA_BODY: ${{ inputs.llm_extra_body }}
-        OCR_LANGUAGE: ${{ inputs.language }}
+        # Keep every kaid invocation on the install performed above; see the
+        # Install kaid step for why self-update is disabled.
+        KAID_NO_UPDATE: "1"
+        KAID_LLM_URL: ${{ inputs.llm_url }}
+        KAID_LLM_MODEL: ${{ inputs.llm_model }}
+        KAID_USE_ANTHROPIC: ${{ inputs.llm_use_anthropic }}
+        KAID_LLM_PROTOCOL_INPUT: ${{ inputs.llm_protocol }}
+        KAID_LLM_AUTH_HEADER: ${{ inputs.llm_auth_header }}
+        KAID_EXTRA_BODY: ${{ inputs.llm_extra_body }}
+        KAID_LANGUAGE: ${{ inputs.language }}
       shell: bash
       run: |
         # An explicit protocol wins over llm_use_anthropic: the input first,
-        # then OCR_LLM_PROTOCOL inherited from the job or step environment.
+        # then KAID_LLM_PROTOCOL inherited from the job or step environment.
         # Read it before the derivation below reuses that variable name.
-        EXPLICIT_PROTOCOL="$(printf '%s' "${OCR_LLM_PROTOCOL_INPUT:-${OCR_LLM_PROTOCOL:-}}" | tr '[:upper:]' '[:lower:]')"
-        NORMALIZED_USE_ANTHROPIC="$(printf '%s' "$OCR_USE_ANTHROPIC" | tr '[:upper:]' '[:lower:]')"
+        EXPLICIT_PROTOCOL="$(printf '%s' "${KAID_LLM_PROTOCOL_INPUT:-${KAID_LLM_PROTOCOL:-}}" | tr '[:upper:]' '[:lower:]')"
+        NORMALIZED_USE_ANTHROPIC="$(printf '%s' "$KAID_USE_ANTHROPIC" | tr '[:upper:]' '[:lower:]')"
         case "$NORMALIZED_USE_ANTHROPIC" in
           ""|true|1|yes)
-            OCR_USE_ANTHROPIC="true"
-            OCR_LLM_PROTOCOL="anthropic"
+            KAID_USE_ANTHROPIC="true"
+            KAID_LLM_PROTOCOL="anthropic"
             ;;
           *)
-            OCR_USE_ANTHROPIC="false"
-            OCR_LLM_PROTOCOL="openai"
+            KAID_USE_ANTHROPIC="false"
+            KAID_LLM_PROTOCOL="openai"
             ;;
         esac
         # use_anthropic is mirrored from the explicit protocol the same way
-        # `ocr config set llm.protocol` mirrors it, so the two never disagree.
+        # `kaid config set llm.protocol` mirrors it, so the two never disagree.
         case "$EXPLICIT_PROTOCOL" in
           "")
             ;;
           anthropic)
-            OCR_USE_ANTHROPIC="true"
-            OCR_LLM_PROTOCOL="anthropic"
+            KAID_USE_ANTHROPIC="true"
+            KAID_LLM_PROTOCOL="anthropic"
             ;;
           openai|openai-responses)
-            OCR_USE_ANTHROPIC="false"
-            OCR_LLM_PROTOCOL="$EXPLICIT_PROTOCOL"
+            KAID_USE_ANTHROPIC="false"
+            KAID_LLM_PROTOCOL="$EXPLICIT_PROTOCOL"
             ;;
           *)
             echo "::error::llm_protocol must be anthropic, openai or openai-responses (got '${EXPLICIT_PROTOCOL}')"
@@ -663,25 +663,25 @@ runs:
         # Exported for the checkpoint fingerprint: the normalized explicit
         # protocol, empty when neither the input nor the inherited variable
         # was set, so checkpoints taken before the input existed stay valid.
-        echo "OCR_LLM_PROTOCOL_EXPLICIT=${EXPLICIT_PROTOCOL}" >> "$GITHUB_ENV"
+        echo "KAID_LLM_PROTOCOL_EXPLICIT=${EXPLICIT_PROTOCOL}" >> "$GITHUB_ENV"
         # reasoning_effort is OpenAI-compatible vocabulary; the Anthropic API
         # rejects unknown body fields, so fail fast instead of breaking every
         # request. Anthropic thinking control goes through an explicit
         # llm_extra_body key instead.
-        if [ -n "${LLM_REASONING_EFFORT:-}" ] && [ "$OCR_LLM_PROTOCOL" = "anthropic" ]; then
+        if [ -n "${LLM_REASONING_EFFORT:-}" ] && [ "$KAID_LLM_PROTOCOL" = "anthropic" ]; then
           echo "::error::llm_reasoning_effort is supported only with OpenAI-compatible protocols"
           exit 1
         fi
-        ocr config unset provider
-        ocr config set llm.auth_token ""
-        ocr config set llm.extra_headers ""
-        ocr config set llm.retry_codes ""
-        ocr config set llm.url "$OCR_LLM_URL"
-        ocr config set llm.model "$OCR_LLM_MODEL"
-        ocr config set llm.use_anthropic "$OCR_USE_ANTHROPIC"
-        ocr config set llm.protocol "$OCR_LLM_PROTOCOL"
-        ocr config set llm.auth_header "$OCR_LLM_AUTH_HEADER"
-        ocr config set llm.auth_token_cmd 'printf "%s" "$OCR_LLM_TOKEN"'
+        kaid config unset provider
+        kaid config set llm.auth_token ""
+        kaid config set llm.extra_headers ""
+        kaid config set llm.retry_codes ""
+        kaid config set llm.url "$KAID_LLM_URL"
+        kaid config set llm.model "$KAID_LLM_MODEL"
+        kaid config set llm.use_anthropic "$KAID_USE_ANTHROPIC"
+        kaid config set llm.protocol "$KAID_LLM_PROTOCOL"
+        kaid config set llm.auth_header "$KAID_LLM_AUTH_HEADER"
+        kaid config set llm.auth_token_cmd 'printf "%s" "$KAID_LLM_TOKEN"'
         # reasoning_effort rides the existing extra_body merge, so any
         # published CLI version supports it. An explicit reasoning_effort key
         # in llm_extra_body wins over the input — the hand-written body is the
@@ -690,7 +690,7 @@ runs:
         # runtime guarantees node on PATH even inside container jobs, while jq
         # is only preinstalled on GitHub-hosted images. An explicitly empty
         # extra_body parses as an empty object so the merge still lands.
-        EFFECTIVE_EXTRA_BODY="$OCR_EXTRA_BODY"
+        EFFECTIVE_EXTRA_BODY="$KAID_EXTRA_BODY"
         if [ -n "${LLM_REASONING_EFFORT:-}" ]; then
           EFFECTIVE_EXTRA_BODY="$(printf '%s' "$EFFECTIVE_EXTRA_BODY" | node -e '
             let raw = "";
@@ -712,18 +712,18 @@ runs:
               process.stdout.write(JSON.stringify(body));
             });')"
         fi
-        ocr config set llm.extra_body "$EFFECTIVE_EXTRA_BODY"
-        ocr config set language "$OCR_LANGUAGE"
+        kaid config set llm.extra_body "$EFFECTIVE_EXTRA_BODY"
+        kaid config set language "$KAID_LANGUAGE"
 
     - name: Resolve review range
       if: inputs.checkpoint_range == 'true'
       id: range
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       env:
-        OCR_FULL_REVIEW: ${{ inputs.full_review }}
-        OCR_STICKY_SUMMARY: ${{ inputs.sticky_summary }}
+        KAID_FULL_REVIEW: ${{ inputs.full_review }}
+        KAID_STICKY_SUMMARY: ${{ inputs.sticky_summary }}
         # "reopened" / "ready_for_review" ask for a fresh look at the whole PR.
-        OCR_EVENT_ACTION: ${{ github.event.action }}
+        KAID_EVENT_ACTION: ${{ github.event.action }}
         # Written to $GITHUB_ENV by the "Resolve PR refs" and "Compute
         # merge-base" steps above. Declared here rather than read straight off
         # the ambient job env so this step's inputs are all in one place and the
@@ -732,13 +732,13 @@ runs:
         # already fails closed on: an empty baseRef/mergeBase cannot equal the
         # non-empty ones validateCheckpointPayload requires, so it reports
         # base_changed and reviews the full range.
-        OCR_HEAD_SHA: ${{ env.HEAD_SHA }}
-        OCR_BASE_REF: ${{ env.BASE_REF }}
-        OCR_MERGE_BASE: ${{ env.MERGE_BASE }}
+        KAID_HEAD_SHA: ${{ env.HEAD_SHA }}
+        KAID_BASE_REF: ${{ env.BASE_REF }}
+        KAID_MERGE_BASE: ${{ env.MERGE_BASE }}
         # Same origin, but this one cannot arrive empty: "Resolve PR refs" fails
         # the job when no PR number resolves, so a checkpoint is always read for
         # a known PR rather than for issue //comments.
-        OCR_PR_NUMBER: ${{ env.PR_NUMBER }}
+        KAID_PR_NUMBER: ${{ env.PR_NUMBER }}
         # Everything that changes what a review would say. Any difference
         # invalidates the checkpoint, because findings from the previous run are
         # no longer comparable to what this configuration would produce.
@@ -750,26 +750,26 @@ runs:
         # value ever containing the separator — and a value that does contain it
         # shifts the field boundaries, so two different configurations can hash
         # alike and a checkpoint survives a change that should have killed it.
-        OCR_FP_LLM_URL: ${{ inputs.llm_url }}
-        OCR_FP_LLM_MODEL: ${{ inputs.llm_model }}
-        OCR_FP_LLM_USE_ANTHROPIC: ${{ inputs.llm_use_anthropic }}
-        OCR_FP_LLM_PROTOCOL: ${{ env.OCR_LLM_PROTOCOL_EXPLICIT }}
-        OCR_FP_LANGUAGE: ${{ inputs.language }}
-        OCR_FP_LLM_EXTRA_BODY: ${{ inputs.llm_extra_body }}
+        KAID_FP_LLM_URL: ${{ inputs.llm_url }}
+        KAID_FP_LLM_MODEL: ${{ inputs.llm_model }}
+        KAID_FP_LLM_USE_ANTHROPIC: ${{ inputs.llm_use_anthropic }}
+        KAID_FP_LLM_PROTOCOL: ${{ env.KAID_LLM_PROTOCOL_EXPLICIT }}
+        KAID_FP_LANGUAGE: ${{ inputs.language }}
+        KAID_FP_LLM_EXTRA_BODY: ${{ inputs.llm_extra_body }}
         # Normalized by Validate inputs, so spellings that mean the same thing
         # (HIGH vs high, '0' vs '' vs '00') hash identically and keep the
         # checkpoint.
-        OCR_FP_LLM_REASONING_EFFORT: ${{ env.LLM_REASONING_EFFORT }}
-        OCR_FP_LLM_AUTH_HEADER: ${{ inputs.llm_auth_header }}
+        KAID_FP_LLM_REASONING_EFFORT: ${{ env.LLM_REASONING_EFFORT }}
+        KAID_FP_LLM_AUTH_HEADER: ${{ inputs.llm_auth_header }}
         # A timeout change shifts which runs finish and which are cut short, so
         # it shifts the partial/complete distribution the checkpoint gates on.
-        OCR_FP_LLM_TIMEOUT: ${{ inputs.llm_timeout }}
+        KAID_FP_LLM_TIMEOUT: ${{ inputs.llm_timeout }}
         # Effort shifts how many rounds a review runs and the budget caps how
         # much it may spend; both change what a review would say, so both
         # invalidate the checkpoint. Both read the values Validate inputs
         # normalized into the environment, not the raw inputs.
-        OCR_FP_EFFORT: ${{ env.EFFORT }}
-        OCR_FP_MAX_TOKENS_BUDGET: ${{ env.MAX_TOKENS_BUDGET }}
+        KAID_FP_EFFORT: ${{ env.EFFORT }}
+        KAID_FP_MAX_TOKENS_BUDGET: ${{ env.MAX_TOKENS_BUDGET }}
         # Extra headers can point the same `llm_model` string at a different
         # backend model or a different provider entirely, so they change what a
         # review would say and must invalidate the checkpoint. Their VALUES can
@@ -777,19 +777,19 @@ runs:
         # others — the same treatment the rule file contents get. Only the
         # digest reaches the fingerprint, and the fingerprint is all the stored
         # checkpoint ever carries.
-        OCR_FP_LLM_EXTRA_HEADERS: ${{ inputs.llm_extra_headers }}
-        OCR_FP_RULE: ${{ inputs.rule }}
-        OCR_FP_ROUTE_SEVERITY_BELOW: ${{ inputs.route_severity_below }}
-        OCR_FP_ROUTE_CATEGORIES: ${{ inputs.route_categories }}
-        OCR_FP_BACKGROUND: ${{ inputs.background }}
-        OCR_RULE_PATH: ${{ inputs.rule }}
+        KAID_FP_LLM_EXTRA_HEADERS: ${{ inputs.llm_extra_headers }}
+        KAID_FP_RULE: ${{ inputs.rule }}
+        KAID_FP_ROUTE_SEVERITY_BELOW: ${{ inputs.route_severity_below }}
+        KAID_FP_ROUTE_CATEGORIES: ${{ inputs.route_categories }}
+        KAID_FP_BACKGROUND: ${{ inputs.background }}
+        KAID_RULE_PATH: ${{ inputs.rule }}
         # `github.token` is always the "github-actions" app, so when the caller
         # did not override the token we know exactly which app wrote our summary
         # and can pin the author check to it instead of trusting any bot. A
         # custom token may belong to any app and an installation token cannot
         # ask GitHub which app it is (GET /app needs a JWT), so that case keeps
         # the wider "any writer GitHub attributes to a bot" check.
-        OCR_CHECKPOINT_APP_SLUG: ${{ inputs.github_token == github.token && 'github-actions' || '' }}
+        KAID_CHECKPOINT_APP_SLUG: ${{ inputs.github_token == github.token && 'github-actions' || '' }}
       with:
         github-token: ${{ inputs.github_token }}
         script: |
@@ -836,19 +836,19 @@ runs:
             const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
             let ruleUnverified = false;
 
-            // `rule` names a JSON file that OCR reads off the workspace at review
+            // `rule` names a JSON file that kaid reads off the workspace at review
             // time (rules.NewResolver only touches disk when the path is non-empty;
             // the default rule set is embedded in the binary and so already moves
-            // with OCR_VERSION_ACTUAL). Fingerprinting the *path* alone would let an
+            // with KAID_VERSION_ACTUAL). Fingerprinting the *path* alone would let an
             // edit to that file narrow the next range under rules the earlier
             // commits were never reviewed against, so hash the contents too.
             let ruleDigest = 'none';
-            const rulePath = process.env.OCR_RULE_PATH || '';
+            const rulePath = process.env.KAID_RULE_PATH || '';
             if (rulePath) {
               try {
                 ruleDigest = sha256(fs.readFileSync(path.resolve(process.env.GITHUB_WORKSPACE || '.', rulePath)));
               } catch (e) {
-                // Cannot prove the rules are unchanged -> do not narrow. OCR itself
+                // Cannot prove the rules are unchanged -> do not narrow. kaid itself
                 // would normally have failed on an unreadable rule file before this
                 // step runs, so this is a belt-and-braces path.
                 ruleUnverified = true;
@@ -856,36 +856,36 @@ runs:
               }
             }
 
-            // .opencodereview/rule.json is loaded from the repo whether or not
-            // `rule` is set (rules.NewResolver reads <repoDir>/.opencodereview/rule.json
+            // .kaid/rule.json is loaded from the repo whether or not
+            // `rule` is set (rules.NewResolver reads <repoDir>/.kaid/rule.json
             // at high priority), so a commit that edits it changes what a review
             // says and must invalidate the checkpoint the same way.
             let localRuleDigest = 'none';
-            const localRulePath = path.resolve(process.env.GITHUB_WORKSPACE || '.', '.opencodereview/rule.json');
+            const localRulePath = path.resolve(process.env.GITHUB_WORKSPACE || '.', '.kaid/rule.json');
             if (fs.existsSync(localRulePath)) {
               try {
                 localRuleDigest = sha256(fs.readFileSync(localRulePath));
               } catch (e) {
                 ruleUnverified = true;
-                core.warning(`checkpoint: cannot read .opencodereview/rule.json (${e.message}); forcing a full review.`);
+                core.warning(`checkpoint: cannot read .kaid/rule.json (${e.message}); forcing a full review.`);
               }
             }
 
             // Header values can be credentials, so this axis goes in as a
             // digest. Same shape as ruleDigest: 'none' when unset, so "no extra
             // headers" and "extra headers that hash to nothing" stay distinct.
-            const extraHeaders = process.env.OCR_FP_LLM_EXTRA_HEADERS || '';
+            const extraHeaders = process.env.KAID_FP_LLM_EXTRA_HEADERS || '';
             const extraHeadersDigest = extraHeaders ? sha256(extraHeaders) : 'none';
 
-            // `ocr version` printed nothing, so this run cannot say which OCR
+            // `kaid version` printed nothing, so this run cannot say which kaid
             // version it is about to use and no stored fingerprint can be
             // trusted to mean "same version". An empty fingerprint is the
             // honest answer: it matches no stored one (-> config_changed, full
             // review) and the posting step refuses to record a checkpoint
             // without it. Don't narrow, don't advance.
-            const versionActual = process.env.OCR_VERSION_ACTUAL || '';
+            const versionActual = process.env.KAID_VERSION_ACTUAL || '';
             if (!versionActual) {
-              core.warning('checkpoint: `ocr version` printed no version; reviewing the full range and not recording a checkpoint.');
+              core.warning('checkpoint: `kaid version` printed no version; reviewing the full range and not recording a checkpoint.');
             }
 
             // JSON, not a joined string: it is length-delimited, so no input
@@ -893,27 +893,27 @@ runs:
             // configurations hash alike.
             const fingerprint = !versionActual ? '' : crypto.createHash('sha256')
               .update(JSON.stringify([
-                process.env.OCR_FP_LLM_URL,
-                process.env.OCR_FP_LLM_MODEL,
-                process.env.OCR_FP_LLM_USE_ANTHROPIC,
-                // The explicit protocol as Configure OCR resolved it — the input
-                // first, then OCR_LLM_PROTOCOL inherited from the job — so a
+                process.env.KAID_FP_LLM_URL,
+                process.env.KAID_FP_LLM_MODEL,
+                process.env.KAID_FP_LLM_USE_ANTHROPIC,
+                // The explicit protocol as Configure kaid resolved it — the input
+                // first, then KAID_LLM_PROTOCOL inherited from the job — so a
                 // protocol switched through the environment alone still fails
                 // closed to a full review. Appended only when set, so
                 // checkpoints taken before the input existed stay valid.
-                ...(process.env.OCR_FP_LLM_PROTOCOL ? [process.env.OCR_FP_LLM_PROTOCOL] : []),
-                process.env.OCR_FP_LANGUAGE,
-                process.env.OCR_FP_LLM_EXTRA_BODY,
-                process.env.OCR_FP_LLM_REASONING_EFFORT,
-                process.env.OCR_FP_LLM_AUTH_HEADER,
-                process.env.OCR_FP_LLM_TIMEOUT,
-                process.env.OCR_FP_EFFORT,
-                process.env.OCR_FP_MAX_TOKENS_BUDGET,
+                ...(process.env.KAID_FP_LLM_PROTOCOL ? [process.env.KAID_FP_LLM_PROTOCOL] : []),
+                process.env.KAID_FP_LANGUAGE,
+                process.env.KAID_FP_LLM_EXTRA_BODY,
+                process.env.KAID_FP_LLM_REASONING_EFFORT,
+                process.env.KAID_FP_LLM_AUTH_HEADER,
+                process.env.KAID_FP_LLM_TIMEOUT,
+                process.env.KAID_FP_EFFORT,
+                process.env.KAID_FP_MAX_TOKENS_BUDGET,
                 extraHeadersDigest,
-                process.env.OCR_FP_RULE,
-                process.env.OCR_FP_ROUTE_SEVERITY_BELOW,
-                process.env.OCR_FP_ROUTE_CATEGORIES,
-                process.env.OCR_FP_BACKGROUND,
+                process.env.KAID_FP_RULE,
+                process.env.KAID_FP_ROUTE_SEVERITY_BELOW,
+                process.env.KAID_FP_ROUTE_CATEGORIES,
+                process.env.KAID_FP_BACKGROUND,
                 versionActual,
                 ruleDigest,
                 localRuleDigest,
@@ -932,10 +932,10 @@ runs:
               github,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              prNumber: Number(process.env.OCR_PR_NUMBER),
+              prNumber: Number(process.env.KAID_PR_NUMBER),
               // Non-empty only when the token is the default one, whose app
               // identity is known; empty keeps the wider bot check.
-              appSlug: process.env.OCR_CHECKPOINT_APP_SLUG || '',
+              appSlug: process.env.KAID_CHECKPOINT_APP_SLUG || '',
               log: (m) => core.info(m),
             };
             // One read serves both purposes: the range decision, and the verbatim
@@ -947,12 +947,12 @@ runs:
             const range = await resolveCheckpointRange(Object.assign({}, common, {
               read: existing,
               enabled: true,
-              sticky: process.env.OCR_STICKY_SUMMARY === 'true',
-              fullReview: process.env.OCR_FULL_REVIEW === 'true',
-              eventAction: process.env.OCR_EVENT_ACTION || '',
-              headSha: process.env.OCR_HEAD_SHA || '',
-              baseRef: process.env.OCR_BASE_REF || '',
-              mergeBase: process.env.OCR_MERGE_BASE || '',
+              sticky: process.env.KAID_STICKY_SUMMARY === 'true',
+              fullReview: process.env.KAID_FULL_REVIEW === 'true',
+              eventAction: process.env.KAID_EVENT_ACTION || '',
+              headSha: process.env.KAID_HEAD_SHA || '',
+              baseRef: process.env.KAID_BASE_REF || '',
+              mergeBase: process.env.KAID_MERGE_BASE || '',
               fingerprint,
               isAncestor,
             }));
@@ -969,31 +969,31 @@ runs:
             emit(range, fingerprint, existing.raw || '');
           } catch (e) {
             core.warning(`checkpoint: could not resolve a range (${e.message}); reviewing the full range.`);
-            emit({ mode: 'full', reason: 'resolver_error', from: '', to: process.env.OCR_HEAD_SHA || '' }, '', '');
+            emit({ mode: 'full', reason: 'resolver_error', from: '', to: process.env.KAID_HEAD_SHA || '' }, '', '');
           }
 
-    - name: Run OpenCodeReview
+    - name: Run kaid
       env:
         # Keep the review on the install performed above; see the Install
-        # OpenCodeReview step for why self-update is disabled.
-        OCR_NO_UPDATE: "1"
-        OCR_LLM_URL: ${{ inputs.llm_url }}
-        OCR_LLM_TOKEN: ${{ inputs.llm_auth_token }}
-        OCR_LLM_MODEL: ${{ inputs.llm_model }}
-        OCR_USE_ANTHROPIC: ${{ inputs.llm_use_anthropic }}
-        OCR_LLM_AUTH_HEADER: ${{ inputs.llm_auth_header }}
-        OCR_LLM_EXTRA_HEADERS: ${{ inputs.llm_extra_headers }}
-        OCR_LLM_TIMEOUT: ${{ inputs.llm_timeout }}
-        OCR_REVIEW_CONCURRENCY: ${{ inputs.review_concurrency }}
-        OCR_BACKGROUND: ${{ inputs.background }}
-        OCR_RULE: ${{ inputs.rule }}
+        # kaid step for why self-update is disabled.
+        KAID_NO_UPDATE: "1"
+        KAID_LLM_URL: ${{ inputs.llm_url }}
+        KAID_LLM_TOKEN: ${{ inputs.llm_auth_token }}
+        KAID_LLM_MODEL: ${{ inputs.llm_model }}
+        KAID_USE_ANTHROPIC: ${{ inputs.llm_use_anthropic }}
+        KAID_LLM_AUTH_HEADER: ${{ inputs.llm_auth_header }}
+        KAID_LLM_EXTRA_HEADERS: ${{ inputs.llm_extra_headers }}
+        KAID_LLM_TIMEOUT: ${{ inputs.llm_timeout }}
+        KAID_REVIEW_CONCURRENCY: ${{ inputs.review_concurrency }}
+        KAID_BACKGROUND: ${{ inputs.background }}
+        KAID_RULE: ${{ inputs.rule }}
         # Step output, not job env: empty when the resolve step was skipped or
         # chose the full range, and never inherited from an earlier use of this
         # action in the same job.
         RANGE_FROM: ${{ steps.range.outputs.range_from }}
       shell: bash
       run: |
-        export OCR_LLM_TIMEOUT="${OCR_LLM_TIMEOUT:-300}"
+        export KAID_LLM_TIMEOUT="${KAID_LLM_TIMEOUT:-300}"
         if [ -z "${REVIEW_TASK_TIMEOUT:-}" ]; then
           echo "::error::Validated review_task_timeout is missing; the Validate inputs step must complete first"
           exit 1
@@ -1001,7 +1001,7 @@ runs:
         ARGS=(--from "${RANGE_FROM:-$MERGE_BASE}" --to "${HEAD_SHA}")
         # stream_progress 'false' (default): agent audience, stderr captured to
         # the log file without a live tee. Opt-in 'true': no --audience agent,
-        # so human-audience routing sends [ocr] progress lines to stderr; a
+        # so human-audience routing sends [kaid] progress lines to stderr; a
         # FIFO feeds a background tee so progress streams live into the
         # workflow log while still landing in the file for artifacts and the
         # posting step. The tee is a real background job rather than process
@@ -1009,73 +1009,73 @@ runs:
         # before anything reads it. Neither mode disturbs $?.
         [ "${STREAM_PROGRESS:-false}" = "true" ] || ARGS+=(--audience agent)
         ARGS+=(--format json --timeout "$REVIEW_TASK_TIMEOUT")
-        [ -n "$OCR_REVIEW_CONCURRENCY" ] && ARGS+=(--concurrency "$OCR_REVIEW_CONCURRENCY")
-        [ -n "$OCR_BACKGROUND" ] && ARGS+=(--background "$OCR_BACKGROUND")
-        [ -n "$OCR_RULE" ] && ARGS+=(--rule "$OCR_RULE")
+        [ -n "$KAID_REVIEW_CONCURRENCY" ] && ARGS+=(--concurrency "$KAID_REVIEW_CONCURRENCY")
+        [ -n "$KAID_BACKGROUND" ] && ARGS+=(--background "$KAID_BACKGROUND")
+        [ -n "$KAID_RULE" ] && ARGS+=(--rule "$KAID_RULE")
         [ -n "${EFFORT:-}" ] && ARGS+=(--effort "$EFFORT")
         [ -n "${MAX_TOKENS_BUDGET:-}" ] && ARGS+=(--max-tokens-budget "$MAX_TOKENS_BUDGET")
         set +e
         if [ "${STREAM_PROGRESS:-false}" = "true" ]; then
-          OCR_STDERR_FIFO="$(mktemp -u)"
-          mkfifo "$OCR_STDERR_FIFO" || exit 1
-          tee /tmp/ocr-stderr.log < "$OCR_STDERR_FIFO" >&2 &
+          KAID_STDERR_FIFO="$(mktemp -u)"
+          mkfifo "$KAID_STDERR_FIFO" || exit 1
+          tee /tmp/kaid-stderr.log < "$KAID_STDERR_FIFO" >&2 &
           TEE_PID=$!
-          ocr review "${ARGS[@]}" > /tmp/ocr-result.json 2> "$OCR_STDERR_FIFO"
-          OCR_EXIT_CODE=$?
+          kaid review "${ARGS[@]}" > /tmp/kaid-result.json 2> "$KAID_STDERR_FIFO"
+          KAID_EXIT_CODE=$?
           wait "$TEE_PID"
-          rm -f "$OCR_STDERR_FIFO"
+          rm -f "$KAID_STDERR_FIFO"
         else
-          ocr review "${ARGS[@]}" > /tmp/ocr-result.json 2>/tmp/ocr-stderr.log
-          OCR_EXIT_CODE=$?
+          kaid review "${ARGS[@]}" > /tmp/kaid-result.json 2>/tmp/kaid-stderr.log
+          KAID_EXIT_CODE=$?
         fi
         set -e
-        echo "OCR_EXIT_CODE=$OCR_EXIT_CODE" >> "$GITHUB_ENV"
-        echo "=== OCR result ==="
-        cat /tmp/ocr-result.json
-        echo "=== OCR stderr ==="
-        cat /tmp/ocr-stderr.log
+        echo "KAID_EXIT_CODE=$KAID_EXIT_CODE" >> "$GITHUB_ENV"
+        echo "=== kaid result ==="
+        cat /tmp/kaid-result.json
+        echo "=== kaid stderr ==="
+        cat /tmp/kaid-stderr.log
 
     - name: Upload review artifacts
       if: ${{ always() && inputs.upload_artifacts == 'true' }}
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
-        name: ocr-review-result-${{ github.run_id }}-${{ github.run_attempt }}
+        name: kaid-review-result-${{ github.run_id }}-${{ github.run_attempt }}
         path: |
-          /tmp/ocr-result.json
-          /tmp/ocr-stderr.log
+          /tmp/kaid-result.json
+          /tmp/kaid-stderr.log
         if-no-files-found: warn
 
-    - name: Fail job on OCR error
-      if: env.OCR_EXIT_CODE != '0'
+    - name: Fail job on kaid error
+      if: env.KAID_EXIT_CODE != '0'
       shell: bash
       run: |
-        echo "ocr review exited with code ${OCR_EXIT_CODE}; see uploaded artifacts for details."
-        exit "${OCR_EXIT_CODE}"
+        echo "kaid review exited with code ${KAID_EXIT_CODE}; see uploaded artifacts for details."
+        exit "${KAID_EXIT_CODE}"
 
     - name: Post review comments
-      if: env.OCR_EXIT_CODE == '0'
+      if: env.KAID_EXIT_CODE == '0'
       id: post
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       env:
-        OCR_INCREMENTAL_OVERLAP_THRESHOLD: ${{ inputs.incremental_overlap_threshold }}
-        OCR_REVIEW_COMMENT_BATCH_SIZE: ${{ inputs.review_comment_batch_size }}
-        OCR_ROUTE_SEVERITY_BELOW: ${{ inputs.route_severity_below }}
-        OCR_ROUTE_CATEGORIES: ${{ inputs.route_categories }}
+        KAID_INCREMENTAL_OVERLAP_THRESHOLD: ${{ inputs.incremental_overlap_threshold }}
+        KAID_REVIEW_COMMENT_BATCH_SIZE: ${{ inputs.review_comment_batch_size }}
+        KAID_ROUTE_SEVERITY_BELOW: ${{ inputs.route_severity_below }}
+        KAID_ROUTE_CATEGORIES: ${{ inputs.route_categories }}
         # Outputs of the Resolve review range step; all empty when that step was
         # skipped (checkpointing off), which is what turns the checkpoint write
         # path back into today's behavior.
-        OCR_CHECKPOINT_CARRY: ${{ steps.range.outputs.checkpoint_carry }}
-        OCR_CONFIG_FINGERPRINT: ${{ steps.range.outputs.config_fingerprint }}
-        OCR_RANGE_MODE: ${{ steps.range.outputs.range_mode }}
-        OCR_RANGE_FROM: ${{ steps.range.outputs.range_from }}
-        OCR_RANGE_TO: ${{ steps.range.outputs.range_to }}
-        OCR_RANGE_REASON: ${{ steps.range.outputs.range_reason }}
-        OCR_BASE_REF: ${{ env.BASE_REF }}
-        OCR_MERGE_BASE: ${{ env.MERGE_BASE }}
+        KAID_CHECKPOINT_CARRY: ${{ steps.range.outputs.checkpoint_carry }}
+        KAID_CONFIG_FINGERPRINT: ${{ steps.range.outputs.config_fingerprint }}
+        KAID_RANGE_MODE: ${{ steps.range.outputs.range_mode }}
+        KAID_RANGE_FROM: ${{ steps.range.outputs.range_from }}
+        KAID_RANGE_TO: ${{ steps.range.outputs.range_to }}
+        KAID_RANGE_REASON: ${{ steps.range.outputs.range_reason }}
+        KAID_BASE_REF: ${{ env.BASE_REF }}
+        KAID_MERGE_BASE: ${{ env.MERGE_BASE }}
         # Resolved by "Resolve PR refs", which fails the job when no number is
         # available; context.issue.number resolves nothing on a workflow_run.
-        OCR_PR_NUMBER: ${{ env.PR_NUMBER }}
-        OCR_RESOLVE_OUTDATED: ${{ env.RESOLVE_OUTDATED }}
+        KAID_PR_NUMBER: ${{ env.PR_NUMBER }}
+        KAID_RESOLVE_OUTDATED: ${{ env.RESOLVE_OUTDATED }}
       with:
         github-token: ${{ inputs.github_token }}
         script: |
@@ -1098,25 +1098,25 @@ runs:
             context,
             core,
             fs,
-            prNumber: Number(process.env.OCR_PR_NUMBER),
-            resultPath: '/tmp/ocr-result.json',
-            stderrPath: '/tmp/ocr-stderr.log',
+            prNumber: Number(process.env.KAID_PR_NUMBER),
+            resultPath: '/tmp/kaid-result.json',
+            stderrPath: '/tmp/kaid-stderr.log',
             stickySummary: ${{ inputs.sticky_summary == 'true' }},
             incremental: ${{ inputs.incremental == 'true' }},
-            incrementalOverlapThreshold: parseFloat(process.env.OCR_INCREMENTAL_OVERLAP_THRESHOLD),
-            reviewCommentBatchSize: parseInt(process.env.OCR_REVIEW_COMMENT_BATCH_SIZE, 10),
-            routeSeverityBelow: process.env.OCR_ROUTE_SEVERITY_BELOW,
-            routeCategories: process.env.OCR_ROUTE_CATEGORIES,
+            incrementalOverlapThreshold: parseFloat(process.env.KAID_INCREMENTAL_OVERLAP_THRESHOLD),
+            reviewCommentBatchSize: parseInt(process.env.KAID_REVIEW_COMMENT_BATCH_SIZE, 10),
+            routeSeverityBelow: process.env.KAID_ROUTE_SEVERITY_BELOW,
+            routeCategories: process.env.KAID_ROUTE_CATEGORIES,
             checkpointEnabled: ${{ inputs.checkpoint_range == 'true' }},
-            checkpointCarry: process.env.OCR_CHECKPOINT_CARRY || '',
-            checkpointBaseRef: process.env.OCR_BASE_REF || '',
-            checkpointMergeBase: process.env.OCR_MERGE_BASE || '',
-            checkpointFingerprint: process.env.OCR_CONFIG_FINGERPRINT || '',
+            checkpointCarry: process.env.KAID_CHECKPOINT_CARRY || '',
+            checkpointBaseRef: process.env.KAID_BASE_REF || '',
+            checkpointMergeBase: process.env.KAID_MERGE_BASE || '',
+            checkpointFingerprint: process.env.KAID_CONFIG_FINGERPRINT || '',
             // Nothing new was in range, so leave the previous run's summary alone
             // instead of rewriting it into "No comments generated".
-            checkpointNoop: process.env.OCR_RANGE_REASON === 'same_head_noop',
-            rangeMode: process.env.OCR_RANGE_MODE || '',
-            rangeFrom: process.env.OCR_RANGE_FROM || '',
-            rangeTo: process.env.OCR_RANGE_TO || '',
-            resolveOutdated: process.env.OCR_RESOLVE_OUTDATED,
+            checkpointNoop: process.env.KAID_RANGE_REASON === 'same_head_noop',
+            rangeMode: process.env.KAID_RANGE_MODE || '',
+            rangeFrom: process.env.KAID_RANGE_FROM || '',
+            rangeTo: process.env.KAID_RANGE_TO || '',
+            resolveOutdated: process.env.KAID_RESOLVE_OUTDATED,
           });

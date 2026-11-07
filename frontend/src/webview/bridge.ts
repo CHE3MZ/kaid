@@ -17,7 +17,7 @@ window.addEventListener('message', (event) => {
     try {
       handler(event.data as HostToWebview);
     } catch (err) {
-      console.error('[ocr] message handler failed', err);
+      console.error('[kaid] message handler failed', err);
     }
   });
 });
@@ -25,7 +25,7 @@ window.addEventListener('message', (event) => {
 export const bridge: Bridge = {
   post(msg: WebviewToHost): void {
     if (window.parent === window) {
-      console.warn('[ocr] no host window is available');
+      console.warn('[kaid] no host window is available');
       return;
     }
     window.parent.postMessage(msg, '*');

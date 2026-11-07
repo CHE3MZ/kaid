@@ -142,7 +142,7 @@ func TestPendingRefreshRejectsUnverifiedIdentity(t *testing.T) {
 			if err == nil || got != nil || f.calls.Load() != 0 {
 				t.Fatal("unverified pending credentials were used", err)
 			}
-			wantRecovery := "ocr auth login --provider chatgpt --account " + a.ClientID
+			wantRecovery := "kaid auth login --provider chatgpt --account " + a.ClientID
 			if !strings.Contains(err.Error(), wantRecovery) {
 				t.Fatalf("permanent identity failure needs sign-in guidance: %v", err)
 			}

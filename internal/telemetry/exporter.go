@@ -90,7 +90,7 @@ func initOTLPProviders(ctx context.Context, res *resource.Resource, cfg Config) 
 	case "", "grpc":
 		initOTLPGRPCProviders(ctx, res, cfg)
 	default:
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: unsupported OTLP protocol %q, falling back to gRPC\n", cfg.OTLPProtocol)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: unsupported OTLP protocol %q, falling back to gRPC\n", cfg.OTLPProtocol)
 		initOTLPGRPCProviders(ctx, res, cfg)
 	}
 }
@@ -105,7 +105,7 @@ func initOTLPGRPCProviders(ctx context.Context, res *resource.Resource, cfg Conf
 	}
 	traceExp, err := otlptracegrpc.New(ctx, traceOpts...)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: failed to create OTLP trace exporter: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: failed to create OTLP trace exporter: %v\n", err)
 		return
 	}
 
@@ -122,7 +122,7 @@ func initOTLPGRPCProviders(ctx context.Context, res *resource.Resource, cfg Conf
 	}
 	metricExp, err := otlpmetricgrpc.New(ctx, metricOpts...)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: failed to create OTLP metric exporter: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: failed to create OTLP metric exporter: %v\n", err)
 		return
 	}
 
@@ -154,7 +154,7 @@ func initOTLPHTTPProviders(ctx context.Context, res *resource.Resource, cfg Conf
 	traceExp, err := otlptracehttp.New(ctx,
 		otlptracehttp.WithEndpointURL(otlpSignalURL(cfg.OTLPEndpoint, "/v1/traces")))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: failed to create OTLP HTTP trace exporter: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: failed to create OTLP HTTP trace exporter: %v\n", err)
 		return
 	}
 
@@ -168,7 +168,7 @@ func initOTLPHTTPProviders(ctx context.Context, res *resource.Resource, cfg Conf
 	metricExp, err := otlpmetrichttp.New(ctx,
 		otlpmetrichttp.WithEndpointURL(otlpSignalURL(cfg.OTLPEndpoint, "/v1/metrics")))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: failed to create OTLP HTTP metric exporter: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: failed to create OTLP HTTP metric exporter: %v\n", err)
 		return
 	}
 
@@ -184,7 +184,7 @@ func initOTLPHTTPProviders(ctx context.Context, res *resource.Resource, cfg Conf
 func initConsoleProviders(res *resource.Resource) {
 	traceExp, err := newStdoutTraceExporter()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: failed to create console trace exporter: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: failed to create console trace exporter: %v\n", err)
 		return
 	}
 
@@ -197,7 +197,7 @@ func initConsoleProviders(res *resource.Resource) {
 
 	metricExp, err := newStdoutMetricExporter()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: failed to create console metric exporter: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: failed to create console metric exporter: %v\n", err)
 		return
 	}
 

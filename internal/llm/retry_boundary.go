@@ -20,7 +20,7 @@ import (
 // one panicking file would erase every other file's retry records.
 var errRequestPanicked = errors.New("llm request panicked")
 
-// streamIntegrityError is a stream-completeness failure detected by OCR itself
+// streamIntegrityError is a stream-completeness failure detected by kaid itself
 // rather than reported by the transport or the SDK.
 //
 // It exists because classification may only read HTTP status and Go error types,

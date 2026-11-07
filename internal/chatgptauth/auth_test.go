@@ -227,7 +227,7 @@ func TestAuthorizationAndCallbacks(t *testing.T) {
 	a := attempt{state: "state", nonce: "nonce", verifier: "verifier", redirect: "http://127.0.0.1:123/auth/callback", host: "urn:uuid:fixture"}
 	u, _ := url.Parse(c.authorize(a, nil))
 	q := u.Query()
-	if q.Get("client_id") != DynamicClient || q.Get("agent_name_hint") != "OpenCodeReview" || q.Get("resource") != Resource || q.Get("scope") != Scope || q.Get("nonce") != "nonce" || q.Get("code_challenge") == "" {
+	if q.Get("client_id") != DynamicClient || q.Get("agent_name_hint") != "kaid" || q.Get("resource") != Resource || q.Get("scope") != Scope || q.Get("nonce") != "nonce" || q.Get("code_challenge") == "" {
 		t.Fatal(q)
 	}
 	old := testAuth()

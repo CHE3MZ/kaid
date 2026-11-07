@@ -337,7 +337,7 @@ func TestLogoutUnconfirmedRevocation(t *testing.T) {
 	}
 }
 func TestCrossProcessSessionLock(t *testing.T) {
-	if dir := os.Getenv("OCR_SIWC_TEST_LOCK_DIR"); dir != "" {
+	if dir := os.Getenv("KAID_SIWC_TEST_LOCK_DIR"); dir != "" {
 		s := Store{Dir: dir}
 		ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond)
 		defer cancel()
@@ -349,7 +349,7 @@ func TestCrossProcessSessionLock(t *testing.T) {
 	s := testStore(t)
 	err := s.withLock(context.Background(), func() error {
 		cmd := exec.Command(os.Args[0], "-test.run=^TestCrossProcessSessionLock$")
-		cmd.Env = append(os.Environ(), "OCR_SIWC_TEST_LOCK_DIR="+s.Dir)
+		cmd.Env = append(os.Environ(), "KAID_SIWC_TEST_LOCK_DIR="+s.Dir)
 		b, err := cmd.CombinedOutput()
 		if err != nil {
 			t.Log(string(b))

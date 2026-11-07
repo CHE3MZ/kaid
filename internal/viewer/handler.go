@@ -137,8 +137,8 @@ func toLlmComments(comments []*ReviewComment) []model.LlmComment {
 	return out
 }
 
-// modeWarning mirrors the only comparability warning `ocr session compare`
-// emits (cmd/opencodereview/session_cmd.go, runSessionCompare): a differing
+// modeWarning mirrors the only comparability warning `kaid session compare`
+// emits (cmd/kaid/session_cmd.go, runSessionCompare): a differing
 // review mode warns, and the comparison still renders. The dash for an unset
 // mode matches displayMode there and the Mode column in sessions.html.
 func modeWarning(before, after SessionSummary) string {
@@ -155,7 +155,7 @@ func modeWarning(before, after SessionSummary) string {
 		dash(before.ReviewMode), dash(after.ReviewMode))
 }
 
-// handleCompare renders the `ocr session compare` result for two sessions of
+// handleCompare renders the `kaid session compare` result for two sessions of
 // the same repo. repo is the on-disk directory name, passed through from the
 // URL exactly as handleSessions/handleSession pass it.
 func handleCompare(w http.ResponseWriter, r *http.Request, root, repo string) {
@@ -190,7 +190,7 @@ func handleCompare(w http.ResponseWriter, r *http.Request, root, repo string) {
 	// directories ("/home/a/b" and "/home/a-b") share one viewer directory and
 	// this route can be handed a cross-repo pair. Comparing findings across
 	// repositories is meaningless, so it is an error here exactly as it is in
-	// the CLI (cmd/opencodereview/session_cmd.go, runSessionCompare) - unlike a
+	// the CLI (cmd/kaid/session_cmd.go, runSessionCompare) - unlike a
 	// differing review mode, which only warns.
 	if bv.Summary.CWD != av.Summary.CWD {
 		http.Error(w, "sessions belong to different repositories", http.StatusBadRequest)

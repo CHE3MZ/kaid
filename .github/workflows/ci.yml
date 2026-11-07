@@ -83,7 +83,7 @@ jobs:
 
       - name: Test with coverage
         env:
-          OCR_DELEGATE_REQUIRE_PTY: '1'
+          KAID_DELEGATE_REQUIRE_PTY: '1'
         run: |
           go test -v -race -count=1 -coverprofile=coverage.out ./...
           go tool cover -func=coverage.out | grep total: | awk '{print $3}'
@@ -99,13 +99,13 @@ jobs:
           echo "PASS: Coverage ${COVERAGE}% meets 90% threshold"
 
       - name: Build
-        run: go build -o ./opencodereview ./cmd/opencodereview
+        run: go build -o ./kaid ./cmd/kaid
 
       - name: Smoke test
         run: |
-          ./opencodereview --version
-          ./opencodereview --version | grep -q "open-code-review"
-          HELP=$(./opencodereview --help)
+          ./kaid --version
+          ./kaid --version | grep -q "kaid"
+          HELP=$(./kaid --help)
           echo "$HELP" | grep -q "Commands:"
           echo "$HELP" | grep -q "review"
           echo "$HELP" | grep -q "scan"
@@ -116,7 +116,7 @@ jobs:
           echo "$HELP" | grep -q "viewer"
           echo "$HELP" | grep -q "session"
           echo "$HELP" | grep -q "rules"
-          rm -f ./opencodereview
+          rm -f ./kaid
 
   # Runs the suite natively on Windows, which the cross-compile job below cannot
   # do: it only proves the windows arms of the build-tag splits compile. GitHub
@@ -146,16 +146,16 @@ jobs:
         run: go test -count=1 ./...
 
       - name: Build
-        run: go build -o opencodereview.exe ./cmd/opencodereview
+        run: go build -o kaid.exe ./cmd/kaid
 
       # Same assertions as the Linux smoke test, under git-bash so the script is
       # shared verbatim rather than reimplemented in PowerShell.
       - name: Smoke test
         shell: bash
         run: |
-          ./opencodereview.exe --version
-          ./opencodereview.exe --version | grep -q "open-code-review"
-          HELP=$(./opencodereview.exe --help)
+          ./kaid.exe --version
+          ./kaid.exe --version | grep -q "kaid"
+          HELP=$(./kaid.exe --help)
           echo "$HELP" | grep -q "Commands:"
           echo "$HELP" | grep -q "review"
           echo "$HELP" | grep -q "scan"
@@ -166,7 +166,7 @@ jobs:
           echo "$HELP" | grep -q "viewer"
           echo "$HELP" | grep -q "session"
           echo "$HELP" | grep -q "rules"
-          rm -f ./opencodereview.exe
+          rm -f ./kaid.exe
 
   cross-compile:
     runs-on: self-hosted

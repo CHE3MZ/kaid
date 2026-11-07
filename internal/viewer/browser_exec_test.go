@@ -18,10 +18,10 @@ import (
 
 // Environment keys used to steer the helper process below.
 const (
-	helperModeEnv   = "OCR_VIEWER_BROWSER_HELPER"
-	helperSleepEnv  = "OCR_VIEWER_BROWSER_HELPER_SLEEP"
-	helperExitEnv   = "OCR_VIEWER_BROWSER_HELPER_EXIT"
-	helperStderrEnv = "OCR_VIEWER_BROWSER_HELPER_STDERR"
+	helperModeEnv   = "KAID_VIEWER_BROWSER_HELPER"
+	helperSleepEnv  = "KAID_VIEWER_BROWSER_HELPER_SLEEP"
+	helperExitEnv   = "KAID_VIEWER_BROWSER_HELPER_EXIT"
+	helperStderrEnv = "KAID_VIEWER_BROWSER_HELPER_STDERR"
 )
 
 // TestBrowserHelperProcess is not a real test. It is the child process the
@@ -190,7 +190,7 @@ func TestRunBrowserCmd_PreservesCallerStderr(t *testing.T) {
 }
 
 func TestRunBrowserCmd_StartFailure(t *testing.T) {
-	if err := runBrowserCmd(exec.Command("ocr-viewer-no-such-browser-opener")); err == nil {
+	if err := runBrowserCmd(exec.Command("kaid-viewer-no-such-browser-opener")); err == nil {
 		t.Fatal("runBrowserCmd(missing binary) = nil, want an error")
 	}
 }
@@ -233,7 +233,7 @@ func TestOpenBrowserCandidates_FallsThroughToNextCandidate(t *testing.T) {
 	setBrowserWaitWindow(t, 30*time.Second)
 	setHelperEnv(t, 0, 0)
 	err := openBrowserCandidates([][]string{
-		{"ocr-viewer-no-such-browser-opener"},
+		{"kaid-viewer-no-such-browser-opener"},
 		helperArgv(),
 	})
 	if err != nil {
@@ -257,15 +257,15 @@ func TestOpenBrowserCandidates_SkipsNonZeroExit(t *testing.T) {
 // when the platform opener is missing too.
 func TestOpenBrowserCandidates_AllFail(t *testing.T) {
 	err := openBrowserCandidates([][]string{
-		{"ocr-viewer-no-such-browser-opener"},
-		{"ocr-viewer-no-such-browser-opener-either"},
+		{"kaid-viewer-no-such-browser-opener"},
+		{"kaid-viewer-no-such-browser-opener-either"},
 	})
 	if err == nil {
 		t.Fatal("openBrowserCandidates(all missing) = nil, want an error")
 	}
 	for _, want := range []string{
-		"ocr-viewer-no-such-browser-opener:",
-		"ocr-viewer-no-such-browser-opener-either:",
+		"kaid-viewer-no-such-browser-opener:",
+		"kaid-viewer-no-such-browser-opener-either:",
 	} {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("error = %q, want it to mention %q", err, want)

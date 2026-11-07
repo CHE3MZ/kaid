@@ -15,7 +15,7 @@ import (
 // logicalRequestIDVersion is the domain prefix mixed into every
 // logical_request_id. Changing the field set of RequestMeta must bump this
 // prefix so IDs from two different field sets can never collide.
-const logicalRequestIDVersion = "ocr.llm-request/v1"
+const logicalRequestIDVersion = "kaid.llm-request/v1"
 
 // RequestMeta identifies one logical LLM request. A logical request is a single
 // business-level call — one main_task turn, one re-location, one memory

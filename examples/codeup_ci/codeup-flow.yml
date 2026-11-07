@@ -1,4 +1,4 @@
-name: open-code-review
+name: kaid
 
 # Triggered whenever a merge request is opened or updated against any branch.
 sources:
@@ -19,14 +19,14 @@ stages:
     name: Code Review
     jobs:
       code_review_job:
-        name: open-code-review
+        name: kaid
         runsOn: public/cn-hangzhou
         steps:
-          install_ocr_step:
+          install_kaid_step:
             step: Shell
-            name: Install open-code-review CLI
+            name: Install kaid CLI
             with:
-              run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+              run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_INSTALL_DIR=/usr/local/bin sh
 
           run_review_step:
             step: Shell
@@ -43,8 +43,8 @@ stages:
                 CODEUP_MR_LOCAL_ID: ${CODEUP_MERGE_REQUEST_LOCAL_ID}
                 CODEUP_TARGET_BRANCH: ${CODEUP_MERGE_REQUEST_TARGET_BRANCH}
                 CODEUP_SOURCE_BRANCH: ${CODEUP_MERGE_REQUEST_SOURCE_BRANCH}
-                OCR_LLM_URL: ${OCR_LLM_URL}
-                OCR_LLM_TOKEN: ${OCR_LLM_TOKEN}
-                OCR_LLM_MODEL: ${OCR_LLM_MODEL}
-                OCR_USE_ANTHROPIC: ${OCR_USE_ANTHROPIC}
+                KAID_LLM_URL: ${KAID_LLM_URL}
+                KAID_LLM_TOKEN: ${KAID_LLM_TOKEN}
+                KAID_LLM_MODEL: ${KAID_LLM_MODEL}
+                KAID_USE_ANTHROPIC: ${KAID_USE_ANTHROPIC}
               run: python3 post_review.py

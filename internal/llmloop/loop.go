@@ -51,7 +51,7 @@ type Deps struct {
 	AllDiffs func() []model.Diff
 
 	// NewRequestMeta builds the retry-report identity for one logical LLM
-	// request. Non-nil only for review: the retry report describes ocr review,
+	// request. Non-nil only for review: the retry report describes kaid review,
 	// and this Runner is shared with scan (internal/scan.Agent calls RunMainTask),
 	// so main_task, memory compression and re-location all run under both modes.
 	//
@@ -332,7 +332,7 @@ func (s MainLoopStop) String() string {
 // path or a provider payload — because callers persist it into machine-readable
 // output.
 //
-// Under --format json the [ocr] progress lines that would say which exit fired
+// Under --format json the [kaid] progress lines that would say which exit fired
 // are discarded by stdout.Quiet(), so this is the only stop diagnostic that
 // survives an ephemeral CI runner. Every stop must therefore read distinctly,
 // including one added to the enum after this was written: the default names the
@@ -458,7 +458,7 @@ func (r *Runner) RunMainTask(ctx context.Context, messages []llm.Message, taskKe
 		calls := resp.ToolCalls()
 
 		if len(calls) == 0 {
-			fmt.Fprintf(stdout.Writer(), "[ocr] No tool calls parsed for %s, retrying...\n", taskKey)
+			fmt.Fprintf(stdout.Writer(), "[kaid] No tool calls parsed for %s, retrying...\n", taskKey)
 			messages = append(messages, llm.NewTextMessage("user", "You did not successfully call any tools. Please try again or use task_done if finished."))
 			native := resp.Native()
 			reasoning := resp.ReasoningContent()
@@ -509,18 +509,18 @@ func (r *Runner) RunMainTask(ctx context.Context, messages []llm.Message, taskKe
 		if !hasValidResult {
 			consecutiveEmptyRounds++
 			if consecutiveEmptyRounds >= maxConsecutiveEmptyRounds {
-				fmt.Fprintf(stdout.Writer(), "[ocr] Too many empty retries for %s, stopping.\n", taskKey)
+				fmt.Fprintf(stdout.Writer(), "[kaid] Too many empty retries for %s, stopping.\n", taskKey)
 				stop = StopEmptyRounds
 				break
 			}
-			fmt.Fprintf(stdout.Writer(), "[ocr] No valid tool results for %s, retrying...\n", taskKey)
+			fmt.Fprintf(stdout.Writer(), "[kaid] No valid tool results for %s, retrying...\n", taskKey)
 		} else {
 			consecutiveEmptyRounds = 0
 		}
 
 		succeed := r.addNextMessage(ctx, content, calls, resp.Native(), thinking, results, &messages, taskKey, st)
 		if !succeed {
-			fmt.Fprintf(stdout.Writer(), "[ocr] Context compression exceeded threshold for %s, stopping.\n", taskKey)
+			fmt.Fprintf(stdout.Writer(), "[kaid] Context compression exceeded threshold for %s, stopping.\n", taskKey)
 			stop = StopCompression
 			break
 		}
@@ -533,10 +533,10 @@ func (r *Runner) RunMainTask(ctx context.Context, messages []llm.Message, taskKe
 	completed := false
 	switch stop {
 	case StopMaxRounds:
-		fmt.Fprintf(stdout.Writer(), "[ocr] Max tool requests reached for %s.\n", taskKey)
+		fmt.Fprintf(stdout.Writer(), "[kaid] Max tool requests reached for %s.\n", taskKey)
 		completed = r.runGraceRound(ctx, messages, taskKey, sessionID)
 	case StopTokenBudget:
-		fmt.Fprintf(stdout.Writer(), "[ocr] Token budget exceeded (used %d > budget %d) for %s.\n",
+		fmt.Fprintf(stdout.Writer(), "[kaid] Token budget exceeded (used %d > budget %d) for %s.\n",
 			r.TotalTokensUsed(), r.deps.MaxTokensBudget, taskKey)
 		completed = r.runGraceRound(ctx, messages, taskKey, sessionID)
 	}
@@ -574,7 +574,7 @@ func (r *Runner) runGraceRound(ctx context.Context, messages []llm.Message, task
 			"No other tools are available. Do not attempt further analysis."))
 
 	if ctx.Err() != nil {
-		fmt.Fprintf(stdout.Writer(), "[ocr] Grace round skipped for %s: context cancelled\n", taskKey)
+		fmt.Fprintf(stdout.Writer(), "[kaid] Grace round skipped for %s: context cancelled\n", taskKey)
 		return false
 	}
 
@@ -597,7 +597,7 @@ func (r *Runner) runGraceRound(ctx context.Context, messages []llm.Message, task
 		telemetry.RecordLLMResult(llmSpan, duration, 0, err)
 		llmSpan.End()
 		telemetry.RecordLLMRequest(ctx, r.deps.Model, duration, 0, "error")
-		fmt.Fprintf(stdout.Writer(), "[ocr] Grace round LLM error for %s: %v\n", taskKey, err)
+		fmt.Fprintf(stdout.Writer(), "[kaid] Grace round LLM error for %s: %v\n", taskKey, err)
 		return false
 	}
 
@@ -897,7 +897,7 @@ func (r *Runner) addNextMessage(ctx context.Context, assistantContent string, to
 		if *messages, err = r.runCompression(ctx, *messages, taskKey); err != nil {
 			// Compression failed; continue with over-limit messages — the
 			// post-append check below will retry.
-			fmt.Fprintf(stdout.Writer(), "[ocr] Memory compression failed: %v\n", err)
+			fmt.Fprintf(stdout.Writer(), "[kaid] Memory compression failed: %v\n", err)
 		}
 	}
 
@@ -916,7 +916,7 @@ func (r *Runner) addNextMessage(ctx context.Context, assistantContent string, to
 		r.cancelPendingCompression(st)
 		var err error
 		if *messages, err = r.runCompression(ctx, *messages, taskKey); err != nil {
-			fmt.Fprintf(stdout.Writer(), "[ocr] Memory compression failed: %v\n", err)
+			fmt.Fprintf(stdout.Writer(), "[kaid] Memory compression failed: %v\n", err)
 		}
 		finalCount = CountMessagesTokens(*messages)
 	}

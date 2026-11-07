@@ -12,7 +12,7 @@
     // leave a dead tab stop on wide screens — and the keys fall through to
     // their native behavior (Home/End jump the page) when there is nothing
     // to scroll.
-    window.ocrArrowScroll = (region) => {
+    window.kaidArrowScroll = (region) => {
         if (!region) return;
         const scrolls = () => region.scrollWidth > region.clientWidth;
         const sync = () => {

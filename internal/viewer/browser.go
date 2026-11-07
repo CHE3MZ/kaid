@@ -17,7 +17,7 @@ import (
 )
 
 // Open mode values accepted by the viewer's --open flag. The three-state shape
-// mirrors --color (cmd/opencodereview/color.go) so "auto, but let me override
+// mirrors --color (cmd/kaid/color.go) so "auto, but let me override
 // the heuristic in both directions" works the same way across the CLI.
 const (
 	OpenAuto   = "auto"
@@ -42,10 +42,10 @@ func ValidateOpenMode(mode string) error {
 // os.Stderr global.
 var browserWarnOut io.Writer = os.Stderr
 
-// browserWarnf emits one warning using the "[ocr] WARNING:" prefix the rest of
+// browserWarnf emits one warning using the "[kaid] WARNING:" prefix the rest of
 // the codebase uses for non-fatal problems.
 func browserWarnf(format string, args ...any) {
-	fmt.Fprintf(browserWarnOut, "[ocr] WARNING: "+format+"\n", args...)
+	fmt.Fprintf(browserWarnOut, "[kaid] WARNING: "+format+"\n", args...)
 }
 
 // browserWaitWindow bounds how long runBrowserCmd waits for an opener to exit.

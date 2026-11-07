@@ -37,8 +37,8 @@ func TestInstallScriptsUseFork(t *testing.T) {
 		prefix   string
 		checksum string
 	}{
-		{"scripts/install.sh", `REPO="CHE3MZ/kaid"`, `ASSET_PREFIX="opencodereview"`, "sha256sum.txt"},
-		{"scripts/install.ps1", "$Repo = 'CHE3MZ/kaid'", "$AssetPrefix = 'opencodereview'", "sha256sum.txt"},
+		{"scripts/install.sh", `REPO="CHE3MZ/kaid"`, `ASSET_PREFIX="kaid"`, "sha256sum.txt"},
+		{"scripts/install.ps1", "$Repo = 'CHE3MZ/kaid'", "$AssetPrefix = 'kaid'", "sha256sum.txt"},
 	} {
 		t.Run(tc.path, func(t *testing.T) {
 			script := loadFile(t, tc.path)
@@ -115,7 +115,7 @@ func TestReleaseWorkflowUsesGoReleaser(t *testing.T) {
 		"fetch-depth: 0",
 		"args: release --clean",
 		"GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}",
-		"dist/**/opencodereview",
+		"dist/**/kaid",
 		"dist/sha256sum.txt",
 	} {
 		if !strings.Contains(yml, want) {

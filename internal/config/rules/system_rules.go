@@ -202,14 +202,14 @@ func expandBraces(s string) []string {
 	return results
 }
 
-// ProjectRuleEntry is a single entry in .opencodereview/rule.json.
+// ProjectRuleEntry is a single entry in .kaid/rule.json.
 type ProjectRuleEntry struct {
 	Path            string `json:"path"`
 	Rule            string `json:"rule"`
 	MergeSystemRule bool   `json:"merge_system_rule,omitempty"`
 }
 
-// ProjectRule holds rules loaded from <repoDir>/.opencodereview/rule.json.
+// ProjectRule holds rules loaded from <repoDir>/.kaid/rule.json.
 type ProjectRule struct {
 	Rules   []ProjectRuleEntry `json:"rules"`
 	Include []string           `json:"include,omitempty"`
@@ -265,8 +265,8 @@ func (f *FileFilter) IsUserIncluded(path string) bool {
 // composedResolver implements Resolver with layered priority.
 type composedResolver struct {
 	custom  *ProjectRule // highest: --rule flag
-	project *ProjectRule // high: .opencodereview/rule.json
-	global  *ProjectRule // low: ~/.opencodereview/rule.json
+	project *ProjectRule // high: .kaid/rule.json
+	global  *ProjectRule // low: ~/.kaid/rule.json
 	system  systemLayer  // lowest: embedded default, decorated by sniffer
 }
 
@@ -277,7 +277,7 @@ type composedResolver struct {
 type ResolverOptions struct {
 	// Ref is the git ref whose content should be inspected — the review head
 	// (--to) in range mode, or --commit in commit mode. Empty reads the
-	// working tree, which is what `ocr scan` and `ocr rules check` want.
+	// working tree, which is what `kaid scan` and `kaid rules check` want.
 	Ref string
 
 	// Runner bounds concurrent git subprocesses. Optional; when nil the
@@ -287,8 +287,8 @@ type ResolverOptions struct {
 
 // NewResolver builds a Resolver with the following priority:
 //  1. Custom rule file specified via --rule flag (first match wins)
-//  2. Project-local .opencodereview/rule.json (first match wins)
-//  3. Global ~/.opencodereview/rule.json (first match wins)
+//  2. Project-local .kaid/rule.json (first match wins)
+//  3. Global ~/.kaid/rule.json (first match wins)
 //  4. Embedded system default rules
 //
 // The system layer is wrapped in a sniffer so ".m" files can be resolved as
@@ -373,7 +373,7 @@ func loadGlobalRule() (*ProjectRule, error) {
 	if err != nil {
 		return nil, nil
 	}
-	path := filepath.Join(home, ".opencodereview", "rule.json")
+	path := filepath.Join(home, ".kaid", "rule.json")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -402,8 +402,8 @@ func loadRuleFile(path string) (*ProjectRule, error) {
 	return &pr, nil
 }
 
-// loadProjectRule reads <repoDir>/.opencodereview/rule.json. Since #287 anchored
-// RepoDir at the git top-level, `ocr review` from a monorepo subdirectory loads
+// loadProjectRule reads <repoDir>/.kaid/rule.json. Since #287 anchored
+// RepoDir at the git top-level, `kaid review` from a monorepo subdirectory loads
 // the repo-root rule file — which is consistent, since rule entries match against
 // root-relative diff paths. A subproject-local rule.json under the subdirectory is
 // intentionally not consulted; put shared rules at the repo root, or pass --rule.
@@ -413,7 +413,7 @@ func loadProjectRule(repoDir string) (*ProjectRule, error) {
 		return nil, fmt.Errorf("resolve repo dir %s: %w", repoDir, err)
 	}
 
-	path := filepath.Join(repoDir, ".opencodereview", "rule.json")
+	path := filepath.Join(repoDir, ".kaid", "rule.json")
 	resolved, err := filepath.EvalSymlinks(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -422,7 +422,7 @@ func loadProjectRule(repoDir string) (*ProjectRule, error) {
 		return nil, fmt.Errorf("resolve project rule %s: %w", path, err)
 	}
 	if !pathutil.WithinBase(confineRoot, resolved) {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: project rule file escapes repo dir: %s\n", path)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: project rule file escapes repo dir: %s\n", path)
 		return nil, nil
 	}
 
@@ -592,7 +592,7 @@ func resolveRuleEntries(entries []ProjectRuleEntry, repoDir string, confineRoot 
 func tryReadRuleFile(rule string, repoDir string, confineRoot string) *string {
 	if repoDir == "" {
 		if !filepath.IsAbs(rule) {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: cannot resolve relative rule path %q without a repo dir\n", rule)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: cannot resolve relative rule path %q without a repo dir\n", rule)
 			return nil
 		}
 	}
@@ -602,9 +602,9 @@ func tryReadRuleFile(rule string, repoDir string, confineRoot string) *string {
 			return &content
 		}
 		if os.IsNotExist(err) {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: rule file not found: %s\n", rule)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: rule file not found: %s\n", rule)
 		} else {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: cannot read rule file %s: %v\n", rule, err)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: cannot read rule file %s: %v\n", rule, err)
 		}
 		return nil
 	}
@@ -613,7 +613,7 @@ func tryReadRuleFile(rule string, repoDir string, confineRoot string) *string {
 	resolved := filepath.Clean(filepath.Join(repoDir, rule))
 	cleanRepo := filepath.Clean(repoDir)
 	if !strings.HasPrefix(resolved, cleanRepo+string(os.PathSeparator)) {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: rule file path escapes repo dir: %s\n", rule)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: rule file path escapes repo dir: %s\n", rule)
 		return nil
 	}
 
@@ -622,9 +622,9 @@ func tryReadRuleFile(rule string, repoDir string, confineRoot string) *string {
 		return &content
 	}
 	if os.IsNotExist(err) {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: rule file not found: %s\n", rule)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: rule file not found: %s\n", rule)
 	} else {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: cannot read rule file %s: %v\n", resolved, err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: cannot read rule file %s: %v\n", resolved, err)
 	}
 	return nil
 }

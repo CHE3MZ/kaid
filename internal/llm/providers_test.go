@@ -261,7 +261,7 @@ func TestLookupProvider_OpenAIResponsesDetails(t *testing.T) {
 // TestGPT56ModelsUseResponsesProtocol guards the fix for issue #559: GPT-5.6
 // models require the OpenAI Responses API (/v1/responses). A built-in provider
 // pointing at api.openai.com must never offer a gpt-5.6 model over Chat
-// Completions, because ocr's tool-calling review workflow then fails with a
+// Completions, because kaid's tool-calling review workflow then fails with a
 // 400 ("function tools with reasoning_effort are not supported ... in
 // /v1/chat/completions").
 func TestGPT56ModelsUseResponsesProtocol(t *testing.T) {

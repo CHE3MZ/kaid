@@ -1,16 +1,16 @@
-# OpenCodeReview - GitLab CI Demo
+# kaid - GitLab CI Demo
 
-This demo shows how to integrate OpenCodeReview into your GitLab CI/CD pipeline to automatically review Merge Requests and post review comments as inline discussions.
+This demo shows how to integrate kaid into your GitLab CI/CD pipeline to automatically review Merge Requests and post review comments as inline discussions.
 
 ## How It Works
 
 ```
-MR Created/Updated → GitLab Pipeline Triggered → OCR Reviews Diff → Discussions Posted on MR
+MR Created/Updated → GitLab Pipeline Triggered → kaid Reviews Diff → Discussions Posted on MR
 ```
 
 1. When a Merge Request is opened or updated, the pipeline triggers
-2. It installs OCR from GitHub Releases in a `node:20` Docker image
-3. Runs `ocr review --from origin/<target> --to <commit_sha> --format json --audience agent` to analyze the diff (uses commit SHA to support fork MRs)
+2. It installs kaid from GitHub Releases in a `node:20` Docker image
+3. Runs `kaid review --from origin/<target> --to <commit_sha> --format json --audience agent` to analyze the diff (uses commit SHA to support fork MRs)
 4. Parses the JSON output and posts inline discussions on the MR using GitLab's Discussions API
 
 ## Setup
@@ -36,18 +36,18 @@ Go to your project's **Settings → CI/CD → Variables** and add:
 
 | Variable | Required | Masked | Description |
 |----------|----------|--------|-------------|
-| `OCR_LLM_URL` | Yes | No | LLM API endpoint URL (e.g., `https://api.openai.com/v1/chat/completions`) |
-| `OCR_LLM_AUTH_TOKEN` | Yes | Yes | API authentication token |
-| `OCR_LLM_MODEL` | Yes | No | Model name (e.g., `gpt-4o`) — OCR has no built-in default model and fails when this is unset |
+| `KAID_LLM_URL` | Yes | No | LLM API endpoint URL (e.g., `https://api.openai.com/v1/chat/completions`) |
+| `KAID_LLM_AUTH_TOKEN` | Yes | Yes | API authentication token |
+| `KAID_LLM_MODEL` | Yes | No | Model name (e.g., `gpt-4o`) — kaid has no built-in default model and fails when this is unset |
 | `GITLAB_API_TOKEN` | No | Yes | GitLab access token with `api` scope (falls back to `CI_JOB_TOKEN` if not set) |
-| `OCR_VERSION` | No | No | Release tag for kaid (default: `latest`). Pin it (e.g. `v1.8.8`) for reproducible reviews. |
-| `OCR_LANGUAGE` | No | No | Review output language, written via `ocr config set language` (e.g. `English`, `Chinese`). Defaults to OCR's built-in default. |
-| `OCR_LLM_AUTH_HEADER` | No | No | Custom auth header name, written via `ocr config set llm.auth_header` (e.g. `x-api-key` for some providers). |
-| `OCR_LLM_EXTRA_HEADERS` | No | No | Extra headers `K=V,K=V`, written via `ocr config set llm.extra_headers`. |
-| `OCR_LLM_TIMEOUT` | No | No | LLM request timeout in seconds (read natively by OCR from the env). Unset/empty = OCR's default. |
-| `OCR_REVIEW_CONCURRENCY` | No | No | Max concurrent file reviews, passed via `ocr review --concurrency` (default: 8). |
-| `OCR_BACKGROUND` | No | No | Business/requirement context, passed via `ocr review --background` (e.g. the MR title). |
-| `OCR_RULE` | No | No | Path to a custom rules JSON file, passed via `ocr review --rule`. |
+| `KAID_VERSION` | No | No | Release tag for kaid (default: `latest`). Pin it (e.g. `v1.8.8`) for reproducible reviews. |
+| `KAID_LANGUAGE` | No | No | Review output language, written via `kaid config set language` (e.g. `English`, `Chinese`). Defaults to kaid's built-in default. |
+| `KAID_LLM_AUTH_HEADER` | No | No | Custom auth header name, written via `kaid config set llm.auth_header` (e.g. `x-api-key` for some providers). |
+| `KAID_LLM_EXTRA_HEADERS` | No | No | Extra headers `K=V,K=V`, written via `kaid config set llm.extra_headers`. |
+| `KAID_LLM_TIMEOUT` | No | No | LLM request timeout in seconds (read natively by kaid from the env). Unset/empty = kaid's default. |
+| `KAID_REVIEW_CONCURRENCY` | No | No | Max concurrent file reviews, passed via `kaid review --concurrency` (default: 8). |
+| `KAID_BACKGROUND` | No | No | Business/requirement context, passed via `kaid review --background` (e.g. the MR title). |
+| `KAID_RULE` | No | No | Path to a custom rules JSON file, passed via `kaid review --rule`. |
 
 > **Note:** GitLab CI/CD does not support variables with values shorter than 8 characters, so `use_anthropic` cannot be set as a CI variable. The pipeline sets it to `false` by default. If you need to use Anthropic Claude models, you'll need to modify the `.gitlab-ci.yml` script directly.
 >
@@ -63,7 +63,7 @@ You need a token with `api` scope to post discussions on MRs. Options:
 
 > **Note:** The built-in `CI_JOB_TOKEN` has limited API scope and may not support all discussion features (e.g., creating new threads on older GitLab versions). If `GITLAB_API_TOKEN` is not set, the pipeline falls back to `CI_JOB_TOKEN` automatically — but for best results, a dedicated token with `api` scope is recommended.
 >
-> **Tip:** For Project Access Tokens and Group Access Tokens, the token name determines the bot name shown in MR discussions. For example, naming your token `OpenCodeReview Bot` will make review comments appear as posted by `OpenCodeReview Bot`.
+> **Tip:** For Project Access Tokens and Group Access Tokens, the token name determines the bot name shown in MR discussions. For example, naming your token `kaid Bot` will make review comments appear as posted by `kaid Bot`.
 
 ## Example Output
 
@@ -79,7 +79,7 @@ Comments are posted using GitLab's Discussion API with position data, so they ap
 
 ## Supported LLM Providers
 
-OCR supports both OpenAI and Anthropic API formats:
+kaid supports both OpenAI and Anthropic API formats:
 
 - **OpenAI-compatible APIs** (default):
   - OpenAI (GPT-4o, GPT-4, etc.)
@@ -92,13 +92,13 @@ OCR supports both OpenAI and Anthropic API formats:
 
 Most review behavior is configurable via CI/CD Variables (see the table above) — no YAML edits required. The recipes below cover the remaining cases.
 
-### Use a specific OCR version
+### Use a specific kaid version
 
-Set the `OCR_VERSION` CI/CD variable (e.g. `1.8.8` or `~1.8`). Unset defaults to `latest`.
+Set the `KAID_VERSION` CI/CD variable (e.g. `1.8.8` or `~1.8`). Unset defaults to `latest`.
 
 ### Add custom review rules
 
-Set the `OCR_RULE` CI/CD variable to the path of a custom rules JSON file (passed to `ocr review --rule`). For rules that live inside the repo, commit the file and point `OCR_RULE` at its path.
+Set the `KAID_RULE` CI/CD variable to the path of a custom rules JSON file (passed to `kaid review --rule`). For rules that live inside the repo, commit the file and point `KAID_RULE` at its path.
 
 ### Adjust retry and delay settings
 
@@ -106,33 +106,33 @@ When posting review discussions, the script includes rate-limit handling with ex
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `OCR_RETRY_BASE_DELAY` | `2000` | Base delay (ms) for exponential backoff when a rate-limit error is hit |
-| `OCR_MAX_RETRIES` | `3` | Maximum retry attempts per discussion when rate-limited |
-| `OCR_MAX_RETRY_DELAY` | `60000` | Maximum delay (ms) per single retry, caps both `Retry-After` and backoff |
-| `OCR_SUCCESS_DELAY` | `2000` | Delay (ms) after a successful discussion post to pace subsequent requests |
-| `OCR_FAILURE_DELAY` | `1000` | Delay (ms) after a non-rate-limit failure to pace subsequent requests |
-| `OCR_RATE_LIMIT_THRESHOLD` | `10` | Proactively slow down when GitLab `RateLimit-Remaining` is at/below this value (set `0` to disable). Applies to both writes (doubles the pacing delay) and reads (switches to the longer read spacing). |
-| `OCR_READ_SUCCESS_DELAY` | `500` | Delay (ms) after a successful read (`list_notes`/`list_discussions`/`get_mr_diffs`) to pace read API calls, mirroring the GitHub Action's `readWithPacing`. |
-| `OCR_READ_LOW_REMAINING_SPACING` | `5000` | Longer delay (ms) used after a read when the remaining quota is at/below `OCR_RATE_LIMIT_THRESHOLD`. |
-| `OCR_ROUTE_SEVERITY_BELOW` | _(empty)_ | Optional severity threshold (`critical`, `high`, `medium`, `low`) that routes findings at-or-below it from inline comments to summary notes (fail-open: never drops a finding). Empty or unknown values disable severity routing. |
-| `OCR_ROUTE_CATEGORIES` | _(empty)_ | Optional comma-separated categories (`bug`, `security`, `performance`, `maintainability`, `test`, `style`, `documentation`, `other`) routed from inline to summary notes. Unknown tokens are ignored. Combine with `OCR_ROUTE_SEVERITY_BELOW` to route on either condition. |
+| `KAID_RETRY_BASE_DELAY` | `2000` | Base delay (ms) for exponential backoff when a rate-limit error is hit |
+| `KAID_MAX_RETRIES` | `3` | Maximum retry attempts per discussion when rate-limited |
+| `KAID_MAX_RETRY_DELAY` | `60000` | Maximum delay (ms) per single retry, caps both `Retry-After` and backoff |
+| `KAID_SUCCESS_DELAY` | `2000` | Delay (ms) after a successful discussion post to pace subsequent requests |
+| `KAID_FAILURE_DELAY` | `1000` | Delay (ms) after a non-rate-limit failure to pace subsequent requests |
+| `KAID_RATE_LIMIT_THRESHOLD` | `10` | Proactively slow down when GitLab `RateLimit-Remaining` is at/below this value (set `0` to disable). Applies to both writes (doubles the pacing delay) and reads (switches to the longer read spacing). |
+| `KAID_READ_SUCCESS_DELAY` | `500` | Delay (ms) after a successful read (`list_notes`/`list_discussions`/`get_mr_diffs`) to pace read API calls, mirroring the GitHub Action's `readWithPacing`. |
+| `KAID_READ_LOW_REMAINING_SPACING` | `5000` | Longer delay (ms) used after a read when the remaining quota is at/below `KAID_RATE_LIMIT_THRESHOLD`. |
+| `KAID_ROUTE_SEVERITY_BELOW` | _(empty)_ | Optional severity threshold (`critical`, `high`, `medium`, `low`) that routes findings at-or-below it from inline comments to summary notes (fail-open: never drops a finding). Empty or unknown values disable severity routing. |
+| `KAID_ROUTE_CATEGORIES` | _(empty)_ | Optional comma-separated categories (`bug`, `security`, `performance`, `maintainability`, `test`, `style`, `documentation`, `other`) routed from inline to summary notes. Unknown tokens are ignored. Combine with `KAID_ROUTE_SEVERITY_BELOW` to route on either condition. |
 
-These variables are optional — if not configured, sensible defaults are used. Consider increasing delays for self-hosted GitLab instances with aggressive rate-limit configurations or for large MRs that generate numerous review comments. The `OCR_RATE_LIMIT_THRESHOLD` variable enables proactive throttling: when GitLab reports low remaining quota in the `RateLimit-Remaining` response header, the script automatically doubles the pacing delay to avoid hitting 429 errors.
+These variables are optional — if not configured, sensible defaults are used. Consider increasing delays for self-hosted GitLab instances with aggressive rate-limit configurations or for large MRs that generate numerous review comments. The `KAID_RATE_LIMIT_THRESHOLD` variable enables proactive throttling: when GitLab reports low remaining quota in the `RateLimit-Remaining` response header, the script automatically doubles the pacing delay to avoid hitting 429 errors.
 
 When the primary rate limit is exhausted (`RateLimit-Remaining: 0`), the script additionally honors GitLab's `RateLimit-Reset` header, sleeping until the limit resets (defensively handling both epoch-seconds and seconds-until-reset formats). This mirrors the GitHub Action's `x-ratelimit-reset` handling.
 
 ### Publication behavior (aligned with the GitHub Action)
 
-The posting script implements the same publication behaviors as the GitHub Action (`scripts/github-actions/post-review-comments.js`), exposed as optional CI/CD variables. All default to no-op / current behavior except `OCR_STICKY_SUMMARY`, which defaults to `true` (the summary note is updated in place across runs instead of accumulating one note per run).
+The posting script implements the same publication behaviors as the GitHub Action (`scripts/github-actions/post-review-comments.js`), exposed as optional CI/CD variables. All default to no-op / current behavior except `KAID_STICKY_SUMMARY`, which defaults to `true` (the summary note is updated in place across runs instead of accumulating one note per run).
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `OCR_STICKY_SUMMARY` | `true` | Update the summary note in place across runs (find-by-marker then `PUT /notes/:id`). Set `false` to post a fresh note each run. |
-| `OCR_INCREMENTAL` | `false` | Skip comments whose line range overlaps a prior bot discussion on the same path (so re-runs only append new findings). Uses an IoU threshold for multi-line spans. |
-| `OCR_INCREMENTAL_OVERLAP_THRESHOLD` | `0.6` | IoU (0–1) above which two multi-line comments are considered the same. Single-line comments match only on the exact same line; a single-line and multi-line comment never match. |
-| `OCR_ROUTE_SEVERITY_BELOW` | _(empty)_ | Route findings whose severity is at-or-below this level to the summary note instead of posting them inline (e.g. `low` keeps only critical/high/medium inline). Unknown severities never match (fail-open). |
-| `OCR_ROUTE_CATEGORIES` | _(empty)_ | Comma-separated categories to route to the summary (e.g. `style,documentation`). Routed findings never enter the inline write path, so they cannot be double-posted on retry. |
-| `OCR_FAIL_ON_SEVERITY` | _(empty)_ | Fail the CI job (non-zero exit) when any comment's severity is at-or-above this level (e.g. `critical`). The summary note is still posted before the job fails, so visibility is preserved. |
+| `KAID_STICKY_SUMMARY` | `true` | Update the summary note in place across runs (find-by-marker then `PUT /notes/:id`). Set `false` to post a fresh note each run. |
+| `KAID_INCREMENTAL` | `false` | Skip comments whose line range overlaps a prior bot discussion on the same path (so re-runs only append new findings). Uses an IoU threshold for multi-line spans. |
+| `KAID_INCREMENTAL_OVERLAP_THRESHOLD` | `0.6` | IoU (0–1) above which two multi-line comments are considered the same. Single-line comments match only on the exact same line; a single-line and multi-line comment never match. |
+| `KAID_ROUTE_SEVERITY_BELOW` | _(empty)_ | Route findings whose severity is at-or-below this level to the summary note instead of posting them inline (e.g. `low` keeps only critical/high/medium inline). Unknown severities never match (fail-open). |
+| `KAID_ROUTE_CATEGORIES` | _(empty)_ | Comma-separated categories to route to the summary (e.g. `style,documentation`). Routed findings never enter the inline write path, so they cannot be double-posted on retry. |
+| `KAID_FAIL_ON_SEVERITY` | _(empty)_ | Fail the CI job (non-zero exit) when any comment's severity is at-or-above this level (e.g. `critical`). The summary note is still posted before the job fails, so visibility is preserved. |
 
 Additional behaviors ported from the GitHub Action (always on, no variable):
 
@@ -140,59 +140,59 @@ Additional behaviors ported from the GitHub Action (always on, no variable):
 - **Deterministic ordering**: comments are sorted by `path → start_line → end_line → original index` before posting, so identical reruns produce identical post sequences (which is what makes idempotency reconciliation reproducible).
 - **Detailed warnings**: warnings are rendered as a bulleted list (`file (type): message`) rather than a bare count.
 - **Backtick-safe fences**: fallback Before/After code blocks use a fence long enough to enclose any backticks in the code (the inline suggestion keeps the fixed triple-backtick `suggestion:-0+0` form so GitLab's "Apply suggestion" button keeps working).
-- **Idempotent retry**: each inline discussion carries an invisible HTML-comment id tag (`<!-- ocr-<pipeline>-<job>-<hex> -->`). When a `POST /discussions` fails with a 5xx/408/network error (the request may still have landed), the script queries existing discussions for the id before retrying; if found it is treated as success (no duplicate), and if the read API is unavailable it skips the retry rather than risk a duplicate.
+- **Idempotent retry**: each inline discussion carries an invisible HTML-comment id tag (`<!-- kaid-<pipeline>-<job>-<hex> -->`). When a `POST /discussions` fails with a 5xx/408/network error (the request may still have landed), the script queries existing discussions for the id before retrying; if found it is treated as success (no duplicate), and if the read API is unavailable it skips the retry rather than risk a duplicate.
 - **400 line-resolution fallback**: when a discussion `POST` returns 400 indicating a position problem, the script fetches the MR diff (`GET /merge_requests/:iid/diffs`), classifies the comment as valid/invalid/unknown, and drops provably-out-of-diff findings to the summary rather than blindly retrying. Unknown cases keep the existing fallback behavior.
 
 ### CI outputs and artifacts
 
 The pipeline exposes the following to downstream jobs:
 
-- **dotenv report** (`.ocr/ocr-stats.env`): `OCR_COMMENTS_TOTAL`, `OCR_COMMENTS_INLINE`, `OCR_COMMENTS_SUMMARY`, `OCR_COMMENTS_ROUTED`, `OCR_COMMENTS_SKIPPED`, `OCR_COMMENTS_FAILED`, and `OCR_SUMMARY_URL`. Consume them in later stages via the `dotenv` artifact.
-- **Artifacts** (`when: always`, 1 week retention): `.ocr/ocr-result.json` (raw review JSON) and `.ocr/ocr-stderr.log` (OCR stderr), so you can inspect a failed review even when the job fails. Paths are project-relative (under `.ocr/`) because GitLab Runner refuses to upload artifacts outside the build directory.
+- **dotenv report** (`.kaid/kaid-stats.env`): `KAID_COMMENTS_TOTAL`, `KAID_COMMENTS_INLINE`, `KAID_COMMENTS_SUMMARY`, `KAID_COMMENTS_ROUTED`, `KAID_COMMENTS_SKIPPED`, `KAID_COMMENTS_FAILED`, and `KAID_SUMMARY_URL`. Consume them in later stages via the `dotenv` artifact.
+- **Artifacts** (`when: always`, 1 week retention): `.kaid/kaid-result.json` (raw review JSON) and `.kaid/kaid-stderr.log` (kaid stderr), so you can inspect a failed review even when the job fails. Paths are project-relative (under `.kaid/`) because GitLab Runner refuses to upload artifacts outside the build directory.
 
 ### Limit concurrency
 
-Set the `OCR_REVIEW_CONCURRENCY` CI/CD variable (passed to `ocr review --concurrency`). For large MRs, lowering this caps concurrent LLM requests:
+Set the `KAID_REVIEW_CONCURRENCY` CI/CD variable (passed to `kaid review --concurrency`). For large MRs, lowering this caps concurrent LLM requests:
 
 ```yaml
 variables:
-  OCR_REVIEW_CONCURRENCY: "5"
+  KAID_REVIEW_CONCURRENCY: "5"
 ```
 
 ### Provide background context
 
-Set the `OCR_BACKGROUND` CI/CD variable (passed to `ocr review --background`). A common choice is the MR title:
+Set the `KAID_BACKGROUND` CI/CD variable (passed to `kaid review --background`). A common choice is the MR title:
 
 ```yaml
 variables:
-  OCR_BACKGROUND: "$CI_MERGE_REQUEST_TITLE"
+  KAID_BACKGROUND: "$CI_MERGE_REQUEST_TITLE"
 ```
 
-This is particularly useful when your MR titles follow semantic conventions (e.g., `feat(auth): add OAuth2 support`) that clearly summarize what the MR implements. The background information helps OCR provide more relevant and context-aware review comments.
+This is particularly useful when your MR titles follow semantic conventions (e.g., `feat(auth): add OAuth2 support`) that clearly summarize what the MR implements. The background information helps kaid provide more relevant and context-aware review comments.
 
 ### Change the trigger events
 
 By default, the pipeline uses `only: [merge_requests]`, which triggers on **all** MR events (creation, updates, reopen). GitLab CI does not natively support fine-grained control to trigger **only on MR creation**.
 
-To avoid re-reviewing on every push to an existing MR (and wasting LLM API tokens), you can check for existing OCR reviews **before** running `ocr review`. Use a wrapper script that skips the review step if OCR comments already exist:
+To avoid re-reviewing on every push to an existing MR (and wasting LLM API tokens), you can check for existing kaid reviews **before** running `kaid review`. Use a wrapper script that skips the review step if kaid comments already exist:
 
 ```yaml
 script:
-  # Install OpenCodeReview
-  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+  # Install kaid
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_INSTALL_DIR=/usr/local/bin sh
 
-  # Configure OCR
+  # Configure kaid
   - |
-    : "${OCR_LLM_URL:?set OCR_LLM_URL in Settings -> CI/CD -> Variables}"
-    : "${OCR_LLM_AUTH_TOKEN:?set OCR_LLM_AUTH_TOKEN in Settings -> CI/CD -> Variables}"
-    : "${OCR_LLM_MODEL:?set OCR_LLM_MODEL in Settings -> CI/CD -> Variables}"
-    ocr config set llm.url "$OCR_LLM_URL"
-    ocr config set llm.auth_token "$OCR_LLM_AUTH_TOKEN"
-    ocr config set llm.model "$OCR_LLM_MODEL"
-    ocr config set llm.use_anthropic false
-    ocr config set llm.extra_body '{"thinking": {"type": "disabled"}}'
+    : "${KAID_LLM_URL:?set KAID_LLM_URL in Settings -> CI/CD -> Variables}"
+    : "${KAID_LLM_AUTH_TOKEN:?set KAID_LLM_AUTH_TOKEN in Settings -> CI/CD -> Variables}"
+    : "${KAID_LLM_MODEL:?set KAID_LLM_MODEL in Settings -> CI/CD -> Variables}"
+    kaid config set llm.url "$KAID_LLM_URL"
+    kaid config set llm.auth_token "$KAID_LLM_AUTH_TOKEN"
+    kaid config set llm.model "$KAID_LLM_MODEL"
+    kaid config set llm.use_anthropic false
+    kaid config set llm.extra_body '{"thinking": {"type": "disabled"}}'
 
-  # Check for existing OCR reviews and run review only if not found
+  # Check for existing kaid reviews and run review only if not found
   - |
     python3 << 'WRAPPER_SCRIPT'
     import json
@@ -208,23 +208,23 @@ script:
     SOURCE_BRANCH = os.environ["CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"]
     TARGET_BRANCH = os.environ["CI_MERGE_REQUEST_TARGET_BRANCH_NAME"]
 
-    # Check for existing OCR reviews
+    # Check for existing kaid reviews
     url = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/merge_requests/{MR_IID}/notes?per_page=100"
     req = urllib.request.Request(url, headers={"PRIVATE-TOKEN": API_TOKEN})
     with urllib.request.urlopen(req) as resp:
         notes = json.loads(resp.read().decode("utf-8"))
 
     for note in notes:
-        if "OpenCodeReview" in note.get("body", ""):
-            print("⏭️ OCR has already reviewed this MR. Skipping to save tokens.")
-            print("Delete previous OCR comments to re-trigger review.")
+        if "kaid" in note.get("body", ""):
+            print("⏭️ kaid has already reviewed this MR. Skipping to save tokens.")
+            print("Delete previous kaid comments to re-trigger review.")
             sys.exit(0)
 
-    # No existing review found - run OCR
-    print("🔍 No existing OCR review found. Running review...")
+    # No existing review found - run kaid
+    print("🔍 No existing kaid review found. Running review...")
     COMMIT_SHA = os.environ["CI_COMMIT_SHA"]
     result = subprocess.run([
-        "ocr", "review",
+        "kaid", "review",
         "--from", f"origin/{TARGET_BRANCH}",
         "--to", COMMIT_SHA,
         "--format", "json",
@@ -232,20 +232,20 @@ script:
     ], capture_output=True, text=True)
 
     # Save output for the posting script
-    os.makedirs(".ocr", exist_ok=True)
-    with open(".ocr/ocr-result.json", "w") as f:
+    os.makedirs(".kaid", exist_ok=True)
+    with open(".kaid/kaid-result.json", "w") as f:
         f.write(result.stdout)
-    with open(".ocr/ocr-stderr.log", "w") as f:
+    with open(".kaid/kaid-stderr.log", "w") as f:
         f.write(result.stderr)
 
-    print("OCR review completed.")
+    print("kaid review completed.")
     WRAPPER_SCRIPT
 
   # Post review comments to MR
-  - python3 post_review.py .ocr/ocr-result.json
+  - python3 post_review.py .kaid/kaid-result.json
 ```
 
-The key logic: the Python wrapper checks for existing OCR comments before running `ocr review`. If found, it exits early with `sys.exit(0)` before consuming any LLM tokens. To re-trigger a review, users can manually delete the previous OCR comments.
+The key logic: the Python wrapper checks for existing kaid comments before running `kaid review`. If found, it exits early with `sys.exit(0)` before consuming any LLM tokens. To re-trigger a review, users can manually delete the previous kaid comments.
 
 ### Self-hosted GitLab
 
@@ -264,7 +264,7 @@ Create a service account in your project:
 1. Go to your **Project → Settings → Service Accounts**
 2. Click **New service account**
 3. Fill in the following:
-   - **Name**: e.g., `OpenCodeReview Bot` (this will be the bot name shown in MR discussions)
+   - **Name**: e.g., `kaid Bot` (this will be the bot name shown in MR discussions)
    - **Username**: Will be auto-generated based on the name
 4. Click **Create service account**
 
@@ -274,7 +274,7 @@ After the service account is created, invite it to your project with appropriate
 
 1. Go to your **Project → Settings → Members**
 2. Click **Invite member**
-3. Search for the service account by name (e.g., `OpenCodeReview Bot`)
+3. Search for the service account by name (e.g., `kaid Bot`)
 4. Select the service account and assign a role (`Developer` or `Maintainer` required for posting discussions)
 5. Click **Invite**
 
@@ -286,7 +286,7 @@ Generate an access token for the service account:
 2. Click on the service account to view its details
 3. Click **Add new token**
 4. Configure the token:
-   - **Name**: e.g., `ocr-review-token`
+   - **Name**: e.g., `kaid-review-token`
    - **Expiration**: As needed
    - **Scope**: Select `api` (required for Discussions API)
 5. Click **Create token** and copy the token value
@@ -297,14 +297,14 @@ Update the `GITLAB_API_TOKEN` variable in your project's CI/CD settings:
 
 Go to **Settings → CI/CD → Variables** and update `GITLAB_API_TOKEN` with the service account's token.
 
-Now review comments will be posted with your service account identity (e.g., `OpenCodeReview Bot`), providing a clear and professional appearance for automated code reviews.
+Now review comments will be posted with your service account identity (e.g., `kaid Bot`), providing a clear and professional appearance for automated code reviews.
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **"API error 403"**: The `GITLAB_API_TOKEN` lacks `api` scope or doesn't have access to the project
-2. **"Failed to parse OCR output"**: Check that `OCR_LLM_URL` and `OCR_LLM_AUTH_TOKEN` variables are correctly set
+2. **"Failed to parse kaid output"**: Check that `KAID_LLM_URL` and `KAID_LLM_AUTH_TOKEN` variables are correctly set
 3. **"Cannot find merge-base"**: Ensure `GIT_DEPTH: 0` is set (full clone)
 4. **Inline comments on wrong lines**: GitLab requires exact SHA matching; the script fetches MR version metadata to get correct diff refs
 
@@ -314,8 +314,8 @@ Add verbose output to the review step:
 
 ```yaml
 script:
-  - cat .ocr/ocr-result.json
-  - cat .ocr/ocr-stderr.log
+  - cat .kaid/kaid-result.json
+  - cat .kaid/kaid-stderr.log
 ```
 
 ## Testing

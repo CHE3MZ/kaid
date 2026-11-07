@@ -26,7 +26,7 @@ Get your first code review running in a few minutes.
 Verify the binary:
 
 ```bash
-ocr version
+kaid version
 ```
 
 !!! tip "Other install methods"
@@ -38,36 +38,36 @@ ocr version
 
 !!! info "Using delegation mode?"
 
-    If the host agent supplies the model, skip to Step 4. Kaid never calls an
+    If the host agent supplies the model, skip to Step 4. kaid never calls an
     LLM on its own in [Delegation Mode](integrations/delegate.md).
 
 ```bash
-ocr config provider
+kaid config provider
 ```
 
 It lets you pick a built-in or custom provider, enter an API key, choose a
-model, save everything to the config file, and then runs `ocr llm test` once
+model, save everything to the config file, and then runs `kaid llm test` once
 to verify the endpoint. To switch models later:
 
 ```bash
-ocr config model
+kaid config model
 ```
 
 ### Alternative: non-interactive command
 
 In CI or a no-TUI environment, write to the same config directly with
-`ocr config set`:
+`kaid config set`:
 
 ```bash
-ocr config set provider                    anthropic
-ocr config set model                       claude-opus-4-6
-ocr config set providers.anthropic.api_key sk-ant-xxxxxxxxxx
+kaid config set provider                    anthropic
+kaid config set model                       claude-opus-4-6
+kaid config set providers.anthropic.api_key sk-ant-xxxxxxxxxx
 ```
 
 ## Step 3 - Test connectivity
 
 ```bash
-ocr llm test
+kaid llm test
 ```
 
 If you get an error like `no valid LLM endpoint configured`, recheck the Step 2
@@ -80,9 +80,9 @@ Move into any Git repository and run:
 ```bash
 cd path/to/your-repo
 
-ocr review                                    # (1)!
-ocr review --from main --to feature-branch    # (2)!
-ocr review --commit abc123                    # (3)!
+kaid review                                    # (1)!
+kaid review --from main --to feature-branch    # (2)!
+kaid review --commit abc123                    # (3)!
 ```
 
 1. **Workspace mode** reviews staged, unstaged, and untracked changes. This is
@@ -93,7 +93,7 @@ ocr review --commit abc123                    # (3)!
 
 !!! tip "Preview first"
 
-    Run `ocr review --preview` to see which files would be reviewed and which
+    Run `kaid review --preview` to see which files would be reviewed and which
     ones were excluded before spending a model call.
 
 ### JSON output for systems
@@ -103,13 +103,13 @@ on stdout is the JSON / final summary - exactly what an upstream agent or CI
 script wants.
 
 ```bash
-ocr review --format json --audience agent > review.json
+kaid review --format json --audience agent > review.json
 ```
 
 ??? example "Where do the session transcripts live?"
 
     Every run writes a JSONL transcript under
-    `~/.opencodereview/sessions/`. Run `ocr viewer` to browse it in a browser.
+    `~/.kaid/sessions/`. Run `kaid viewer` to browse it in a browser.
     See [Session Viewer](viewer.md) for the full UI.
 
 ## Next steps
@@ -118,7 +118,7 @@ ocr review --format json --audience agent > review.json
 [Configuration](configuration.md){ .md-button }
 [Review Rules](review-rules.md){ .md-button }
 
-- [Installation](installation.md) - every install method and OCR's state directory.
+- [Installation](installation.md) - every install method and kaid's state directory.
 - [Configuration](configuration.md) - every env var, config key, and built-in provider.
 - [CLI Reference](cli-reference.md) - every sub-command, flag, and output mode.
 - [Review Rules](review-rules.md) - customize what gets reviewed.

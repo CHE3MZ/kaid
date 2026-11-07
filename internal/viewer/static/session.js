@@ -3,7 +3,7 @@
 
 // The token breakdown table overflows its scroll wrapper on narrow screens;
 // make that wrapper an arrow-key reachable region like the list-page tables.
-ocrArrowScroll(document.querySelector(".token-breakdown-body"));
+kaidArrowScroll(document.querySelector(".token-breakdown-body"));
 
 document.querySelectorAll('.response-text').forEach(function(el) {
     const text = el.textContent;
@@ -57,7 +57,7 @@ document.querySelectorAll('.response-text').forEach(function(el) {
     // its default instead of taking the whole feature down.
     function storedHideMarked() {
         try {
-            return (localStorage.getItem('ocr-viewer-hide-marked') || '1') === '1';
+            return (localStorage.getItem('kaid-viewer-hide-marked') || '1') === '1';
         } catch (_) {
             return true;
         }
@@ -65,7 +65,7 @@ document.querySelectorAll('.response-text').forEach(function(el) {
 
     function storeHideMarked(value) {
         try {
-            localStorage.setItem('ocr-viewer-hide-marked', value ? '1' : '0');
+            localStorage.setItem('kaid-viewer-hide-marked', value ? '1' : '0');
         } catch (_) {
             // Nothing to persist without storage; the in-page toggle still works.
         }
@@ -189,7 +189,7 @@ document.querySelectorAll('.response-text').forEach(function(el) {
     }
 
     function marksStorageKey() {
-        return 'ocr-viewer-marks:' + window.location.pathname.replace(/\/$/, '');
+        return 'kaid-viewer-marks:' + window.location.pathname.replace(/\/$/, '');
     }
 
     function loadStoredMarks() {
@@ -238,7 +238,7 @@ document.querySelectorAll('.response-text').forEach(function(el) {
             // Storage full or disabled: the in-page marks still work, they
             // just won't survive a reload — say so in the toolbar.
             marksSaveFailed = true;
-            console.error('[ocr viewer] could not persist marks:', err);
+            console.error('[kaid viewer] could not persist marks:', err);
         }
     }
 
@@ -314,7 +314,7 @@ document.querySelectorAll('.response-text').forEach(function(el) {
         }
     });
 
-    commentsPager = window.ocrPager({
+    commentsPager = window.kaidPager({
         rows: cards,
         pager: pager,
         numbers: pageNumbers,

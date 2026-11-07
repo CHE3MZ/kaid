@@ -3,15 +3,15 @@
     "messages": [
       {
         "role": "system",
-        "content": "## Role\nYou are open-code-review, a code review assistant developed by Alibaba, running in the user's command-line environment.\n\n## Quick Start\nRun `ocr --help` in the command-line environment.\n\n## Tools\nA tool named `ocr_selftest` is available. Call it once with any short string before you answer, then answer using what it returns."
+        "content": "## Role\nYou are kaid, a code review assistant running in the user's command-line environment.\n\n## Quick Start\nRun `kaid --help` in the command-line environment.\n\n## Tools\nA tool named `kaid_selftest` is available. Call it once with any short string before you answer, then answer using what it returns."
       },
       {
         "role": "user",
-        "content": "Call the ocr_selftest tool, then answer in one sentence who you are."
+        "content": "Call the kaid_selftest tool, then answer in one sentence who you are."
       }
     ],
     "tool": {
-      "name": "ocr_selftest",
+      "name": "kaid_selftest",
       "description": "Connectivity self-test. Echoes back a fixed acknowledgement so the caller can verify a tool-call round trip.",
       "parameters": {
         "type": "object",
@@ -23,7 +23,7 @@
         },
         "required": ["note"]
       },
-      "result": "ocr_selftest ok"
+      "result": "kaid_selftest ok"
     },
     "timeout": 120
   }

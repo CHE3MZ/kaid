@@ -15,7 +15,7 @@ import (
 )
 
 // RetryReportSchemaVersion is the contract version of the emitted report.
-const RetryReportSchemaVersion = "ocr.llm-retry-report/v1"
+const RetryReportSchemaVersion = "kaid.llm-retry-report/v1"
 
 // ErrorClass is the attempt-level error classification. It is derived only from
 // the HTTP status and the Go error type — never from error message text — and it

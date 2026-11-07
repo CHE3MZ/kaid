@@ -18,10 +18,10 @@ import (
 )
 
 // rawLoggingEnv is the opt-in switch for raw LLM capture. Only the exact
-// value "1" enables it (mirrors telemetry's OCR_ENABLE_TELEMETRY), so an unset
+// value "1" enables it (mirrors telemetry's KAID_ENABLE_TELEMETRY), so an unset
 // or misspelled variable keeps the default: no middleware mounted, no files
 // created, no behavior change.
-const rawLoggingEnv = "OCR_RAW_LOGGING"
+const rawLoggingEnv = "KAID_RAW_LOGGING"
 
 func RawLoggingEnabled() bool {
 	return os.Getenv(rawLoggingEnv) == "1"
@@ -49,7 +49,7 @@ type RawRecord struct {
 	// FilePath, TaskType and RequestNo mirror session.TaskRecord identity and
 	// come from the RequestMeta attached to the request context. Scan requests
 	// carry no meta, so these stay empty / zero — an honest omission rather
-	// than a fabricated identity; `ocr llm test` captures nothing at all.
+	// than a fabricated identity; `kaid llm test` captures nothing at all.
 	FilePath  string `json:"file_path,omitempty"`
 	TaskType  string `json:"task_type,omitempty"`
 	RequestNo int    `json:"request_no,omitempty"`

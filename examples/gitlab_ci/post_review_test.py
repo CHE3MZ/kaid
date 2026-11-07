@@ -43,7 +43,7 @@ import post_review as pr  # noqa: E402
 
 
 def comment(**overrides):
-    """One OCR comment as ``ocr review --format json`` emits it."""
+    """One kaid comment as ``kaid review --format json`` emits it."""
     c = {
         "path": "main.py",
         "content": "possible issue",
@@ -265,8 +265,8 @@ class FormatCommentTest(unittest.TestCase):
         self.assertNotIn("```suggestion", body)
 
     def test_with_id_tag(self):
-        body = pr.format_comment(comment(content="hi"), "ocr-1-2-deadbeef")
-        self.assertTrue(body.startswith("<!-- ocr-1-2-deadbeef -->\n"))
+        body = pr.format_comment(comment(content="hi"), "kaid-1-2-deadbeef")
+        self.assertTrue(body.startswith("<!-- kaid-1-2-deadbeef -->\n"))
         self.assertIn("hi", body)
 
     def test_with_badge(self):
@@ -493,8 +493,8 @@ class PublishTest(unittest.TestCase):
         # LGTM path goes straight through upsert_summary (no anchor phase), so
         # the final body lands in post_note when no prior summary note exists.
         self.assertEqual(rec.final_summary_body,
-                         "<!-- ocr-summary -->\n<!-- ocr-summary-run:42-7 -->\n"
-                         "✅ **OpenCodeReview**: Looks good to me.")
+                         "<!-- kaid-summary -->\n<!-- kaid-summary-run:42-7 -->\n"
+                         "✅ **kaid**: Looks good to me.")
 
     def test_warnings_in_summary(self):
         stats, rec = run_publish({"comments": [comment()], "warnings": [{"file": "a.py", "message": "skipped"}]})
@@ -707,7 +707,7 @@ class NonStickySummaryTest(unittest.TestCase):
 
 class SummaryTagPureTest(unittest.TestCase):
     def test_summary_tag_format(self):
-        self.assertEqual(pr.summary_tag_for("42-7"), "<!-- ocr-summary-run:42-7 -->")
+        self.assertEqual(pr.summary_tag_for("42-7"), "<!-- kaid-summary-run:42-7 -->")
 
     def test_wrap_summary_body_embeds_both_markers(self):
         body = pr.wrap_summary_body("content here", "42-7")
@@ -729,7 +729,7 @@ class SummaryTagPureTest(unittest.TestCase):
         self.assertEqual(pr.find_summary_note([{"id": 1, "body": "x"}, n])["id"], 9)
 
     def test_find_summary_note_returns_none_when_no_match(self):
-        self.assertIsNone(pr.find_summary_note([], tag="<!-- ocr-summary-run:1-1 -->"))
+        self.assertIsNone(pr.find_summary_note([], tag="<!-- kaid-summary-run:1-1 -->"))
         self.assertIsNone(pr.find_summary_note([{"id": 1, "body": "nope"}]))
 
 
@@ -790,7 +790,7 @@ class IncrementalPublishTest(unittest.TestCase):
         return c
 
     def test_overlapping_comment_skipped(self):
-        body_with_marker = "<!-- ocr-1-1-aabb -->\nold finding"
+        body_with_marker = "<!-- kaid-1-1-aabb -->\nold finding"
         discussions = [{
             "notes": [{
                 "body": body_with_marker,
@@ -805,7 +805,7 @@ class IncrementalPublishTest(unittest.TestCase):
         self.assertEqual(len(rec.disc_calls), 0)
 
     def test_non_overlapping_comment_posted(self):
-        body_with_marker = "<!-- ocr-1-1-aabb -->\nold finding"
+        body_with_marker = "<!-- kaid-1-1-aabb -->\nold finding"
         discussions = [{
             "notes": [{"body": body_with_marker,
                        "position": {"new_path": "main.py", "new_line": 99}}],
@@ -1156,7 +1156,7 @@ class ReadPacingTest(unittest.TestCase):
 
 class IdempotencyTest(unittest.TestCase):
     API_BASE = "https://gitlab.example/api/v4/projects/1/merge_requests/2"
-    CID = "ocr-42-7-deadbeefdeadbeef"
+    CID = "kaid-42-7-deadbeefdeadbeef"
 
     def run_with_urlopen(self, fake_urlopen, config=None, discussion=None):
         poster = pr.make_poster(self.API_BASE, "tok", "PRIVATE-TOKEN", config or DEFAULT_CONFIG)
@@ -1424,30 +1424,30 @@ class FetchDiffRefsTest(unittest.TestCase):
     def test_picks_version_matching_expected_head(self):
         versions = self._versions(
             ("aaa", "bbb", "old-head", "2024-01-01T00:00:00Z"),
-            ("ccc", "ddd", "ocr-head", "2024-01-02T00:00:00Z"),
+            ("ccc", "ddd", "kaid-head", "2024-01-02T00:00:00Z"),
         )
         body = json.dumps(versions).encode()
         with mock.patch.object(pr.urllib.request, "urlopen",
                                lambda req, timeout=None: FakeResponse(body)), \
                 mock.patch.object(pr, "_sleep", lambda _s: None):
             refs = pr.fetch_diff_refs(self.API_BASE, self.TOKEN, self.AUTH_HEADER,
-                                      DEFAULT_CONFIG, {"head": "ocr-head"})
-        self.assertEqual(refs, {"base_sha": "ccc", "start_sha": "ddd", "head_sha": "ocr-head"})
+                                      DEFAULT_CONFIG, {"head": "kaid-head"})
+        self.assertEqual(refs, {"base_sha": "ccc", "start_sha": "ddd", "head_sha": "kaid-head"})
 
     def test_picks_version_matching_head_and_base(self):
         # Head matches on both versions but base differs: must pick the one
         # whose base also matches, not just the first head match.
         versions = self._versions(
-            ("wrong-base", "bbb", "ocr-head", "2024-01-02T00:00:00Z"),
-            ("ocr-base", "ddd", "ocr-head", "2024-01-01T00:00:00Z"),
+            ("wrong-base", "bbb", "kaid-head", "2024-01-02T00:00:00Z"),
+            ("kaid-base", "ddd", "kaid-head", "2024-01-01T00:00:00Z"),
         )
         body = json.dumps(versions).encode()
         with mock.patch.object(pr.urllib.request, "urlopen",
                                lambda req, timeout=None: FakeResponse(body)), \
                 mock.patch.object(pr, "_sleep", lambda _s: None):
             refs = pr.fetch_diff_refs(self.API_BASE, self.TOKEN, self.AUTH_HEADER,
-                                      DEFAULT_CONFIG, {"head": "ocr-head", "base": "ocr-base"})
-        self.assertEqual(refs["base_sha"], "ocr-base")
+                                      DEFAULT_CONFIG, {"head": "kaid-head", "base": "kaid-base"})
+        self.assertEqual(refs["base_sha"], "kaid-base")
 
     def test_falls_back_to_newest_when_no_sha_match(self):
         versions = self._versions(
@@ -1508,13 +1508,13 @@ class BuildConfigTest(unittest.TestCase):
 
     def test_env_overrides(self):
         env = {
-            "OCR_SUCCESS_DELAY": "5000", "OCR_FAILURE_DELAY": "2500",
-            "OCR_RATE_LIMIT_THRESHOLD": "5", "OCR_RETRY_BASE_DELAY": "3000",
-            "OCR_MAX_RETRIES": "5", "OCR_MAX_RETRY_DELAY": "120000",
-            "OCR_STICKY_SUMMARY": "false", "OCR_INCREMENTAL": "true",
-            "OCR_INCREMENTAL_OVERLAP_THRESHOLD": "0.8",
-            "OCR_ROUTE_SEVERITY_BELOW": "low", "OCR_ROUTE_CATEGORIES": "style,doc",
-            "OCR_FAIL_ON_SEVERITY": "critical", "CI_PIPELINE_ID": "9", "CI_JOB_ID": "3",
+            "KAID_SUCCESS_DELAY": "5000", "KAID_FAILURE_DELAY": "2500",
+            "KAID_RATE_LIMIT_THRESHOLD": "5", "KAID_RETRY_BASE_DELAY": "3000",
+            "KAID_MAX_RETRIES": "5", "KAID_MAX_RETRY_DELAY": "120000",
+            "KAID_STICKY_SUMMARY": "false", "KAID_INCREMENTAL": "true",
+            "KAID_INCREMENTAL_OVERLAP_THRESHOLD": "0.8",
+            "KAID_ROUTE_SEVERITY_BELOW": "low", "KAID_ROUTE_CATEGORIES": "style,doc",
+            "KAID_FAIL_ON_SEVERITY": "critical", "CI_PIPELINE_ID": "9", "CI_JOB_ID": "3",
         }
         config = pr.build_config(env)
         self.assertEqual(config["success_delay"], 5.0)
@@ -1532,19 +1532,19 @@ class BuildConfigTest(unittest.TestCase):
         self.assertEqual(config["read_success_delay"], 0.5)
         self.assertEqual(config["read_low_remaining_spacing"], 5.0)
         # Overridable via env.
-        config = pr.build_config({"OCR_READ_SUCCESS_DELAY": "250",
-                                  "OCR_READ_LOW_REMAINING_SPACING": "8000"})
+        config = pr.build_config({"KAID_READ_SUCCESS_DELAY": "250",
+                                  "KAID_READ_LOW_REMAINING_SPACING": "8000"})
         self.assertEqual(config["read_success_delay"], 0.25)
         self.assertEqual(config["read_low_remaining_spacing"], 8.0)
 
     def test_incremental_overlap_threshold_non_numeric_falls_back(self):
         # A malformed value must not crash build_config; it falls back to the
         # default via resolve_threshold.
-        config = pr.build_config({"OCR_INCREMENTAL_OVERLAP_THRESHOLD": "bogus"})
+        config = pr.build_config({"KAID_INCREMENTAL_OVERLAP_THRESHOLD": "bogus"})
         self.assertEqual(config["incremental_overlap_threshold"], pr.DEFAULT_OVERLAP_THRESHOLD)
 
     def test_incremental_overlap_threshold_out_of_range_falls_back(self):
-        config = pr.build_config({"OCR_INCREMENTAL_OVERLAP_THRESHOLD": "2.5"})
+        config = pr.build_config({"KAID_INCREMENTAL_OVERLAP_THRESHOLD": "2.5"})
         self.assertEqual(config["incremental_overlap_threshold"], pr.DEFAULT_OVERLAP_THRESHOLD)
 
 
@@ -1558,10 +1558,10 @@ class StatsGatingTest(unittest.TestCase):
         pr.write_stats_file(path, stats)
         with open(path) as f:
             content = f.read()
-        self.assertIn("OCR_COMMENTS_TOTAL=5", content)
-        self.assertIn("OCR_COMMENTS_INLINE=3", content)
-        self.assertIn("OCR_COMMENTS_SKIPPED=1", content)
-        self.assertIn("OCR_SUMMARY_URL=https://x/1", content)
+        self.assertIn("KAID_COMMENTS_TOTAL=5", content)
+        self.assertIn("KAID_COMMENTS_INLINE=3", content)
+        self.assertIn("KAID_COMMENTS_SKIPPED=1", content)
+        self.assertIn("KAID_SUMMARY_URL=https://x/1", content)
 
     def test_check_fail_on_severity(self):
         comments = [{"severity": "high"}, {"severity": "low"}]
@@ -1689,8 +1689,8 @@ class MainAuthHeaderTest(unittest.TestCase):
         # artifact is present for downstream jobs.
         with open(stats_path.name) as f:
             content = f.read()
-        self.assertIn("OCR_COMMENTS_TOTAL=0", content)
-        self.assertIn("OCR_COMMENTS_INLINE=0", content)
+        self.assertIn("KAID_COMMENTS_TOTAL=0", content)
+        self.assertIn("KAID_COMMENTS_INLINE=0", content)
 
     def test_missing_token_fails_fast(self):
         env = dict(self.BASE_ENV)
@@ -1702,11 +1702,11 @@ class MainAuthHeaderTest(unittest.TestCase):
         self.assertEqual(rc, 1)
         with open(stats_path.name) as f:
             content = f.read()
-        self.assertIn("OCR_COMMENTS_TOTAL=0", content)
+        self.assertIn("KAID_COMMENTS_TOTAL=0", content)
 
     def test_fail_on_severity_returns_nonzero(self):
         rc, captured = self.run_main_with_captured_poster(
-            {"GITLAB_API_TOKEN": "glpat-xxxx", "OCR_FAIL_ON_SEVERITY": "critical"},
+            {"GITLAB_API_TOKEN": "glpat-xxxx", "KAID_FAIL_ON_SEVERITY": "critical"},
             result={"comments": [comment(severity="critical")]},
         )
         self.assertEqual(rc, 1)

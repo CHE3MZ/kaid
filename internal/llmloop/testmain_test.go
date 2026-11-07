@@ -9,7 +9,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	tmp, err := os.MkdirTemp("", "ocr-test-*")
+	tmp, err := os.MkdirTemp("", "kaid-test-*")
 	if err != nil {
 		panic(err)
 	}

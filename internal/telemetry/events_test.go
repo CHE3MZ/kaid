@@ -143,7 +143,7 @@ func TestPrintTraceSummary_WithTokenDetails(t *testing.T) {
 			Duration: 3 * time.Second,
 		})
 	})
-	want := "[ocr] Summary: 5 file(s) reviewed, 10 comment(s), ~1200 token(s) used (input: ~1000, output: ~200), 3s elapsed\n"
+	want := "[kaid] Summary: 5 file(s) reviewed, 10 comment(s), ~1200 token(s) used (input: ~1000, output: ~200), 3s elapsed\n"
 	if out != want {
 		t.Errorf("PrintTraceSummary output = %q, want %q", out, want)
 	}
@@ -158,7 +158,7 @@ func TestPrintTraceSummary_WithCacheTokens(t *testing.T) {
 			Duration: 2 * time.Second,
 		})
 	})
-	want := "[ocr] Summary: 3 file(s) reviewed, 2 comment(s), ~600 token(s) used (input: ~500, output: ~100), cache(read: ~200, write: ~50), 2s elapsed\n"
+	want := "[kaid] Summary: 3 file(s) reviewed, 2 comment(s), ~600 token(s) used (input: ~500, output: ~100), cache(read: ~200, write: ~50), 2s elapsed\n"
 	if out != want {
 		t.Errorf("PrintTraceSummary output = %q, want %q", out, want)
 	}
@@ -172,7 +172,7 @@ func TestPrintTraceSummary_NoTokenDetails(t *testing.T) {
 			Duration:    1 * time.Second,
 		})
 	})
-	want := "[ocr] Summary: 2 file(s) reviewed, 1 comment(s), ~500 token(s) used, 1s elapsed\n"
+	want := "[kaid] Summary: 2 file(s) reviewed, 1 comment(s), ~500 token(s) used, 1s elapsed\n"
 	if out != want {
 		t.Errorf("PrintTraceSummary output = %q, want %q", out, want)
 	}
@@ -187,8 +187,8 @@ func TestPrintTraceSummary_WithSessionID(t *testing.T) {
 			SessionID: "3a7f2b1c-9d4e-4f8a-b2c1-6e7f8a9b0c1d",
 		})
 	})
-	want := "[ocr] Summary: 5 file(s) reviewed, 10 comment(s), ~1200 token(s) used (input: ~1000, output: ~200), 3s elapsed\n" +
-		"[ocr] Session: 3a7f2b1c-9d4e-4f8a-b2c1-6e7f8a9b0c1d\n"
+	want := "[kaid] Summary: 5 file(s) reviewed, 10 comment(s), ~1200 token(s) used (input: ~1000, output: ~200), 3s elapsed\n" +
+		"[kaid] Session: 3a7f2b1c-9d4e-4f8a-b2c1-6e7f8a9b0c1d\n"
 	if out != want {
 		t.Errorf("PrintTraceSummary output = %q, want %q", out, want)
 	}

@@ -39,12 +39,12 @@ func TestSystemRuleCanonicalConfig(t *testing.T) {
 func TestComposedResolverCanonicalConfig(t *testing.T) {
 	setTestHome(t, t.TempDir())
 	dir := t.TempDir()
-	ocrDir := filepath.Join(dir, ".opencodereview")
-	if err := os.MkdirAll(ocrDir, 0o755); err != nil {
+	kaidDir := filepath.Join(dir, ".kaid")
+	if err := os.MkdirAll(kaidDir, 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}
 	ruleJSON := `{"rules":[{"path":"force-api/**/*.java","rule":"project-java-rule"}]}`
-	if err := os.WriteFile(filepath.Join(ocrDir, "rule.json"), []byte(ruleJSON), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(kaidDir, "rule.json"), []byte(ruleJSON), 0o644); err != nil {
 		t.Fatalf("write rule.json: %v", err)
 	}
 
@@ -80,12 +80,12 @@ func TestComposedResolverCanonicalConfig_ProjectRuleChangeChangesOutput(t *testi
 		home := t.TempDir()
 		setTestHome(t, home)
 		dir := t.TempDir()
-		ocrDir := filepath.Join(dir, ".opencodereview")
-		if err := os.MkdirAll(ocrDir, 0o755); err != nil {
+		kaidDir := filepath.Join(dir, ".kaid")
+		if err := os.MkdirAll(kaidDir, 0o755); err != nil {
 			t.Fatalf("mkdir: %v", err)
 		}
 		ruleJSON := `{"rules":[{"path":"a/**","rule":"` + rule + `"}]}`
-		if err := os.WriteFile(filepath.Join(ocrDir, "rule.json"), []byte(ruleJSON), 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(kaidDir, "rule.json"), []byte(ruleJSON), 0o644); err != nil {
 			t.Fatalf("write rule.json: %v", err)
 		}
 		resolver, _, err := NewResolver(dir, "", ResolverOptions{})

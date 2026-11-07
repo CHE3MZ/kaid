@@ -3,14 +3,14 @@
 
 import { ConfigPanelFocus, isConfigReady } from '../shared/configUtils';
 import { ConfigPanelHostToWebview, HostToWebview } from '../shared/messages';
-import { EnvCheckResult, OcrConfig, LogLine } from '../shared/types';
+import { EnvCheckResult, KaidConfig, LogLine } from '../shared/types';
 import { t } from '../shared/i18n';
 
 export type CliStatus = 'unknown' | 'checking' | 'installed' | 'missing';
 export type ConnTest = { status: 'idle' | 'testing' | 'ok' | 'fail'; message?: string };
 
 export interface ConfigPanelState {
-  config: OcrConfig | null;
+  config: KaidConfig | null;
   panelFocus: ConfigPanelFocus | null;
   skipEnvCheck: boolean;
   cliStatus: CliStatus;
@@ -44,7 +44,7 @@ export type ConfigPanelLocalAction =
   | { type: 'clearErrorHint' };
 
 function envToCliStatus(env: EnvCheckResult): CliStatus {
-  return env.ocr.ok ? 'installed' : 'missing';
+  return env.kaid.ok ? 'installed' : 'missing';
 }
 
 export function configPanelReducer(

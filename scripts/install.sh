@@ -3,21 +3,21 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 CHE3MZ (kaid)
 
-# Install the ocr (Open Code Review) CLI from GitHub releases.
+# Install the kaid CLI from GitHub releases.
 #   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
 # Prefer to inspect first:
 #   curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh -o install.sh
 #   less install.sh && sh install.sh
-# Env: OCR_INSTALL_DIR (default /usr/local/bin), OCR_VERSION (default latest),
-# OCR_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
+# Env: KAID_INSTALL_DIR (default /usr/local/bin), KAID_VERSION (default latest),
+# KAID_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
 set -eu
 
 main() {
   REPO="CHE3MZ/kaid"
-  BIN="ocr"
-  ASSET_PREFIX="opencodereview"
-  INSTALL_DIR="${OCR_INSTALL_DIR:-/usr/local/bin}"
-  VERSION="${OCR_VERSION:-}"
+  BIN="kaid"
+  ASSET_PREFIX="kaid"
+  INSTALL_DIR="${KAID_INSTALL_DIR:-/usr/local/bin}"
+  VERSION="${KAID_VERSION:-}"
 
   command -v curl >/dev/null 2>&1 || err "curl is required"
 
@@ -47,11 +47,11 @@ main() {
   esac
 
   asset="${ASSET_PREFIX}-${os}-${arch}"
-  prefix="$(printf '%s' "${OCR_GITHUB_MIRROR:-}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+  prefix="$(printf '%s' "${KAID_GITHUB_MIRROR:-}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
   prefix="${prefix#https://}"
   prefix="${prefix#http://}"
   prefix="${prefix%/}"
-  case "$prefix" in *[[:space:]]*) err "OCR_GITHUB_MIRROR contains spaces: '$prefix'" ;; esac
+  case "$prefix" in *[[:space:]]*) err "KAID_GITHUB_MIRROR contains spaces: '$prefix'" ;; esac
   if [ -n "$prefix" ]; then
     printf 'warning: downloading from unofficial GitHub mirror "%s" (checksum integrity is not guaranteed)\n' "$prefix" >&2
     base="https://${prefix}/github.com/$REPO/releases/download/$VERSION"
@@ -92,7 +92,7 @@ install_binary() {
     sudo mkdir -p "$dir"
     sudo install -m 0755 "$src" "$dir/$bin"
   else
-    err "$dir is not writable and sudo is unavailable; set OCR_INSTALL_DIR to a writable path"
+    err "$dir is not writable and sudo is unavailable; set KAID_INSTALL_DIR to a writable path"
   fi
 }
 

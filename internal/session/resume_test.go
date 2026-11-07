@@ -850,14 +850,14 @@ func mustJSON(t *testing.T, v any) []byte {
 }
 
 func TestApplySessionStart_SetsScanPathScope(t *testing.T) {
-	paths := []string{"./internal/scan/", "cmd/opencodereview", "internal/scan"}
+	paths := []string{"./internal/scan/", "cmd/kaid", "internal/scan"}
 	s := &ResumeState{Items: make(map[string]ResumeItem)}
 	s.applySessionStart(resumeRecord{
 		SessionID:  "s1",
 		ReviewMode: ReviewModeFullScan,
 		ScanPaths:  &paths,
 	})
-	want := []string{"cmd/opencodereview", "internal/scan"}
+	want := []string{"cmd/kaid", "internal/scan"}
 	if !s.HasScanPathScope {
 		t.Fatal("HasScanPathScope = false, want true")
 	}
@@ -882,10 +882,10 @@ func TestValidateScanOptions_ScanPathScopeMatchesNormalized(t *testing.T) {
 	s := &ResumeState{
 		SessionID:        "s1",
 		ReviewMode:       ReviewModeFullScan,
-		ScanPaths:        []string{"cmd/opencodereview", "internal/scan"},
+		ScanPaths:        []string{"cmd/kaid", "internal/scan"},
 		HasScanPathScope: true,
 	}
-	if err := s.ValidateScanOptions([]string{"./internal/scan/", "cmd/opencodereview"}); err != nil {
+	if err := s.ValidateScanOptions([]string{"./internal/scan/", "cmd/kaid"}); err != nil {
 		t.Fatalf("ValidateScanOptions: %v", err)
 	}
 }

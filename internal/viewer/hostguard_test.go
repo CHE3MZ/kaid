@@ -138,8 +138,8 @@ func TestHostGuard(t *testing.T) {
 		{"wildcard-bind-attacker-rejected", "0.0.0.0:5483", "", "evil.example", 403, false},
 
 		// Env extension allows additional hosts
-		{"env-allowed", "0.0.0.0:5483", "ocr.lan,review.internal", "review.internal:5483", 200, true},
-		{"env-not-listed-rejected", "0.0.0.0:5483", "ocr.lan", "review.internal:5483", 403, false},
+		{"env-allowed", "0.0.0.0:5483", "kaid.lan,review.internal", "review.internal:5483", 200, true},
+		{"env-not-listed-rejected", "0.0.0.0:5483", "kaid.lan", "review.internal:5483", 403, false},
 	}
 
 	for _, c := range cases {

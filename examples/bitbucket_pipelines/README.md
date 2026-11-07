@@ -1,20 +1,20 @@
-# OpenCodeReview - Bitbucket Pipelines
+# kaid - Bitbucket Pipelines
 
-This example reviews Bitbucket Cloud pull requests with OpenCodeReview (OCR)
+This example reviews Bitbucket Cloud pull requests with kaid
 and posts the findings back to the pull request.
 
 ## How it works
 
 ```text
-PR created or updated → Bitbucket Pipeline → OCR reviews diff → PR comments posted
+PR created or updated → Bitbucket Pipeline → kaid reviews diff → PR comments posted
 ```
 
 1. Bitbucket's `pullrequest-push` trigger starts the custom
-   `ocr-pr-review` pipeline when a pull request is created or its source branch
+   `kaid-pr-review` pipeline when a pull request is created or its source branch
    is updated.
-2. The pipeline installs OCR in a `node:20` container and configures the LLM
+2. The pipeline installs kaid in a `node:20` container and configures the LLM
    from secured repository variables.
-3. OCR compares `origin/$BITBUCKET_PR_DESTINATION_BRANCH` with
+3. kaid compares `origin/$BITBUCKET_PR_DESTINATION_BRANCH` with
    `$BITBUCKET_COMMIT` and writes JSON output.
 4. A dependency-free Node.js script posts each finding through the Bitbucket
    Pull Request Comments API. It creates an inline comment when the reported
@@ -26,7 +26,7 @@ PR created or updated → Bitbucket Pipeline → OCR reviews diff → PR comment
 ### 1. Copy the pipeline file
 
 Copy [`bitbucket-pipelines.yml`](bitbucket-pipelines.yml) to the root of the
-repository you want OCR to review:
+repository you want kaid to review:
 
 ```bash
 cp examples/bitbucket_pipelines/bitbucket-pipelines.yml ./bitbucket-pipelines.yml
@@ -43,13 +43,13 @@ and add:
 
 | Variable | Required | Secured | Description |
 | --- | --- | --- | --- |
-| `OCR_LLM_URL` | Yes | No | LLM API endpoint, such as `https://api.openai.com/v1/chat/completions` |
-| `OCR_LLM_AUTH_TOKEN` | Yes | Yes | LLM API authentication token |
-| `OCR_LLM_MODEL` | Yes | No | Model name; OCR has no built-in default and fails when this is unset |
+| `KAID_LLM_URL` | Yes | No | LLM API endpoint, such as `https://api.openai.com/v1/chat/completions` |
+| `KAID_LLM_AUTH_TOKEN` | Yes | Yes | LLM API authentication token |
+| `KAID_LLM_MODEL` | Yes | No | Model name; kaid has no built-in default and fails when this is unset |
 | `BITBUCKET_ACCESS_TOKEN` | Recommended | Yes | Repository access token used as a Bearer token to post PR comments |
 | `BITBUCKET_API_TOKEN` | Alternative | Yes | Scoped user API token; use with `BITBUCKET_API_TOKEN_EMAIL` |
 | `BITBUCKET_API_TOKEN_EMAIL` | With API token | No | Atlassian account email belonging to `BITBUCKET_API_TOKEN` |
-| `OCR_LLM_USE_ANTHROPIC` | No | No | Set to `true` for the Anthropic API format; defaults to `false` |
+| `KAID_LLM_USE_ANTHROPIC` | No | No | Set to `true` for the Anthropic API format; defaults to `false` |
 
 Configure **one** Bitbucket authentication method:
 
@@ -73,7 +73,7 @@ Bitbucket supplies the remaining context automatically:
 
 1. Open **Repository settings → Security → Access tokens**.
 2. Select **Create access token** and give it a descriptive name, such as
-   `OpenCodeReview Bot`.
+   `kaid Bot`.
 3. Grant **Pull requests: Write** permission.
 4. Copy the token into the secured `BITBUCKET_ACCESS_TOKEN` repository
    variable.
@@ -111,7 +111,7 @@ the named custom pipeline for every source branch.
 
 ## Comment behavior
 
-OCR JSON findings contain a path, content, and new-side start/end lines. The
+kaid JSON findings contain a path, content, and new-side start/end lines. The
 posting script maps those fields to Bitbucket's `content.raw` and `inline`
 comment properties:
 
@@ -121,7 +121,7 @@ comment properties:
   heading.
 - Findings without usable line information are posted as general comments.
 - Suggested replacement code is included in a fenced Markdown block.
-- Every run ends with an `OpenCodeReview summary` comment, including runs that
+- Every run ends with an `kaid summary` comment, including runs that
   find no issues.
 
 Any authentication, permission, rate-limit, or server error fails the posting
@@ -129,18 +129,18 @@ step instead of silently losing comments.
 
 ## Customization
 
-### Pin an OCR version
+### Pin a kaid version
 
 For reproducible builds, replace the install command with a version validated
 by your team:
 
 ```yaml
-- curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR=/usr/local/bin sh
+- curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_VERSION=1.7.12 KAID_INSTALL_DIR=/usr/local/bin sh
 ```
 
 ### Use an Anthropic endpoint
 
-Set `OCR_LLM_USE_ANTHROPIC` to `true`. Leave it unset or set it to `false` for
+Set `KAID_LLM_USE_ANTHROPIC` to `true`. Leave it unset or set it to `false` for
 OpenAI-compatible endpoints.
 
 ### Add custom review rules
@@ -150,11 +150,11 @@ copy to `--rule`:
 
 ```yaml
 git show \
-  "origin/${BITBUCKET_PR_DESTINATION_BRANCH}:.opencodereview/rule.json" \
-  > /tmp/ocr-rule.json
+  "origin/${BITBUCKET_PR_DESTINATION_BRANCH}:.kaid/rule.json" \
+  > /tmp/kaid-rule.json
 
-ocr review \
-  --rule /tmp/ocr-rule.json \
+kaid review \
+  --rule /tmp/kaid-rule.json \
   --from "origin/${BITBUCKET_PR_DESTINATION_BRANCH}" \
   --to "${BITBUCKET_COMMIT}" \
   --format json \
@@ -169,7 +169,7 @@ unreviewed PR branch when secured variables are available to the step.
 Add `--concurrency` to control parallel LLM requests:
 
 ```yaml
-ocr review \
+kaid review \
   --concurrency 5 \
   --from "origin/${BITBUCKET_PR_DESTINATION_BRANCH}" \
   --to "${BITBUCKET_COMMIT}"
@@ -184,7 +184,7 @@ triggers:
   pullrequest-push:
     - condition: BITBUCKET_PR_DESTINATION_BRANCH == "main"
       pipelines:
-        - ocr-pr-review
+        - kaid-pr-review
 ```
 
 ### Use the traditional pull-request selector
@@ -196,7 +196,7 @@ be selected with the traditional syntax:
 pipelines:
   pull-requests:
     "**":
-      - step: *ocr-pr-review
+      - step: *kaid-pr-review
 ```
 
 Do not configure both forms for the same branches, or Bitbucket may run the
@@ -207,10 +207,10 @@ review twice.
 - **Fork pull requests:** Bitbucket Cloud does not trigger pull-request
   pipelines for pull requests whose source is a fork.
 - **Merged build setup:** Bitbucket prepares pull-request builds by merging the
-  destination branch into the source branch. OCR still uses the explicit
+  destination branch into the source branch. kaid still uses the explicit
   destination tracking ref and `$BITBUCKET_COMMIT` so it reviews the PR diff,
   not Bitbucket's temporary merge result.
-- **Clone history:** The example uses `clone: depth: full` so OCR can find a
+- **Clone history:** The example uses `clone: depth: full` so kaid can find a
   merge base for long-lived branches.
 - **Repeated runs:** Each source-branch update creates a new set of findings
   and a new summary. Bitbucket Cloud limits a pull request to 200 comments, so
@@ -237,12 +237,12 @@ Bitbucket username or token label.
 Check the token scope and confirm that the token owner or repository token can
 access the current repository and comment on its pull requests.
 
-### OCR review produced no output
+### kaid review produced no output
 
-The pipeline prints OCR stderr before failing. Use those diagnostics to verify
-`OCR_LLM_URL`, `OCR_LLM_AUTH_TOKEN`, and `OCR_LLM_MODEL`. Also confirm that the
+The pipeline prints kaid stderr before failing. Use those diagnostics to verify
+`KAID_LLM_URL`, `KAID_LLM_AUTH_TOKEN`, and `KAID_LLM_MODEL`. Also confirm that the
 destination branch was fetched and that the PR changes contain file types
-supported by OCR.
+supported by kaid.
 
 ### Cannot find a merge base
 
@@ -251,7 +251,7 @@ Keep `clone: depth: full` and the explicit destination-branch `git fetch`.
 ### Duplicate pipeline runs
 
 Pull-request pipelines can run in addition to `default` or `branches`
-pipelines. Ensure only one configured pipeline invokes OCR for PR events, and
+pipelines. Ensure only one configured pipeline invokes kaid for PR events, and
 do not combine the `pullrequest-push` trigger with the traditional
 `pull-requests` selector for the same PRs.
 

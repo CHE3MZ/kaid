@@ -285,7 +285,7 @@ func TestDeleteSessionAt_RefusesATraversingEncodedDir(t *testing.T) {
 		loc := Location{
 			SessionID:  "important",
 			EncodedDir: encoded,
-			Path:       filepath.Join(home, ".opencodereview", sessionSubDir, encoded, "important.jsonl"),
+			Path:       filepath.Join(home, ".kaid", sessionSubDir, encoded, "important.jsonl"),
 		}
 		if err := DeleteSessionAt(loc); !errors.Is(err, ErrSessionOutsideRoot) {
 			t.Errorf("EncodedDir %q: error = %v, want ErrSessionOutsideRoot", encoded, err)

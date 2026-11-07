@@ -9,7 +9,7 @@ Run with:
     python3 -m unittest post_review_test.py -v
 
 Everything is mocked (subprocess, urllib) so these tests need neither a
-real `ocr` install nor network access / a real CodeUp instance.
+real `kaid` install nor network access / a real CodeUp instance.
 """
 from __future__ import annotations
 
@@ -22,20 +22,20 @@ from unittest import mock
 import post_review as pr
 
 
-class RunOcrReviewTests(unittest.TestCase):
+class RunKaidReviewTests(unittest.TestCase):
     def test_success_parses_json(self):
         fake_proc = mock.Mock(returncode=0, stdout='{"comments": []}', stderr="")
         with mock.patch("subprocess.run", return_value=fake_proc) as run_mock:
-            result = pr.run_ocr_review()
+            result = pr.run_kaid_review()
         self.assertEqual(result, {"comments": []})
         run_mock.assert_called_once()
         cmd = run_mock.call_args[0][0]
-        self.assertEqual(cmd, ["ocr", "review", "--audience", "agent", "--format", "json"])
+        self.assertEqual(cmd, ["kaid", "review", "--audience", "agent", "--format", "json"])
 
     def test_from_to_ref_are_passed_through(self):
         fake_proc = mock.Mock(returncode=0, stdout='{"comments": []}', stderr="")
         with mock.patch("subprocess.run", return_value=fake_proc) as run_mock:
-            pr.run_ocr_review(from_ref="main", to_ref="feature-x")
+            pr.run_kaid_review(from_ref="main", to_ref="feature-x")
         cmd = run_mock.call_args[0][0]
         self.assertIn("--from", cmd)
         self.assertIn("main", cmd)
@@ -44,35 +44,35 @@ class RunOcrReviewTests(unittest.TestCase):
 
     def test_missing_cli_raises(self):
         with mock.patch("subprocess.run", side_effect=FileNotFoundError()):
-            with self.assertRaises(pr.OcrReviewError):
-                pr.run_ocr_review()
+            with self.assertRaises(pr.KaidReviewError):
+                pr.run_kaid_review()
 
     def test_timeout_raises(self):
         with mock.patch(
             "subprocess.run",
-            side_effect=subprocess.TimeoutExpired(cmd="ocr", timeout=1800),
+            side_effect=subprocess.TimeoutExpired(cmd="kaid", timeout=1800),
         ):
-            with self.assertRaises(pr.OcrReviewError):
-                pr.run_ocr_review()
+            with self.assertRaises(pr.KaidReviewError):
+                pr.run_kaid_review()
 
     def test_nonzero_exit_raises(self):
         fake_proc = mock.Mock(returncode=2, stdout="", stderr="boom")
         with mock.patch("subprocess.run", return_value=fake_proc):
-            with self.assertRaises(pr.OcrReviewError) as ctx:
-                pr.run_ocr_review()
+            with self.assertRaises(pr.KaidReviewError) as ctx:
+                pr.run_kaid_review()
         self.assertIn("boom", str(ctx.exception))
 
     def test_empty_stdout_raises(self):
         fake_proc = mock.Mock(returncode=0, stdout="   ", stderr="")
         with mock.patch("subprocess.run", return_value=fake_proc):
-            with self.assertRaises(pr.OcrReviewError):
-                pr.run_ocr_review()
+            with self.assertRaises(pr.KaidReviewError):
+                pr.run_kaid_review()
 
     def test_invalid_json_raises(self):
         fake_proc = mock.Mock(returncode=0, stdout="not json", stderr="")
         with mock.patch("subprocess.run", return_value=fake_proc):
-            with self.assertRaises(pr.OcrReviewError):
-                pr.run_ocr_review()
+            with self.assertRaises(pr.KaidReviewError):
+                pr.run_kaid_review()
 
 
 class FormatSummaryCommentTests(unittest.TestCase):
@@ -224,7 +224,7 @@ class MainEndToEndTests(unittest.TestCase):
 
     def test_happy_path_posts_comment_and_returns_zero(self):
         with mock.patch.dict("os.environ", self.REQUIRED_ENV, clear=True), \
-             mock.patch("post_review.run_ocr_review", return_value={"comments": []}) as run_mock, \
+             mock.patch("post_review.run_kaid_review", return_value={"comments": []}) as run_mock, \
              mock.patch("post_review.post_global_comment", return_value=(200, "{}")) as post_mock:
             rc = pr.main([])
         self.assertEqual(rc, 0)
@@ -237,17 +237,17 @@ class MainEndToEndTests(unittest.TestCase):
 
     def test_extra_args_are_split_and_forwarded(self):
         env = dict(self.REQUIRED_ENV)
-        env["OCR_REVIEW_EXTRA_ARGS"] = "--concurrency 4"
+        env["KAID_REVIEW_EXTRA_ARGS"] = "--concurrency 4"
         with mock.patch.dict("os.environ", env, clear=True), \
-             mock.patch("post_review.run_ocr_review", return_value={"comments": []}) as run_mock, \
+             mock.patch("post_review.run_kaid_review", return_value={"comments": []}) as run_mock, \
              mock.patch("post_review.post_global_comment", return_value=(200, "{}")):
             rc = pr.main([])
         self.assertEqual(rc, 0)
         self.assertEqual(run_mock.call_args.kwargs["extra_args"], ["--concurrency", "4"])
 
-    def test_ocr_failure_returns_nonzero_and_skips_post(self):
+    def test_kaid_failure_returns_nonzero_and_skips_post(self):
         with mock.patch.dict("os.environ", self.REQUIRED_ENV, clear=True), \
-             mock.patch("post_review.run_ocr_review", side_effect=pr.OcrReviewError("boom")), \
+             mock.patch("post_review.run_kaid_review", side_effect=pr.KaidReviewError("boom")), \
              mock.patch("post_review.post_global_comment") as post_mock:
             rc = pr.main([])
         self.assertEqual(rc, 1)
@@ -257,7 +257,7 @@ class MainEndToEndTests(unittest.TestCase):
         env = dict(self.REQUIRED_ENV)
         del env["CODEUP_TOKEN"]
         with mock.patch.dict("os.environ", env, clear=True), \
-             mock.patch("post_review.run_ocr_review", return_value={"comments": []}):
+             mock.patch("post_review.run_kaid_review", return_value={"comments": []}):
             rc = pr.main([])
         self.assertEqual(rc, 1)
 
@@ -265,13 +265,13 @@ class MainEndToEndTests(unittest.TestCase):
         env = dict(self.REQUIRED_ENV)
         del env["CODEUP_ORG_ID"]
         with mock.patch.dict("os.environ", env, clear=True), \
-             mock.patch("post_review.run_ocr_review", return_value={"comments": []}):
+             mock.patch("post_review.run_kaid_review", return_value={"comments": []}):
             rc = pr.main([])
         self.assertEqual(rc, 1)
 
     def test_post_failure_defaults_to_non_blocking(self):
         with mock.patch.dict("os.environ", self.REQUIRED_ENV, clear=True), \
-             mock.patch("post_review.run_ocr_review", return_value={"comments": []}), \
+             mock.patch("post_review.run_kaid_review", return_value={"comments": []}), \
              mock.patch(
                  "post_review.post_global_comment",
                  side_effect=pr.CodeupApiError("network blip"),
@@ -281,7 +281,7 @@ class MainEndToEndTests(unittest.TestCase):
 
     def test_post_failure_can_be_made_blocking(self):
         with mock.patch.dict("os.environ", self.REQUIRED_ENV, clear=True), \
-             mock.patch("post_review.run_ocr_review", return_value={"comments": []}), \
+             mock.patch("post_review.run_kaid_review", return_value={"comments": []}), \
              mock.patch(
                  "post_review.post_global_comment",
                  side_effect=pr.CodeupApiError("network blip"),

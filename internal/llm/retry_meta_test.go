@@ -119,7 +119,7 @@ func TestLogicalRequestIDVariesWithRunIDAndRequestNo(t *testing.T) {
 // IDs only have to be stable within one run, so updating this constant is
 // allowed. It just has to be a deliberate edit and not a silent side effect.
 func TestLogicalRequestIDCanonicalEncoding(t *testing.T) {
-	const want = "14e212a5316c922ea2e0758da1a243255ac33f6360fd0d4e70af90ad1441516c"
+	const want = "8d47671e6d3df00b94cc8afb08395466c5247926210c1da3a37f5bba548e2dce"
 	if got := testMeta().logicalRequestID("run-1"); got != want {
 		t.Fatalf("canonical encoding changed:\n got %s\nwant %s", got, want)
 	}

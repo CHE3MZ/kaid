@@ -224,7 +224,7 @@ func TestBoundaryCorrectsDecodeFailure(t *testing.T) {
 // --- blind spot 3: a stream that fails after it opened ---
 
 // The stream opens with HTTP 200 and then ends without any choice reaching a
-// finish_reason. OCR detects that itself, which is why the three integrity
+// finish_reason. kaid detects that itself, which is why the three integrity
 // conditions carry a dedicated error type: a bare fmt.Errorf would be
 // indistinguishable from every other error under "classify by Go type only".
 func TestBoundaryCorrectsMidStreamFailure(t *testing.T) {

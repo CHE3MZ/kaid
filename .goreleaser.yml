@@ -1,11 +1,11 @@
 version: 2
 
-project_name: opencodereview
+project_name: kaid
 
 builds:
-  - id: opencodereview
-    main: ./cmd/opencodereview
-    binary: opencodereview
+  - id: kaid
+    main: ./cmd/kaid
+    binary: kaid
     env:
       - CGO_ENABLED=0
     goos:

@@ -16,7 +16,7 @@ type GitVersion struct {
 	Patch int
 }
 
-// gitVersionMin is the minimum git version open-code-review supports.
+// gitVersionMin is the minimum git version kaid supports.
 var gitVersionMin = GitVersion{Major: 2, Minor: 41, Patch: 0}
 
 func (v GitVersion) String() string {

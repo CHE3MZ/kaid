@@ -4,24 +4,24 @@ sidebar:
   order: 7
 ---
 
-Rules tell OCR **what to focus on** when reviewing each file. They live
+Rules tell kaid **what to focus on** when reviewing each file. They live
 in JSON files at three layers, plus an embedded system default that ships
 with the binary.
 
 ## Priority chain
 
-OCR resolves rules using a **four-layer priority chain**. For each file
+kaid resolves rules using a **four-layer priority chain**. For each file
 path, the layers are tried in order; the first matching pattern wins.
 
 | Priority    | Source         | Path                                  | Notes                                     |
 | ----------- | -------------- | ------------------------------------- | ----------------------------------------- |
 | 1 (highest) | `--rule` flag  | user-specified                        | CLI override; always wins when supplied.  |
-| 2           | Project config | `<repoDir>/.opencodereview/rule.json` | Per-project rules — safe to commit.       |
-| 3           | Global config  | `~/.opencodereview/rule.json`         | User-wide preferences.                    |
+| 2           | Project config | `<repoDir>/.kaid/rule.json` | Per-project rules — safe to commit.       |
+| 3           | Global config  | `~/.kaid/rule.json`         | User-wide preferences.                    |
 | 4 (lowest)  | System default | embedded `system_rules.json`          | Built-in rules covering common languages. |
 
 If a higher-priority layer's file doesn't exist, it's silently skipped —
-not an error. So a project that never adds `.opencodereview/rule.json`
+not an error. So a project that never adds `.kaid/rule.json`
 just falls through to the global / system layers.
 
 The system layer is **always** present (it ships in the binary), so there
@@ -53,11 +53,11 @@ Three independent fields:
   whitelist: files not matching any `include` pattern still proceed
   through the `unsupported_ext` and `default_path` checks and may still
   be reviewed.
-- `exclude` — optional. Glob patterns for files OCR must _not_ review.
+- `exclude` — optional. Glob patterns for files kaid must _not_ review.
   Highest precedence among user-configured filters.
 - `rules` — array of `{path, rule}` entries, evaluated **in declaration
   order**. The first `path` whose glob matches the file determines the
-  prompt OCR sends to the model for that file.
+  prompt kaid sends to the model for that file.
 
 Each `rules` entry also accepts an optional third field:
 
@@ -78,12 +78,12 @@ Each `rules` entry also accepts an optional third field:
 }
 ```
 
-With that entry in place, `ocr rules check src/main/java/com/example/UserService.java`
+With that entry in place, `kaid rules check src/main/java/com/example/UserService.java`
 reports both halves:
 
 ```
-$ ocr rules check src/main/java/com/example/UserService.java
-Source: Project (.opencodereview/rule.json)
+$ kaid rules check src/main/java/com/example/UserService.java
+Source: Project (.kaid/rule.json)
 Pattern: **/*
 Rule:
 ────────────────────────────────────────
@@ -112,7 +112,7 @@ Two things are worth knowing about how the merge is assembled:
   placeholder.
 
 The field is read from all three user layers — `--rule`, the project's
-`.opencodereview/rule.json`, and `~/.opencodereview/rule.json`. Layer
+`.kaid/rule.json`, and `~/.kaid/rule.json`. Layer
 priority is unchanged: the first matching entry still wins, and a
 matching layer still shadows the layers below it.
 
@@ -123,7 +123,7 @@ each other.
 
 ### Glob features
 
-OCR uses [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4)
+kaid uses [`bmatcuk/doublestar/v4`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4)
 for matching:
 
 - `*` — match any characters except `/`.
@@ -135,13 +135,13 @@ for matching:
 - `[abc]` — character class.
 
 > Patterns are matched **case-insensitively** (file path is lowercased
-> before matching). When in doubt, use `ocr rules check <path>` to confirm.
+> before matching). When in doubt, use `kaid rules check <path>` to confirm.
 
 ## How files are filtered
 
 The filter is a six-gate algorithm in
 [`internal/agent/selection.go`](https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go).
-For each diff, OCR asks:
+For each diff, kaid asks:
 
 1. **`binary`** — Is the file binary? Excluded.
 2. **`secret_exclude`** — Does either path match a built-in secret-path
@@ -167,7 +167,7 @@ Files that survive all six gates are sent to the LLM, unless the diff
 alone exceeds 80% of `max_tokens`: `selectFiles` applies that ceiling
 after the gates and excludes the file as `too_large`. It also marks a
 file whose new path is `/dev/null` as `deleted`; there's no new content
-to review. Use `ocr review --preview` to print the result of this filter
+to review. Use `kaid review --preview` to print the result of this filter
 without spending a token.
 
 ### Built-in secret paths
@@ -285,12 +285,12 @@ it to the user `include` list — that overrides the default-path gate.
 
 ## Rule resolution per file
 
-After filtering decides a file _will_ be reviewed, OCR picks the rule
+After filtering decides a file _will_ be reviewed, kaid picks the rule
 text the agent should follow:
 
 1. Try `--rule` (custom) layer in declaration order.
-2. Try `<repo>/.opencodereview/rule.json` in declaration order.
-3. Try `~/.opencodereview/rule.json` in declaration order.
+2. Try `<repo>/.kaid/rule.json` in declaration order.
+3. Try `~/.kaid/rule.json` in declaration order.
 4. Fall back to the embedded system rule layer.
 
 Selected embedded `system_rules.json` patterns are shown below in relative
@@ -354,20 +354,20 @@ plan and main task prompts.
 
 ### Content sniffing for `.m` files
 
-`.m` is shared by MATLAB and Objective-C. OCR peeks at the file's first
+`.m` is shared by MATLAB and Objective-C. kaid peeks at the file's first
 non-blank line to disambiguate: if it looks like Objective-C (e.g. `#import`,
 `@implementation`, a C-style comment), `objc.md` is used instead of
 `matlab.md`. When the content cannot be read, resolution falls back to
 `matlab.md`.
 
-> **Stability note.** The sniff heuristic may change between OCR versions. If
+> **Stability note.** The sniff heuristic may change between kaid versions. If
 > you need deterministic `.m` routing, set an explicit project-level rule for
 > your `.m` paths — project rules always outrank the system layer.
 
-## Inspecting which rule wins: `ocr rules check`
+## Inspecting which rule wins: `kaid rules check`
 
 ```bash
-$ ocr rules check src/main/java/com/example/UserService.java
+$ kaid rules check src/main/java/com/example/UserService.java
 File: src/main/java/com/example/UserService.java
 Source: System built-in
 Pattern: **/*.java
@@ -378,7 +378,7 @@ Rule:
 ```
 
 ```bash
-$ ocr rules check --rule custom.json src/main/resources/mapper/UserMapper.xml
+$ kaid rules check --rule custom.json src/main/resources/mapper/UserMapper.xml
 File: src/main/resources/mapper/UserMapper.xml
 Source: Custom (--rule)
 Pattern: **/*mapper*.xml
@@ -395,7 +395,7 @@ you the **layer** and the **pattern** that won.
 
 ### Project-level: enforce a coding standard
 
-Save as `<repo>/.opencodereview/rule.json` and commit:
+Save as `<repo>/.kaid/rule.json` and commit:
 
 ```json
 {
@@ -429,7 +429,7 @@ Files outside `src/` still go through the normal ext / default checks —
 ### Per-PR override
 
 ```bash
-ocr review --rule ./.review-rules-only-for-this-pr.json
+kaid review --rule ./.review-rules-only-for-this-pr.json
 ```
 
 Bypasses both the project and global layers — handy when a single PR
@@ -437,7 +437,7 @@ needs a totally different review checklist (e.g., security-only review).
 
 ### Global personal preferences
 
-Put them at `~/.opencodereview/rule.json` so every repo on your machine
+Put them at `~/.kaid/rule.json` so every repo on your machine
 inherits them:
 
 ```json
@@ -470,18 +470,18 @@ both:
 }
 ```
 
-Save it at `~/.opencodereview/rule.json` to apply it to every repo, or
-in `<repo>/.opencodereview/rule.json` to apply it to one. Because the
+Save it at `~/.kaid/rule.json` to apply it to every repo, or
+in `<repo>/.kaid/rule.json` to apply it to one. Because the
 system half is resolved per file, each language still gets its own
 built-in rules alongside yours — no need to enumerate extensions.
 
 The global file is the **lowest** of the three user layers. If `--rule`
-or the project's `.opencodereview/rule.json` has an entry that matches
+or the project's `.kaid/rule.json` has an entry that matches
 the same file, that entry wins and the global one is never reached, so
 put the catch-all rule in only one place.
 
 ## See Also
 
-- [CLI Reference](cli-reference.md) — `ocr review --rule`, `--preview`, and `ocr rules check`.
+- [CLI Reference](cli-reference.md) — `kaid review --rule`, `--preview`, and `kaid rules check`.
 - [Configuration](configuration.md) — config file locations and the layered resolution chain.
 - [Architecture](architecture.md) — how the resolved rule feeds the agent prompt.

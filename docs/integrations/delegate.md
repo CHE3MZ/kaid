@@ -4,28 +4,28 @@ sidebar:
   order: 5
 ---
 
-OCR handles deterministic engineering (file selection, rule resolution)
+kaid handles deterministic engineering (file selection, rule resolution)
 while the host agent performs the actual code review using its own LLM
-capabilities. No LLM endpoint is required on the OCR side.
+capabilities. No LLM endpoint is required on the kaid side.
 
 !!! tip "No model configuration required"
 
-    Delegation mode never calls an LLM from the Kaid side. The host agent
+    Delegation mode never calls an LLM from the kaid side. The host agent
     supplies both the model and the review reasoning, so you do not need to run
-    `ocr config provider` or set `OCR_LLM_*` variables.
+    `kaid config provider` or set `KAID_LLM_*` variables.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Host as Host agent
-    participant OCR as ocr delegate
+    participant kaid as kaid delegate
 
-    Host->>OCR: preview
-    OCR-->>Host: reviewable files + exclusions
-    Host->>OCR: rule <paths>
-    OCR-->>Host: rules grouped by content
-    Host->>OCR: diff <paths>
-    OCR-->>Host: diffs and metadata
+    Host->>kaid: preview
+    kaid-->>Host: reviewable files + exclusions
+    Host->>kaid: rule <paths>
+    kaid-->>Host: rules grouped by content
+    Host->>kaid: diff <paths>
+    kaid-->>Host: diffs and metadata
     Host->>Host: review with its own model
     Host-->>Host: render findings
 ```
@@ -34,7 +34,7 @@ sequenceDiagram
 
 Delegation mode is designed for subscription-based AI coding agents where you
 already have an LLM subscription bundled with the host agent. Instead
-of configuring a separate model endpoint for OCR, you reuse the host
+of configuring a separate model endpoint for kaid, you reuse the host
 agent's existing subscription quota to perform the review.
 
 Use delegation mode when:
@@ -42,7 +42,7 @@ Use delegation mode when:
 1. Your AI coding agent runs on a subscription plan and you want to
    reuse that quota for code review — no extra API key or model
    configuration needed.
-2. You want OCR only for its engineering scaffolding — file filtering,
+2. You want kaid only for its engineering scaffolding — file filtering,
    rule resolution, exclusion logic — while the host agent handles all
    LLM reasoning.
 3. You're building a custom agent pipeline that needs structured inputs
@@ -50,21 +50,21 @@ Use delegation mode when:
 
 ## Prerequisites
 
-The `ocr` CLI must be installed:
+The `kaid` CLI must be installed:
 
 ```bash
-which ocr || curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
+which kaid || curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh
 ```
 
-No LLM configuration (`ocr config set …` or environment variables) is
-needed — delegation mode never calls an LLM on the OCR side.
+No LLM configuration (`kaid config set …` or environment variables) is
+needed — delegation mode never calls an LLM on the kaid side.
 
 ## Workflow
 
 ### Step 1: Preview — determine what to review
 
 ```bash
-ocr delegate preview [--from <ref> --to <ref>] [--commit <hash>] [--exclude <patterns>]
+kaid delegate preview [--from <ref> --to <ref>] [--commit <hash>] [--exclude <patterns>]
 ```
 
 Outputs:
@@ -78,14 +78,14 @@ Common invocations:
 
 | Scenario | Command |
 |----------|---------|
-| Workspace changes | `ocr delegate preview` |
-| Branch comparison | `ocr delegate preview --from main --to feature` |
-| Single commit | `ocr delegate preview -c abc123` |
+| Workspace changes | `kaid delegate preview` |
+| Branch comparison | `kaid delegate preview --from main --to feature` |
+| Single commit | `kaid delegate preview -c abc123` |
 
 ### Step 2: Get rules for files
 
 ```bash
-ocr delegate rule <path1> <path2> ...
+kaid delegate rule <path1> <path2> ...
 ```
 
 Pass the reviewable paths from Step 1. Output is grouped by rule
@@ -152,8 +152,8 @@ Classify each finding by severity:
 
 | Command | Purpose |
 |---------|---------|
-| `ocr delegate preview` | List reviewable files + mode/ref metadata |
-| `ocr delegate rule <path...>` | Resolve review rules grouped by content |
+| `kaid delegate preview` | List reviewable files + mode/ref metadata |
+| `kaid delegate rule <path...>` | Resolve review rules grouped by content |
 
 ## Shared flags
 
@@ -170,8 +170,8 @@ Classify each finding by severity:
 
 ## See Also
 
-- [CLI Reference](../cli-reference.md) - the `ocr delegate` sub-commands and global flags.
-- [Review Rules](../review-rules.md) - how `ocr delegate rule` resolves per-file text.
+- [CLI Reference](../cli-reference.md) - the `kaid delegate` sub-commands and global flags.
+- [Review Rules](../review-rules.md) - how `kaid delegate rule` resolves per-file text.
 
 *[LLM]: Large Language Model
-*[OCR]: Open Code Review
+*[kaid]: kaid

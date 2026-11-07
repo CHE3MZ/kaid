@@ -61,10 +61,10 @@ func TestChatGPTNativeToolHTTPRoundTrip(t *testing.T) {
 		turns++
 		if turns == 1 {
 			fmt.Fprint(w, "event: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"rs\",\"summary\":[],\"encrypted_content\":\"ciphertext\"}}\n\n")
-			fmt.Fprint(w, "event: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"output_index\":1,\"item\":{\"type\":\"function_call\",\"namespace\":\"ocr\",\"name\":\"file_read\",\"call_id\":\"call\",\"id\":\"fc\",\"arguments\":\"{\\\"path\\\":\\\"main.go\\\"}\",\"status\":\"completed\"}}\n\n")
+			fmt.Fprint(w, "event: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"output_index\":1,\"item\":{\"type\":\"function_call\",\"namespace\":\"kaid\",\"name\":\"file_read\",\"call_id\":\"call\",\"id\":\"fc\",\"arguments\":\"{\\\"path\\\":\\\"main.go\\\"}\",\"status\":\"completed\"}}\n\n")
 			fmt.Fprint(w, "event: response.completed\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"r\",\"status\":\"completed\",\"model\":\"gpt-6-luna\",\"output\":[],\"usage\":{\"input_tokens\":11,\"output_tokens\":12,\"total_tokens\":23,\"output_tokens_details\":{\"reasoning_tokens\":7}}}}\n\n")
 		} else {
-			if !strings.Contains(string(raw), `"namespace":"ocr"`) || !strings.Contains(string(raw), `"encrypted_content":"ciphertext"`) || !strings.Contains(string(raw), `"type":"function_call_output"`) || !strings.Contains(string(raw), "package main") {
+			if !strings.Contains(string(raw), `"namespace":"kaid"`) || !strings.Contains(string(raw), `"encrypted_content":"ciphertext"`) || !strings.Contains(string(raw), `"type":"function_call_output"`) || !strings.Contains(string(raw), "package main") {
 				t.Error("replay lost", string(raw))
 			}
 			fmt.Fprint(w, "event: response.completed\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"r2\",\"status\":\"completed\",\"model\":\"gpt-6-luna\",\"output\":[{\"type\":\"message\",\"id\":\"m\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"Reviewed\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":14,\"output_tokens\":3,\"total_tokens\":17}}}\n\n")
@@ -128,7 +128,7 @@ func TestChatGPTFallbackCallAndCredentialFailure(t *testing.T) {
 	}
 	p := c.buildResponsesParams("gpt-6-luna", ChatRequest{Messages: []Message{NewToolCallMessage("", []ToolCall{{ID: "call", Function: FunctionCall{Name: "file_read", Arguments: "{}"}}}, NativeTurn{}, "")}})
 	b, _ := json.Marshal(p)
-	if !strings.Contains(string(b), `"namespace":"ocr"`) {
+	if !strings.Contains(string(b), `"namespace":"kaid"`) {
 		t.Fatal(string(b))
 	}
 	old, oldModels := chatGPTCredentials, chatGPTModels

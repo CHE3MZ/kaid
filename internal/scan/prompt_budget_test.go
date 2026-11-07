@@ -222,7 +222,7 @@ func TestRun_TokenBudgetStopSurfacesAsBudgetExceeded(t *testing.T) {
 	// The per-item scan_subtask_error warning also names the same stop
 	// trigger via stop.Reason(); llmloop's per-round check tripped
 	// StopTokenBudget, so that string is the diagnostic that survives
-	// --format json's discarded [ocr] progress lines.
+	// --format json's discarded [kaid] progress lines.
 	var sawStopReason bool
 	for _, w := range a.Warnings() {
 		if w.Type == "scan_subtask_error" && strings.Contains(w.Message, llmloop.StopTokenBudget.Reason()) {

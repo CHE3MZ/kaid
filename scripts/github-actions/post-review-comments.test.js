@@ -27,18 +27,18 @@ const { runPostReviewComments, safeFence, fencedBlock, lineSpan, sameCommentSpan
 const REVIEW_TAG = buildRunTags(undefined, undefined).REVIEW_TAG;
 
 // Make all retry/pacing delays effectively zero so tests run fast.
-// computeRetryDelayMs reads OCR_RETRY_MAX_DELAY / OCR_RETRY_BASE_DELAY via
+// computeRetryDelayMs reads KAID_RETRY_MAX_DELAY / KAID_RETRY_BASE_DELAY via
 // parseNonNegInt; "1" keeps the cap/base at 1ms so any transient/rate-limit
 // backoff sleep is effectively instant.
-process.env.OCR_MAX_RETRIES = "0";
-process.env.OCR_SUCCESS_DELAY = "0";
-process.env.OCR_FAILURE_DELAY = "0";
-process.env.OCR_LOW_REMAINING_SPACING = "0";
-process.env.OCR_LOW_REMAINING_THRESHOLD = "0";
-process.env.OCR_RETRY_MAX_DELAY = "1";
-process.env.OCR_RETRY_BASE_DELAY = "1";
-process.env.OCR_READ_SUCCESS_DELAY = "0";
-process.env.OCR_READ_LOW_REMAINING_SPACING = "0";
+process.env.KAID_MAX_RETRIES = "0";
+process.env.KAID_SUCCESS_DELAY = "0";
+process.env.KAID_FAILURE_DELAY = "0";
+process.env.KAID_LOW_REMAINING_SPACING = "0";
+process.env.KAID_LOW_REMAINING_THRESHOLD = "0";
+process.env.KAID_RETRY_MAX_DELAY = "1";
+process.env.KAID_RETRY_BASE_DELAY = "1";
+process.env.KAID_READ_SUCCESS_DELAY = "0";
+process.env.KAID_READ_LOW_REMAINING_SPACING = "0";
 
 const DEFAULT_HEAD_SHA = "1".repeat(40);
 const context = {
@@ -51,8 +51,8 @@ const context = {
 function mockFs(resultText, stderrText) {
   return {
     readFileSync(file) {
-      if (file === "/tmp/ocr-result.json") return resultText;
-      if (file === "/tmp/ocr-stderr.log") return stderrText;
+      if (file === "/tmp/kaid-result.json") return resultText;
+      if (file === "/tmp/kaid-stderr.log") return stderrText;
       throw new Error(`unexpected read: ${file}`);
     },
   };
@@ -82,7 +82,7 @@ function commentKey(rc) {
 
 // Temporarily override env vars for a single (sync or async) test body, always
 // restoring originals afterwards. Used for retry/quota tests that need a
-// different OCR_MAX_RETRIES / OCR_LOW_REMAINING_THRESHOLD than the fast default.
+// different KAID_MAX_RETRIES / KAID_LOW_REMAINING_THRESHOLD than the fast default.
 async function withEnv(env, fn) {
   const saved = {};
   for (const k of Object.keys(env)) {
@@ -132,7 +132,7 @@ function makeGithub(opts = {}) {
     for (const call of createReviewCalls) {
       if ((call.body || "") !== REVIEW_TAG) continue;
       for (const c of call.comments || []) {
-        const m = /<!--\s*(ocr-\d+-\d+-[a-f0-9]+)\s*-->/.exec(c.body || "");
+        const m = /<!--\s*(kaid-\d+-\d+-[a-f0-9]+)\s*-->/.exec(c.body || "");
         if (m) {
           out.push({
             path: c.path,
@@ -355,7 +355,7 @@ function makeGithub(opts = {}) {
           if (opts.echoPosted || opts.landedKeys) {
             const byId = new Map();
             const add = (c) => {
-              const m = /<!--\s*(ocr-\d+-\d+-[a-f0-9]+)\s*-->/.exec(c.body || "");
+              const m = /<!--\s*(kaid-\d+-\d+-[a-f0-9]+)\s*-->/.exec(c.body || "");
               const k = m ? m[1] : `${c.path}|${c.start_line != null ? c.start_line : "-"}|${c.line != null ? c.line : "-"}|${c.body}`;
               if (!byId.has(k)) byId.set(k, c);
             };
@@ -422,8 +422,8 @@ async function run({ result, stderr = "", opts = {}, githubOpts = {} }) {
     context,
     core,
     fs,
-    resultPath: "/tmp/ocr-result.json",
-    stderrPath: "/tmp/ocr-stderr.log",
+    resultPath: "/tmp/kaid-result.json",
+    stderrPath: "/tmp/kaid-stderr.log",
     ...options,
   });
   return { github, core, outputs: core.outputs };
@@ -550,7 +550,7 @@ async function testErrorCommentUsesSafeFence() {
 }
 
 async function testStickyUpdatesExistingSummary() {
-  const existing = [{ id: 42, body: "<!-- ocr-summary -->\nold summary", user: { login: "github-actions[bot]" } }];
+  const existing = [{ id: 42, body: "<!-- kaid-summary -->\nold summary", user: { login: "github-actions[bot]" } }];
   const result = { comments: [{ path: "src/a.js", content: "x", start_line: 1, end_line: 1 }], warnings: [] };
 
   const { github, outputs } = await run({
@@ -611,7 +611,7 @@ async function testNonStickyCreatesNewCommentOnFallback() {
 }
 
 async function testNoCommentsStickyUpdate() {
-  const existing = [{ id: 7, body: "<!-- ocr-summary -->\nold good", user: { login: "github-actions[bot]" } }];
+  const existing = [{ id: 7, body: "<!-- kaid-summary -->\nold good", user: { login: "github-actions[bot]" } }];
   const result = { comments: [], message: "All clear." };
 
   const { github } = await run({
@@ -884,10 +884,10 @@ async function testPerComment5xxIdempotencyUnavailableSkipsRetry() {
 // finalize phase must refresh it in place with the final body.
 async function testSummaryDoesNotDuplicateWhenAlreadyPosted() {
   // context.runId/runAttempt are unset -> RUN_TAG = "0-1" -> SUMMARY_TAG =
-  // "<!-- ocr-summary-run:0-1 -->". A real summary carries both the persistent
+  // "<!-- kaid-summary-run:0-1 -->". A real summary carries both the persistent
   // SUMMARY_MARKER and the per-run SUMMARY_TAG.
   const existing = [
-    { id: 5, body: "<!-- ocr-summary -->\n<!-- ocr-summary-run:0-1 -->\nold summary", user: { login: "github-actions[bot]" } },
+    { id: 5, body: "<!-- kaid-summary -->\n<!-- kaid-summary-run:0-1 -->\nold summary", user: { login: "github-actions[bot]" } },
   ];
   const result = { comments: [{ path: "src/a.js", content: "x", start_line: 1, end_line: 1 }], warnings: [] };
 
@@ -955,8 +955,8 @@ async function testSummaryAnchorCreatedBeforeReviewNonSticky() {
 
 function testNewCommentIdFormat() {
   const id = newCommentId("12-3");
-  // Format: ocr-<runId>-<attempt>-<16 hex chars> (crypto.randomBytes(8)).
-  assert.match(id, /^ocr-12-3-[a-f0-9]{16}$/, "id format is ocr-<run>-<hex>");
+  // Format: kaid-<runId>-<attempt>-<16 hex chars> (crypto.randomBytes(8)).
+  assert.match(id, /^kaid-12-3-[a-f0-9]{16}$/, "id format is kaid-<run>-<hex>");
   // Random -> two calls produce distinct IDs (so two comments that share
   // path/line/content still get different IDs and the check never mistakes
   // one for the other).
@@ -969,13 +969,13 @@ async function testGetPostedCommentIdsExtractsEmbeddedIds() {
       pulls: {
         listReviewComments: async () => ({
           data: [
-            { body: "<!-- ocr-0-1-aaaa0000bbbb1111 -->\ncontent a" },
+            { body: "<!-- kaid-0-1-aaaa0000bbbb1111 -->\ncontent a" },
             { body: "no id here" },
-            { body: "<!-- ocr-0-1-cccc2222dddd3333 -->\ncontent c" },
+            { body: "<!-- kaid-0-1-cccc2222dddd3333 -->\ncontent c" },
             // User content that mentions the bare id string must NOT match:
             // the regex is anchored to <!-- ... --> wrappers, defending against
             // false positives in the idempotency check.
-            { body: "see ocr-0-1-aaaa0000bbbb1111 somewhere" },
+            { body: "see kaid-0-1-aaaa0000bbbb1111 somewhere" },
           ],
           headers: {},
         }),
@@ -984,16 +984,16 @@ async function testGetPostedCommentIdsExtractsEmbeddedIds() {
   };
   const ids = await getPostedCommentIds({ github, owner: "o", repo: "r", prNumber: 1, log: () => {} });
   assert.strictEqual(ids.size, 2, "only IDs inside HTML comment wrappers are extracted");
-  assert.ok(ids.has("ocr-0-1-aaaa0000bbbb1111"));
-  assert.ok(ids.has("ocr-0-1-cccc2222dddd3333"));
-  assert.ok(!ids.has("ocr-0-1-zzzz0000"), "non-hex tokens do not match");
+  assert.ok(ids.has("kaid-0-1-aaaa0000bbbb1111"));
+  assert.ok(ids.has("kaid-0-1-cccc2222dddd3333"));
+  assert.ok(!ids.has("kaid-0-1-zzzz0000"), "non-hex tokens do not match");
 }
 
 // ---- computeRetryDelayMs unit tests ----
 //
 // The rate-limit retry strategy is a pure function of the error (status +
 // response headers) and attempt number. The integration tests below cap every
-// delay to ~1ms via OCR_RETRY_MAX_DELAY=1, so they cannot assert that specific
+// delay to ~1ms via KAID_RETRY_MAX_DELAY=1, so they cannot assert that specific
 // headers are honored; these unit tests pin down each branch of the strategy
 // directly. They run under realistic cap/base values (overridden locally) so
 // the returned delayMs is meaningful.
@@ -1001,10 +1001,10 @@ async function testGetPostedCommentIdsExtractsEmbeddedIds() {
 function testComputeRetryDelayMs() {
   // Use realistic cap/base so delayMs reflects the strategy rather than the
   // 1ms test-harness cap. Restored at the end.
-  const realCap = process.env.OCR_RETRY_MAX_DELAY;
-  const realBase = process.env.OCR_RETRY_BASE_DELAY;
-  process.env.OCR_RETRY_MAX_DELAY = "300000";
-  process.env.OCR_RETRY_BASE_DELAY = "60000";
+  const realCap = process.env.KAID_RETRY_MAX_DELAY;
+  const realBase = process.env.KAID_RETRY_BASE_DELAY;
+  process.env.KAID_RETRY_MAX_DELAY = "300000";
+  process.env.KAID_RETRY_BASE_DELAY = "60000";
   try {
     // Non-error / non-retryable -> null (no retry).
     assert.strictEqual(computeRetryDelayMs(null, 0), null);
@@ -1052,15 +1052,15 @@ function testComputeRetryDelayMs() {
     // 408 timeout is also treated as transient.
     assert.strictEqual(computeRetryDelayMs(makeErr("timeout", 408), 0).source, "transient-backoff");
 
-    // Cap: a huge retry-after is clamped to OCR_RETRY_MAX_DELAY.
+    // Cap: a huge retry-after is clamped to KAID_RETRY_MAX_DELAY.
     r = computeRetryDelayMs(makeErr("rate", 429, { "retry-after": "1000000" }), 0);
     assert.strictEqual(r.delayMs, 300000, "capped to 300000ms");
     assert.match(r.detail, /CAPPED/, "capping is surfaced in detail");
   } finally {
-    if (realCap === undefined) delete process.env.OCR_RETRY_MAX_DELAY;
-    else process.env.OCR_RETRY_MAX_DELAY = realCap;
-    if (realBase === undefined) delete process.env.OCR_RETRY_BASE_DELAY;
-    else process.env.OCR_RETRY_BASE_DELAY = realBase;
+    if (realCap === undefined) delete process.env.KAID_RETRY_MAX_DELAY;
+    else process.env.KAID_RETRY_MAX_DELAY = realCap;
+    if (realBase === undefined) delete process.env.KAID_RETRY_BASE_DELAY;
+    else process.env.KAID_RETRY_BASE_DELAY = realBase;
   }
 }
 
@@ -1121,7 +1121,7 @@ async function testBatchRateLimitWithPartialInvalidContent() {
 
 // P0-2: per-comment rate-limit with retries. One comment recovers after a
 // retry (429 then success); another stays rate-limited until retries are
-// exhausted. Requires OCR_MAX_RETRIES >= 1 (overridden locally).
+// exhausted. Requires KAID_MAX_RETRIES >= 1 (overridden locally).
 async function testPerCommentRateLimitRetryThenSuccessAndExhausted() {
   const result = {
     comments: [
@@ -1131,7 +1131,7 @@ async function testPerCommentRateLimitRetryThenSuccessAndExhausted() {
     warnings: [],
   };
 
-  return withEnv({ OCR_MAX_RETRIES: "1" }, async () => {
+  return withEnv({ KAID_MAX_RETRIES: "1" }, async () => {
     const { github, outputs } = await run({
       result,
       githubOpts: {
@@ -1302,7 +1302,7 @@ async function testBatchIdempotencyCheckFailureStopsVisibly() {
 // proactive throttle branch. We cannot spy on the internal sleep, so this
 // only verifies the branch executes without breaking the flow or counts.
 async function testLowQuotaProactiveThrottleDoesNotBreakFlow() {
-  return withEnv({ OCR_LOW_REMAINING_THRESHOLD: "3" }, async () => {
+  return withEnv({ KAID_LOW_REMAINING_THRESHOLD: "3" }, async () => {
     const result = { comments: [{ path: "src/a.js", content: "A", start_line: 1, end_line: 1 }], warnings: [] };
     const { outputs } = await run({
       result,
@@ -1347,7 +1347,7 @@ async function testBatchRateLimitSkipsIdempotencyReads() {
 // Fix A + read self-protection: a 5xx batch MAY have landed, so the idempotency
 // read runs — but only AFTER cooling down. The read itself can also hit a
 // rate-limit; withRetry (wrapping readWithPacing) must back off and recover so
-// the batch-landing detection still works. Requires OCR_MAX_RETRIES >= 1.
+// the batch-landing detection still works. Requires KAID_MAX_RETRIES >= 1.
 async function testBatchReadRateLimitRetriedViaWithRetry() {
   const result = {
     comments: [
@@ -1357,7 +1357,7 @@ async function testBatchReadRateLimitRetriedViaWithRetry() {
     warnings: [],
   };
 
-  return withEnv({ OCR_MAX_RETRIES: "1" }, async () => {
+  return withEnv({ KAID_MAX_RETRIES: "1" }, async () => {
     const { github, outputs } = await run({
       result,
       githubOpts: {
@@ -1787,7 +1787,7 @@ async function testBatchTelemetryOutputs() {
 // ---- Badge + publication policy tests (#478) ----
 //
 // I6: buildBadge byte-matches the CLI's buildBadge degeneration
-// (cmd/opencodereview/output.go:98-114). Each degeneration branch is pinned,
+// (cmd/kaid/output.go:98-114). Each degeneration branch is pinned,
 // plus control-char sanitization so a model-emitted newline cannot break the
 // comment body layout.
 function testBuildBadgeMatchesCliDegeneration() {
@@ -2064,10 +2064,10 @@ async function testFindingMatchingBothConditionsRoutesOnce() {
 // is the first VISIBLE line. No badge when category/severity are absent.
 function testFormatCommentBadgePlacement() {
   // with id and badge: id HTML comment stays first, badge on the next line
-  const withBadge = formatComment({ content: "body", category: "bug", severity: "high" }, "ocr-1-1-abcd");
-  assert.ok(withBadge.startsWith("<!-- ocr-1-1-abcd -->\n"), "id HTML comment is the first bytes");
+  const withBadge = formatComment({ content: "body", category: "bug", severity: "high" }, "kaid-1-1-abcd");
+  assert.ok(withBadge.startsWith("<!-- kaid-1-1-abcd -->\n"), "id HTML comment is the first bytes");
   assert.ok(
-    withBadge.startsWith("<!-- ocr-1-1-abcd -->\n![bug · high](https://img.shields.io/badge/bug-high-red)\n"),
+    withBadge.startsWith("<!-- kaid-1-1-abcd -->\n![bug · high](https://img.shields.io/badge/bug-high-red)\n"),
     "badge image follows id line"
   );
   assert.ok(withBadge.endsWith("body"), "content preserved at the end");
@@ -2075,12 +2075,12 @@ function testFormatCommentBadgePlacement() {
   const noId = formatComment({ content: "body", category: "style", severity: "low" });
   assert.ok(noId.startsWith("![style · low](https://img.shields.io/badge/style-low-green)\n"));
   // no metadata -> no badge line at all (byte-identical to pre-change output)
-  const noBadge = formatComment({ content: "body" }, "ocr-1-1-abcd");
-  assert.strictEqual(noBadge, "<!-- ocr-1-1-abcd -->\nbody");
+  const noBadge = formatComment({ content: "body" }, "kaid-1-1-abcd");
+  assert.strictEqual(noBadge, "<!-- kaid-1-1-abcd -->\nbody");
   // suggestion block still appends after the badge
   const withSuggestion = formatComment(
     { content: "c", category: "bug", severity: "high", existing_code: "old", suggestion_code: "new" },
-    "ocr-1-1-abcd"
+    "kaid-1-1-abcd"
   );
   assert.match(withSuggestion, /!\[bug · high\]/);
   assert.match(withSuggestion, /\*\*Suggestion:\*\*/);
@@ -2324,9 +2324,9 @@ async function testRoutedFindingsCarryNoIdempotencyId() {
   });
   // No createReview call at all (the only finding was routed).
   assert.strictEqual(github.createReviewCalls.length, 0);
-  // The routed body in the summary must NOT contain an ocr-... id comment.
+  // The routed body in the summary must NOT contain a kaid-... id comment.
   const body = github.updatedComments[0].body;
-  assert.doesNotMatch(body, /ocr-\d+-\d+-[a-f0-9]+/, "routed summary body carries no idempotency id");
+  assert.doesNotMatch(body, /kaid-\d+-\d+-[a-f0-9]+/, "routed summary body carries no idempotency id");
 }
 
 async function main() {
@@ -3253,9 +3253,9 @@ async function testHttp422SecondaryFailureReconcilesPerCommentNotWholesale() {
 // A 429/403 rate-limit error surfacing from the secondary batch must cool down
 // (honoring Retry-After) before the per-comment loop issues another write.
 async function testHttp422SecondaryRateLimitCoolsDownBeforeRetrying() {
-  const realBase = process.env.OCR_RETRY_BASE_DELAY;
+  const realBase = process.env.KAID_RETRY_BASE_DELAY;
   const realSetTimeout = global.setTimeout;
-  process.env.OCR_RETRY_BASE_DELAY = "1";
+  process.env.KAID_RETRY_BASE_DELAY = "1";
   const logs = [];
   let releaseCooldown = null;
   let gh;
@@ -3323,8 +3323,8 @@ async function testHttp422SecondaryRateLimitCoolsDownBeforeRetrying() {
     assert.strictEqual(gh.updatedComments[0].body.includes("Failed to post inline: 1 comment(s)"), true);
   } finally {
     global.setTimeout = realSetTimeout;
-    if (realBase === undefined) delete process.env.OCR_RETRY_BASE_DELAY;
-    else process.env.OCR_RETRY_BASE_DELAY = realBase;
+    if (realBase === undefined) delete process.env.KAID_RETRY_BASE_DELAY;
+    else process.env.KAID_RETRY_BASE_DELAY = realBase;
   }
 }
 
@@ -3502,7 +3502,7 @@ const CK_OLD = "1a".repeat(20);
 const CK_MID = "2b".repeat(20);
 const CK_NEW = "3c".repeat(20);
 const CK_MB = "4d".repeat(20);
-const CK_MARKER_RE = /^<!-- ocr-checkpoint:v1 [A-Za-z0-9+/]+={0,2} -->$/;
+const CK_MARKER_RE = /^<!-- kaid-checkpoint:v1 [A-Za-z0-9+/]+={0,2} -->$/;
 
 function ckPayload(over = {}) {
   return Object.assign(
@@ -3591,9 +3591,9 @@ function testCheckpointMarkerRoundTrip() {
   const b64 = (s) => Buffer.from(s, "utf8").toString("base64");
   const malformed = [
     ["empty string", ""],
-    ["non-base64 payload", "<!-- ocr-checkpoint:v1 !!!not-base64!!! -->"],
-    ["base64 of non-JSON", `<!-- ocr-checkpoint:v1 ${b64("not json at all")} -->`],
-    ["base64 of a JSON array", `<!-- ocr-checkpoint:v1 ${b64("[1,2,3]")} -->`],
+    ["non-base64 payload", "<!-- kaid-checkpoint:v1 !!!not-base64!!! -->"],
+    ["base64 of non-JSON", `<!-- kaid-checkpoint:v1 ${b64("not json at all")} -->`],
+    ["base64 of a JSON array", `<!-- kaid-checkpoint:v1 ${b64("[1,2,3]")} -->`],
     ["--> inside summary prose", "Summary mentioning --> an arrow, with no marker"],
     ["two markers in one body", `${buildCheckpointMarker(ckPayload())}\n${buildCheckpointMarker(ckPayload({ head: CK_MID }))}`],
   ];
@@ -3724,8 +3724,8 @@ async function testCheckpointAuthorVerificationFailsClosed() {
 // the default GITHUB_TOKEN ("github-actions[bot]") is a different writer and
 // must be rejected even though it is a perfectly good bot comment.
 async function testCheckpointRejectsDifferentBotIdentity() {
-  const github = ckGithub({ comments: [ckComment({ payload: ckPayload() })], login: "ocr-app[bot]" });
-  const gated = await resolveCheckpointRange(ckArgs({ github, appSlug: "ocr-app" }));
+  const github = ckGithub({ comments: [ckComment({ payload: ckPayload() })], login: "kaid-app[bot]" });
+  const gated = await resolveCheckpointRange(ckArgs({ github, appSlug: "kaid-app" }));
   assert.strictEqual(gated.reason, "author_unverified");
   assert.strictEqual(gated.mode, "full");
   assert.strictEqual(gated.from, "");
@@ -3735,7 +3735,7 @@ async function testCheckpointRejectsDifferentBotIdentity() {
     owner: "owner",
     repo: "repo",
     prNumber: 123,
-    appSlug: "ocr-app",
+    appSlug: "kaid-app",
     log: () => {},
   });
   assert.strictEqual(read.reason, "author_unverified");
@@ -3928,7 +3928,7 @@ async function testCheckpointAdvanceGateTable() {
           )
         );
         const body = lastSummaryBody(gh) || "";
-        const advanced = body.includes("ocr-checkpoint");
+        const advanced = body.includes("kaid-checkpoint");
         const label = `terminal=${terminal} failed=${failed} published=${isPublished}`;
         // Pin the fixture itself: the "failed" axis must really have failed a
         // finding, otherwise the row proves nothing.
@@ -4067,7 +4067,7 @@ async function testCheckpointAdvanceRequiresFullSha() {
       )
     );
     assert.strictEqual(
-      (lastSummaryBody(gh) || "").includes("ocr-checkpoint"),
+      (lastSummaryBody(gh) || "").includes("kaid-checkpoint"),
       false,
       `resolved_head ${JSON.stringify(head)} must not advance the checkpoint`
     );
@@ -4203,7 +4203,7 @@ async function testCheckpointCarryForwardOnEveryBodyPath() {
   const paths = [
     [
       "json parse failure",
-      { raw: "not json", stderr: "ocr blew up", manifest: null },
+      { raw: "not json", stderr: "kaid blew up", manifest: null },
     ],
     [
       "zero findings, incomplete run",
@@ -4253,7 +4253,7 @@ async function testCheckpointCarryForwardOnEveryBodyPath() {
       )
     );
     assert.strictEqual(
-      (lastSummaryBody(bare) || "").includes("ocr-checkpoint"),
+      (lastSummaryBody(bare) || "").includes("kaid-checkpoint"),
       false,
       `${label}: no carry means no marker`
     );
@@ -4299,7 +4299,7 @@ async function testCheckpointNeverAdvancesWithoutSticky() {
       ckRunOptions()
     )
   );
-  assert.strictEqual((lastSummaryBody(gh) || "").includes("ocr-checkpoint"), false);
+  assert.strictEqual((lastSummaryBody(gh) || "").includes("kaid-checkpoint"), false);
 }
 
 // The carry must be gated on exactly the same two conditions as the advance.
@@ -4307,7 +4307,7 @@ async function testCheckpointNeverAdvancesWithoutSticky() {
 // read from an older comment would plant a checkpoint on a body that never
 // carried one; a run with checkpointing off must never emit a marker at all.
 // Both cases are reachable from the action: the resolve step exports
-// OCR_CHECKPOINT_CARRY without consulting sticky_summary.
+// KAID_CHECKPOINT_CARRY without consulting sticky_summary.
 async function testCheckpointCarryIsGatedLikeTheAdvance() {
   const cases = [
     ["non-sticky", { stickySummary: false }, ckRunOptions({ checkpointCarry: CARRY })],
@@ -4330,7 +4330,7 @@ async function testCheckpointCarryIsGatedLikeTheAdvance() {
       )
     );
     const body = lastSummaryBody(gh) || "";
-    assert.strictEqual(body.includes("ocr-checkpoint"), false, `${label}: no marker may be emitted`);
+    assert.strictEqual(body.includes("kaid-checkpoint"), false, `${label}: no marker may be emitted`);
     assert.strictEqual(body.includes(CARRY), false, `${label}: the carry must not be re-emitted`);
     assert.strictEqual(outputs.checkpoint_after, "", `${label}: nothing advanced`);
   }
@@ -4408,8 +4408,8 @@ async function testCheckpointOptOutLeavesBodyUnchanged() {
     fs: mockFs(JSON.stringify(result), ""),
   });
   const body = lastSummaryBody(gh);
-  assert.strictEqual(body.includes("ocr-checkpoint"), false, "opt-out runs write no checkpoint");
-  assert.strictEqual(body, `${SUMMARY_MARKER}\n✅ **OpenCodeReview**: No comments generated. Looks good to me.`);
+  assert.strictEqual(body.includes("kaid-checkpoint"), false, "opt-out runs write no checkpoint");
+  assert.strictEqual(body, `${SUMMARY_MARKER}\n✅ **kaid**: No comments generated. Looks good to me.`);
   assert.strictEqual(outputs.comments_total, "0");
   assert.strictEqual(outputs.checkpoint_after, "");
 }
@@ -4555,37 +4555,37 @@ function scriptCore() {
 
 // The complete env the resolve step reads, so a test can vary one axis at a
 // time and know nothing else moved. GITHUB_WORKSPACE is a fresh empty dir:
-// no .opencodereview/rule.json, so that axis stays out of the picture.
+// no .kaid/rule.json, so that axis stays out of the picture.
 function resolveEnv(over = {}) {
   const os = require("os");
   return Object.assign(
     {
       GITHUB_ACTION_PATH: REPO_ROOT,
-      GITHUB_WORKSPACE: require("fs").mkdtempSync(path.join(os.tmpdir(), "ocr-fp-")),
-      OCR_HEAD_SHA: CK_NEW,
-      OCR_BASE_REF: "main",
-      OCR_MERGE_BASE: CK_MB,
+      GITHUB_WORKSPACE: require("fs").mkdtempSync(path.join(os.tmpdir(), "kaid-fp-")),
+      KAID_HEAD_SHA: CK_NEW,
+      KAID_BASE_REF: "main",
+      KAID_MERGE_BASE: CK_MB,
       // Written by "Resolve PR refs", which fails the job rather than leaving
       // it empty; ckPayload records the same PR, so the checkpoint matches.
-      OCR_PR_NUMBER: "123",
-      OCR_STICKY_SUMMARY: "true",
-      OCR_FULL_REVIEW: "false",
-      OCR_EVENT_ACTION: "synchronize",
-      OCR_RULE_PATH: "",
-      OCR_FP_LLM_URL: "https://llm.example",
-      OCR_FP_LLM_MODEL: "model",
-      OCR_FP_LLM_USE_ANTHROPIC: "false",
-      OCR_FP_LANGUAGE: "en",
-      OCR_FP_LLM_EXTRA_BODY: "",
-      OCR_FP_LLM_AUTH_HEADER: "",
-      OCR_FP_LLM_TIMEOUT: "",
-      OCR_FP_LLM_EXTRA_HEADERS: "",
-      OCR_FP_RULE: "",
-      OCR_FP_ROUTE_SEVERITY_BELOW: "",
-      OCR_FP_ROUTE_CATEGORIES: "",
-      OCR_FP_BACKGROUND: "",
-      OCR_CHECKPOINT_APP_SLUG: "",
-      OCR_VERSION_ACTUAL: "1.2.3",
+      KAID_PR_NUMBER: "123",
+      KAID_STICKY_SUMMARY: "true",
+      KAID_FULL_REVIEW: "false",
+      KAID_EVENT_ACTION: "synchronize",
+      KAID_RULE_PATH: "",
+      KAID_FP_LLM_URL: "https://llm.example",
+      KAID_FP_LLM_MODEL: "model",
+      KAID_FP_LLM_USE_ANTHROPIC: "false",
+      KAID_FP_LANGUAGE: "en",
+      KAID_FP_LLM_EXTRA_BODY: "",
+      KAID_FP_LLM_AUTH_HEADER: "",
+      KAID_FP_LLM_TIMEOUT: "",
+      KAID_FP_LLM_EXTRA_HEADERS: "",
+      KAID_FP_RULE: "",
+      KAID_FP_ROUTE_SEVERITY_BELOW: "",
+      KAID_FP_ROUTE_CATEGORIES: "",
+      KAID_FP_BACKGROUND: "",
+      KAID_CHECKPOINT_APP_SLUG: "",
+      KAID_VERSION_ACTUAL: "1.2.3",
     },
     over
   );
@@ -4598,7 +4598,7 @@ function resolveEnv(over = {}) {
 async function testActionResolveScriptFallsBackInsteadOfThrowing() {
   const fsReal = require("fs");
   const os = require("os");
-  const empty = fsReal.mkdtempSync(path.join(os.tmpdir(), "ocr-noscript-"));
+  const empty = fsReal.mkdtempSync(path.join(os.tmpdir(), "kaid-noscript-"));
   const core = scriptCore();
   await runActionScript(actionScriptSource("Resolve review range"), {
     github: {},
@@ -4607,15 +4607,15 @@ async function testActionResolveScriptFallsBackInsteadOfThrowing() {
     env: {
       GITHUB_ACTION_PATH: empty,
       GITHUB_WORKSPACE: empty,
-      OCR_HEAD_SHA: CK_NEW,
-      OCR_BASE_REF: "main",
-      OCR_MERGE_BASE: CK_MB,
-      OCR_STICKY_SUMMARY: "true",
-      OCR_FULL_REVIEW: "false",
-      OCR_EVENT_ACTION: "synchronize",
-      OCR_RULE_PATH: "",
-      OCR_FP_LLM_URL: "https://llm.example",
-      OCR_VERSION_ACTUAL: "1.2.3",
+      KAID_HEAD_SHA: CK_NEW,
+      KAID_BASE_REF: "main",
+      KAID_MERGE_BASE: CK_MB,
+      KAID_STICKY_SUMMARY: "true",
+      KAID_FULL_REVIEW: "false",
+      KAID_EVENT_ACTION: "synchronize",
+      KAID_RULE_PATH: "",
+      KAID_FP_LLM_URL: "https://llm.example",
+      KAID_VERSION_ACTUAL: "1.2.3",
     },
   });
   assert.strictEqual(core.warnings.length, 1, "the failure is reported as a warning");
@@ -4635,7 +4635,7 @@ async function testActionScriptFingerprintCoversRepoLocalRules() {
   const fsReal = require("fs");
   const os = require("os");
   const source = actionScriptSource("Resolve review range");
-  const workspace = fsReal.mkdtempSync(path.join(os.tmpdir(), "ocr-ws-"));
+  const workspace = fsReal.mkdtempSync(path.join(os.tmpdir(), "kaid-ws-"));
   const fingerprint = async (over = {}) => {
     const core = scriptCore();
     await runActionScript(source, {
@@ -4646,24 +4646,24 @@ async function testActionScriptFingerprintCoversRepoLocalRules() {
         {
           GITHUB_ACTION_PATH: REPO_ROOT,
           GITHUB_WORKSPACE: workspace,
-          OCR_HEAD_SHA: CK_NEW,
-          OCR_BASE_REF: "main",
-          OCR_MERGE_BASE: CK_MB,
-          OCR_PR_NUMBER: "123",
-          OCR_STICKY_SUMMARY: "true",
-          OCR_FULL_REVIEW: "false",
-          OCR_EVENT_ACTION: "synchronize",
-          OCR_RULE_PATH: "",
-          OCR_FP_LLM_URL: "https://llm.example",
-          OCR_FP_LLM_MODEL: "model",
-          OCR_FP_LLM_USE_ANTHROPIC: "false",
-          OCR_FP_LANGUAGE: "en",
-          OCR_FP_LLM_EXTRA_BODY: "",
-          OCR_FP_RULE: "",
-          OCR_FP_ROUTE_SEVERITY_BELOW: "low",
-          OCR_FP_ROUTE_CATEGORIES: "",
-          OCR_FP_BACKGROUND: "",
-          OCR_VERSION_ACTUAL: "1.2.3",
+          KAID_HEAD_SHA: CK_NEW,
+          KAID_BASE_REF: "main",
+          KAID_MERGE_BASE: CK_MB,
+          KAID_PR_NUMBER: "123",
+          KAID_STICKY_SUMMARY: "true",
+          KAID_FULL_REVIEW: "false",
+          KAID_EVENT_ACTION: "synchronize",
+          KAID_RULE_PATH: "",
+          KAID_FP_LLM_URL: "https://llm.example",
+          KAID_FP_LLM_MODEL: "model",
+          KAID_FP_LLM_USE_ANTHROPIC: "false",
+          KAID_FP_LANGUAGE: "en",
+          KAID_FP_LLM_EXTRA_BODY: "",
+          KAID_FP_RULE: "",
+          KAID_FP_ROUTE_SEVERITY_BELOW: "low",
+          KAID_FP_ROUTE_CATEGORIES: "",
+          KAID_FP_BACKGROUND: "",
+          KAID_VERSION_ACTUAL: "1.2.3",
         },
         over
       ),
@@ -4676,18 +4676,18 @@ async function testActionScriptFingerprintCoversRepoLocalRules() {
   const none = await fingerprint();
   assert.strictEqual(/^[0-9a-f]{16}$/.test(none), true, "the fingerprint is a short hex digest");
 
-  const ruleDir = path.join(workspace, ".opencodereview");
+  const ruleDir = path.join(workspace, ".kaid");
   fsReal.mkdirSync(ruleDir, { recursive: true });
   fsReal.writeFileSync(path.join(ruleDir, "rule.json"), '[{"path":"**","rule":"be strict"}]');
   const added = await fingerprint();
-  assert.notStrictEqual(added, none, "adding .opencodereview/rule.json must invalidate the checkpoint");
+  assert.notStrictEqual(added, none, "adding .kaid/rule.json must invalidate the checkpoint");
 
   fsReal.writeFileSync(path.join(ruleDir, "rule.json"), '[{"path":"**","rule":"be lenient"}]');
   const edited = await fingerprint();
   assert.notStrictEqual(edited, added, "editing its contents must invalidate the checkpoint");
 
   // The inputs axis still works, `background` included.
-  const otherInputs = await fingerprint({ OCR_FP_BACKGROUND: "some background" });
+  const otherInputs = await fingerprint({ KAID_FP_BACKGROUND: "some background" });
   assert.notStrictEqual(otherInputs, edited, "a changed input must invalidate the checkpoint");
 
   // Two configurations that differ only in where one field ends must not hash
@@ -4695,11 +4695,11 @@ async function testActionScriptFingerprintCoversRepoLocalRules() {
   // identical ("low|a" + "" + "x" and "low" + "a|" + "x" both read as
   // low|a||x), which is a checkpoint surviving a config change that should
   // have invalidated it — the one direction this feature may never fail in.
-  const shifted = await fingerprint({ OCR_FP_ROUTE_SEVERITY_BELOW: "low|a", OCR_FP_ROUTE_CATEGORIES: "", OCR_FP_BACKGROUND: "x" });
-  const shiftedBack = await fingerprint({ OCR_FP_ROUTE_SEVERITY_BELOW: "low", OCR_FP_ROUTE_CATEGORIES: "a|", OCR_FP_BACKGROUND: "x" });
+  const shifted = await fingerprint({ KAID_FP_ROUTE_SEVERITY_BELOW: "low|a", KAID_FP_ROUTE_CATEGORIES: "", KAID_FP_BACKGROUND: "x" });
+  const shiftedBack = await fingerprint({ KAID_FP_ROUTE_SEVERITY_BELOW: "low", KAID_FP_ROUTE_CATEGORIES: "a|", KAID_FP_BACKGROUND: "x" });
   assert.notStrictEqual(shifted, shiftedBack, "no input value may shift a fingerprint field boundary");
-  const otherVersion = await fingerprint({ OCR_VERSION_ACTUAL: "1.2.4" });
-  assert.notStrictEqual(otherVersion, edited, "a changed OCR version must invalidate the checkpoint");
+  const otherVersion = await fingerprint({ KAID_VERSION_ACTUAL: "1.2.4" });
+  assert.notStrictEqual(otherVersion, edited, "a changed kaid version must invalidate the checkpoint");
 }
 
 // GET /user is 403 ("Resource not accessible by integration") for the
@@ -4728,7 +4728,7 @@ async function testCheckpointAuthorSurvivesUnavailableGetUser() {
   // What counts as "written by us", at the unit that decides it.
   const shapes = [
     ["app attribution only", { user: { login: "anything" }, performed_via_github_app: { slug: "github-actions" } }, true],
-    ["bot-typed user", { user: { login: "ocr-app[bot]", type: "Bot" } }, true],
+    ["bot-typed user", { user: { login: "kaid-app[bot]", type: "Bot" } }, true],
     ["bot login, no type", { user: { login: "github-actions[bot]" } }, true],
     ["fork contributor", { user: { login: "fork-contributor", type: "User" } }, false],
     ["maintainer", { user: { login: "release-manager", type: "User" } }, false],
@@ -4738,8 +4738,8 @@ async function testCheckpointAuthorSurvivesUnavailableGetUser() {
     assert.strictEqual(isCheckpointAuthorOurs(comment), ours, `${label}: ours=${ours}`);
   }
   // A caller that knows its app pins the identity exactly.
-  assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "github-actions[bot]" } }, "ocr-app"), false);
-  assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "ocr-app[bot]" } }, "ocr-app"), true);
+  assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "github-actions[bot]" } }, "kaid-app"), false);
+  assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "kaid-app[bot]" } }, "kaid-app"), true);
 }
 
 // The corner case: `user.type` alone carries the whole decision when there is no app
@@ -4755,7 +4755,7 @@ function testCheckpointBotTypeAloneEstablishesAuthorship() {
   // The same login without the Bot type is a human account: no evidence, no trust.
   assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "plain" } }), false);
   // And it cannot satisfy a pinned app slug, since it names no app.
-  assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "plain", type: "Bot" } }, "ocr-app"), false);
+  assert.strictEqual(isCheckpointAuthorOurs({ user: { login: "plain", type: "Bot" } }, "kaid-app"), false);
 }
 
 // The hole this closes: `performed_via_github_app` is also set on comments written with a
@@ -4792,12 +4792,12 @@ async function testCheckpointRejectsUserToServerAppComment() {
   assert.strictEqual(isCheckpointAuthorOurs(viaBot), true);
 }
 
-// Robustness: the no-op is checked before the OCR output is read, because
-// an empty range is also the range OCR is most likely to trip over: an error
+// Robustness: the no-op is checked before the kaid output is read, because
+// an empty range is also the range kaid is most likely to trip over: an error
 // banner written over the previous run's findings destroys them just as
 // thoroughly as "No comments generated" does.
 async function testCheckpointNoopSurvivesUnreadableOcrOutput() {
-  const previous = `${SUMMARY_MARKER}\n🔍 **OpenCodeReview** found **2** issue(s) in this PR.\n\n${CARRY}`;
+  const previous = `${SUMMARY_MARKER}\n🔍 **kaid** found **2** issue(s) in this PR.\n\n${CARRY}`;
   const gh = makeGithub({
     existingSummary: [{ id: 42, html_url: "http://ex/42", user: { login: "github-actions[bot]" }, body: previous }],
   });
@@ -4807,7 +4807,7 @@ async function testCheckpointNoopSurvivesUnreadableOcrOutput() {
         github: gh,
         context,
         core: { setOutput() {} },
-        fs: mockFs("not json at all", "ocr: empty commit range"),
+        fs: mockFs("not json at all", "kaid: empty commit range"),
       },
       ckRunOptions({ checkpointCarry: CARRY, checkpointNoop: true })
     )
@@ -4821,7 +4821,7 @@ async function testCheckpointNoopSurvivesUnreadableOcrOutput() {
 // would destroy findings for commits nobody touched, so the no-op leaves the
 // existing comment exactly as it is.
 async function testCheckpointNoopLeavesSummaryUntouched() {
-  const previous = `${SUMMARY_MARKER}\n🔍 **OpenCodeReview** found **2** issue(s) in this PR.\n\n${CARRY}`;
+  const previous = `${SUMMARY_MARKER}\n🔍 **kaid** found **2** issue(s) in this PR.\n\n${CARRY}`;
   const stickyComment = () => [{ id: 42, html_url: "http://ex/42", user: { login: "github-actions[bot]" }, body: previous }];
 
   const gh = makeGithub({ existingSummary: stickyComment() });
@@ -4939,7 +4939,7 @@ async function testCheckpointCarryNeverErasesExistingMarker() {
     core: { setOutput() {} },
     fs: mockFs(JSON.stringify({ comments: [], manifest: ckManifest({ terminal_state: "partial" }) }), ""),
   });
-  assert.strictEqual(lastSummaryBody(optedOut).includes("ocr-checkpoint"), false);
+  assert.strictEqual(lastSummaryBody(optedOut).includes("kaid-checkpoint"), false);
 }
 
 // The carry rescue, continued. parseCheckpointMarker rejects a body carrying two markers as
@@ -4981,7 +4981,7 @@ async function testCheckpointRescueSkipsAmbiguousMarkers() {
       ckRunOptions({ checkpointCarry: "" })
     )
   );
-  assert.strictEqual(lastSummaryBody(gh).includes("ocr-checkpoint"), false, "neither marker is carried forward");
+  assert.strictEqual(lastSummaryBody(gh).includes("kaid-checkpoint"), false, "neither marker is carried forward");
 }
 
 // The resolve step's failure path publishes an empty fingerprint (it fell over
@@ -5120,12 +5120,12 @@ function fingerprintDigestSource() {
   return block.slice(at, end);
 }
 
-// .opencodereview/rule.json is read from the repo whether or not `rule` is
+// .kaid/rule.json is read from the repo whether or not `rule` is
 // set, so a commit that edits it changes what a review says and must invalidate
 // the checkpoint.
 function testActionFingerprintsRepoLocalRuleFile() {
   const block = actionStepBlock("Resolve review range");
-  assert.strictEqual(block.includes("'.opencodereview/rule.json'"), true, "the repo-local rule file is looked up");
+  assert.strictEqual(block.includes("'.kaid/rule.json'"), true, "the repo-local rule file is looked up");
   assert.strictEqual(
     fingerprintDigestSource().includes("localRuleDigest"),
     true,
@@ -5147,15 +5147,15 @@ function testActionFingerprintIncludesBackground() {
   // digest. Either one alone is the silent failure — an axis that looks covered
   // and quietly stops invalidating checkpoints.
   for (const [envVar, input] of [
-    ["OCR_FP_LLM_URL", "llm_url"],
-    ["OCR_FP_LLM_MODEL", "llm_model"],
-    ["OCR_FP_LLM_USE_ANTHROPIC", "llm_use_anthropic"],
-    ["OCR_FP_LANGUAGE", "language"],
-    ["OCR_FP_LLM_EXTRA_BODY", "llm_extra_body"],
-    ["OCR_FP_RULE", "rule"],
-    ["OCR_FP_ROUTE_SEVERITY_BELOW", "route_severity_below"],
-    ["OCR_FP_ROUTE_CATEGORIES", "route_categories"],
-    ["OCR_FP_BACKGROUND", "background"],
+    ["KAID_FP_LLM_URL", "llm_url"],
+    ["KAID_FP_LLM_MODEL", "llm_model"],
+    ["KAID_FP_LLM_USE_ANTHROPIC", "llm_use_anthropic"],
+    ["KAID_FP_LANGUAGE", "language"],
+    ["KAID_FP_LLM_EXTRA_BODY", "llm_extra_body"],
+    ["KAID_FP_RULE", "rule"],
+    ["KAID_FP_ROUTE_SEVERITY_BELOW", "route_severity_below"],
+    ["KAID_FP_ROUTE_CATEGORIES", "route_categories"],
+    ["KAID_FP_BACKGROUND", "background"],
   ]) {
     assert.strictEqual(
       block.includes(`${envVar}: \${{ inputs.${input} }}`),
@@ -5177,9 +5177,9 @@ function testActionFingerprintReadsNormalizedAxes() {
   const block = actionStepBlock("Resolve review range");
   const digest = fingerprintDigestSource();
   for (const [envVar, normalized] of [
-    ["OCR_FP_EFFORT", "EFFORT"],
-    ["OCR_FP_MAX_TOKENS_BUDGET", "MAX_TOKENS_BUDGET"],
-    ["OCR_FP_LLM_REASONING_EFFORT", "LLM_REASONING_EFFORT"],
+    ["KAID_FP_EFFORT", "EFFORT"],
+    ["KAID_FP_MAX_TOKENS_BUDGET", "MAX_TOKENS_BUDGET"],
+    ["KAID_FP_LLM_REASONING_EFFORT", "LLM_REASONING_EFFORT"],
   ]) {
     assert.strictEqual(
       block.includes(`${envVar}: \${{ env.${normalized} }}`),
@@ -5204,7 +5204,7 @@ function testActionRangeFromIsAStepOutput() {
   const resolve = actionStepBlock("Resolve review range");
   assert.strictEqual(resolve.includes("core.setOutput('range_from'"), true);
 
-  const review = actionStepBlock("Run OpenCodeReview");
+  const review = actionStepBlock("Run kaid");
   assert.strictEqual(review.includes("RANGE_FROM: ${{ steps.range.outputs.range_from }}"), true);
   assert.strictEqual(review.includes('--from "${RANGE_FROM:-$MERGE_BASE}"'), true, "empty output still means merge-base");
 
@@ -5254,29 +5254,29 @@ function testActionPinsGithubScriptSha() {
   assert.strictEqual(new Set(uses).size, 1, "…to the same sha");
 }
 
-// `ocr_version` defaults to "latest", so falling back to `spec:${VERSION}`
+// `kaid_version` defaults to "latest", so falling back to `spec:${VERSION}`
 // pinned the axis to the constant "spec:latest" — it stopped distinguishing
 // versions in exactly the case it was written to cover. Nothing replaces it:
 // an unresolvable version produces an EMPTY fingerprint, which matches no
 // stored one (full review) and blocks the write (no advance).
 async function testActionUnresolvedVersionEmptiesTheFingerprint() {
-  const install = actionStepBlock("Install OpenCodeReview");
-  assert.strictEqual(install.includes("spec:${OCR_VERSION}"), false, "no constant may stand in for a version");
-  assert.strictEqual(install.includes('echo "OCR_VERSION_ACTUAL=${VERSION_ACTUAL}"'), true);
+  const install = actionStepBlock("Install kaid");
+  assert.strictEqual(install.includes("spec:${KAID_VERSION}"), false, "no constant may stand in for a version");
+  assert.strictEqual(install.includes('echo "KAID_VERSION_ACTUAL=${VERSION_ACTUAL}"'), true);
 
   const core = scriptCore();
   await runActionScript(actionScriptSource("Resolve review range"), {
     github: ckGithub({ comments: [ckComment({ payload: ckPayload() })] }),
     context: { repo: { owner: "owner", repo: "repo" }, issue: { number: 123 } },
     core,
-    env: resolveEnv({ OCR_VERSION_ACTUAL: "" }),
+    env: resolveEnv({ KAID_VERSION_ACTUAL: "" }),
   });
   assert.strictEqual(core.outputs.config_fingerprint, "", "an unresolved version fingerprints as nothing");
   assert.strictEqual(core.outputs.range_mode, "full", "…so no stored fingerprint can match it");
   assert.strictEqual(core.outputs.range_reason, "config_changed");
   assert.strictEqual(core.outputs.range_from, "", "empty range_from means ${RANGE_FROM:-$MERGE_BASE}");
   assert.strictEqual(
-    core.warnings.some((w) => /ocr version/.test(w)),
+    core.warnings.some((w) => /kaid version/.test(w)),
     true,
     "and the run says why it went wide"
   );
@@ -5307,31 +5307,31 @@ async function testActionFingerprintCoversLlmHeaderAxes() {
 
   const base = (await runWith({})).outputs.config_fingerprint;
   for (const [envVar, value] of [
-    ["OCR_FP_LLM_EXTRA_HEADERS", "X-Model=gpt-4o"],
-    ["OCR_FP_LLM_AUTH_HEADER", "X-Api-Key"],
-    ["OCR_FP_LLM_TIMEOUT", "600"],
+    ["KAID_FP_LLM_EXTRA_HEADERS", "X-Model=gpt-4o"],
+    ["KAID_FP_LLM_AUTH_HEADER", "X-Api-Key"],
+    ["KAID_FP_LLM_TIMEOUT", "600"],
   ]) {
     const changed = (await runWith({ [envVar]: value })).outputs.config_fingerprint;
     assert.notStrictEqual(changed, base, `a changed ${envVar} must invalidate the checkpoint`);
   }
   // Two different header sets must not collide with each other either.
-  const a = (await runWith({ OCR_FP_LLM_EXTRA_HEADERS: "X-Model=a" })).outputs.config_fingerprint;
-  const b = (await runWith({ OCR_FP_LLM_EXTRA_HEADERS: "X-Model=b" })).outputs.config_fingerprint;
+  const a = (await runWith({ KAID_FP_LLM_EXTRA_HEADERS: "X-Model=a" })).outputs.config_fingerprint;
+  const b = (await runWith({ KAID_FP_LLM_EXTRA_HEADERS: "X-Model=b" })).outputs.config_fingerprint;
   assert.notStrictEqual(a, b, "two header sets must not hash alike");
 
   // Header VALUES carry credentials, so the axis goes in as a digest: the value
   // may reach neither the step log nor anything the step publishes (the
   // fingerprint is what the stored checkpoint carries).
   const secret = "X-Api-Key=sk-live-must-never-be-published";
-  const leaky = await runWith({ OCR_FP_LLM_EXTRA_HEADERS: secret });
+  const leaky = await runWith({ KAID_FP_LLM_EXTRA_HEADERS: secret });
   const published = JSON.stringify([leaky.outputs, leaky.warnings, leaky.infos]);
   assert.strictEqual(published.includes("sk-live"), false, "the header value must not be published anywhere");
   const digest = fingerprintDigestSource();
-  assert.strictEqual(digest.includes("process.env.OCR_FP_LLM_EXTRA_HEADERS"), false, "…so it is not inlined raw");
+  assert.strictEqual(digest.includes("process.env.KAID_FP_LLM_EXTRA_HEADERS"), false, "…so it is not inlined raw");
   assert.strictEqual(digest.includes("extraHeadersDigest"), true, "…it is hashed first, like the rule file contents");
   const resolve = actionStepBlock("Resolve review range");
   for (const input of ["llm_extra_headers", "llm_auth_header", "llm_timeout"]) {
-    const envVar = `OCR_FP_${input.toUpperCase()}`;
+    const envVar = `KAID_FP_${input.toUpperCase()}`;
     assert.strictEqual(resolve.includes(`${envVar}: \${{ inputs.${input} }}`), true, `the step passes inputs.${input}`);
   }
 }
@@ -5346,12 +5346,12 @@ async function testActionFingerprintCoversLlmHeaderAxes() {
 async function testActionPinsAuthorToTheDefaultTokenApp() {
   const resolve = actionStepBlock("Resolve review range");
   assert.strictEqual(
-    resolve.includes("OCR_CHECKPOINT_APP_SLUG: ${{ inputs.github_token == github.token && 'github-actions' || '' }}"),
+    resolve.includes("KAID_CHECKPOINT_APP_SLUG: ${{ inputs.github_token == github.token && 'github-actions' || '' }}"),
     true,
     "the slug is pinned only when the token is the default one"
   );
   assert.strictEqual(
-    resolve.includes("appSlug: process.env.OCR_CHECKPOINT_APP_SLUG || ''"),
+    resolve.includes("appSlug: process.env.KAID_CHECKPOINT_APP_SLUG || ''"),
     true,
     "…and it reaches the reader"
   );
@@ -5378,7 +5378,7 @@ async function testActionPinsAuthorToTheDefaultTokenApp() {
       github: ckGithub({ comments: [ckComment({ payload: ckPayload(), login })] }),
       context: { repo: { owner: "owner", repo: "repo" }, issue: { number: 123 } },
       core,
-      env: resolveEnv({ OCR_CHECKPOINT_APP_SLUG: "github-actions" }),
+      env: resolveEnv({ KAID_CHECKPOINT_APP_SLUG: "github-actions" }),
     });
     assert.strictEqual(core.outputs.range_mode, "full");
     return core.outputs.range_reason;
@@ -5468,10 +5468,10 @@ async function testCheckpointReasonsMatchTheDocs() {
 async function testActionResolveStepDeclaresItsRefInputs() {
   const block = actionStepBlock("Resolve review range");
   for (const [envVar, source] of [
-    ["OCR_HEAD_SHA", "env.HEAD_SHA"],
-    ["OCR_BASE_REF", "env.BASE_REF"],
-    ["OCR_MERGE_BASE", "env.MERGE_BASE"],
-    ["OCR_PR_NUMBER", "env.PR_NUMBER"],
+    ["KAID_HEAD_SHA", "env.HEAD_SHA"],
+    ["KAID_BASE_REF", "env.BASE_REF"],
+    ["KAID_MERGE_BASE", "env.MERGE_BASE"],
+    ["KAID_PR_NUMBER", "env.PR_NUMBER"],
   ]) {
     assert.strictEqual(
       block.includes(`${envVar}: \${{ ${source} }}`),
@@ -5491,7 +5491,7 @@ async function testActionResolveStepDeclaresItsRefInputs() {
     github: ckGithub({ comments: [ckComment({ payload: ckPayload() })] }),
     context: { repo: { owner: "owner", repo: "repo" }, issue: { number: 123 } },
     core,
-    env: resolveEnv({ OCR_HEAD_SHA: "", OCR_BASE_REF: "", OCR_MERGE_BASE: "" }),
+    env: resolveEnv({ KAID_HEAD_SHA: "", KAID_BASE_REF: "", KAID_MERGE_BASE: "" }),
   });
   assert.strictEqual(core.outputs.range_mode, "full", "an empty ref set never narrows");
   assert.strictEqual(core.outputs.range_reason, "base_changed", "…because the stored base cannot match an empty one");
@@ -5616,7 +5616,7 @@ function testTailForCommentKeepsTheTail() {
   const out = tailForComment(head + tail);
   assert.ok(out.includes("TAIL-LINE: the actual error"), "the tail must survive truncation");
   assert.ok(!out.includes("HEAD-LINE"), "the head must be truncated away");
-  assert.match(out, /earlier characters truncated; see the ocr-stderr\.log artifact/, "truncation must be announced");
+  assert.match(out, /earlier characters truncated; see the kaid-stderr\.log artifact/, "truncation must be announced");
   assert.ok(out.length <= MAX_COMMENT_STDERR_CHARS + 200, "the result stays far below GitHub's comment limit");
 }
 
@@ -5633,12 +5633,12 @@ const {
 
 const BOT = "github-actions[bot]";
 
-// A root body carrying the marker OCR stamps into every inline comment it
-// creates (`ocr-<runId>-<runAttempt>-<random hex>`, per newCommentId). This is
+// A root body carrying the marker kaid stamps into every inline comment it
+// creates (`kaid-<runId>-<runAttempt>-<random hex>`, per newCommentId). This is
 // what proves a thread is ours, so the resolvable fixture must carry it.
-const OURS = "<!-- ocr-42-1-deadbeefcafe1234 -->\nfindings go here";
+const OURS = "<!-- kaid-42-1-deadbeefcafe1234 -->\nfindings go here";
 
-// An outdated, unresolved, bot-only thread on src/a.js:10 that OCR created —
+// An outdated, unresolved, bot-only thread on src/a.js:10 that kaid created —
 // the one shape that is resolvable. Every case below is this minus exactly one
 // condition.
 function botThread(over = {}) {
@@ -5728,8 +5728,8 @@ function testShouldResolveThreadTable() {
     // mentions the ID (a quote, a code block, a suggestion echoing our comment)
     // cannot pass ownership off to another author's thread.
     {
-      name: "an unwrapped mention of an OCR id does not prove ownership",
-      thread: botThread({ root: { nodes: [{ body: "re: ocr-42-1-deadbeefcafe1234 — see above" }] } }),
+      name: "an unwrapped mention of a kaid id does not prove ownership",
+      thread: botThread({ root: { nodes: [{ body: "re: kaid-42-1-deadbeefcafe1234 — see above" }] } }),
       spans: [],
       want: "not_ours",
     },
@@ -5813,7 +5813,7 @@ async function testShouldResolveThreadPartialCommentView() {
     threads: [botThread({ id: "TRUNC", comments: { totalCount: 101, nodes: botComments(100) } })],
   });
   const core = mockCore();
-  const out = await withEnv({ OCR_SUCCESS_DELAY: "0" }, () =>
+  const out = await withEnv({ KAID_SUCCESS_DELAY: "0" }, () =>
     resolveOutdatedThreads(resolveArgs(gh, core))
   );
   assert.strictEqual(gh.resolveMutationCalls().length, 0, "a partially-visible thread is never resolved");
@@ -5843,7 +5843,7 @@ async function testResolveOutdatedThreadsCapsAndSequences() {
   };
 
   const started = Date.now();
-  const out = await withEnv({ OCR_SUCCESS_DELAY: "0" }, () =>
+  const out = await withEnv({ KAID_SUCCESS_DELAY: "0" }, () =>
     resolveOutdatedThreads(resolveArgs(gh, core))
   );
 
@@ -5854,11 +5854,11 @@ async function testResolveOutdatedThreadsCapsAndSequences() {
     { candidates: out.candidates, attempted: out.attempted, resolved: out.resolved, failed: out.failed },
     { candidates: 60, attempted: 50, resolved: 50, failed: 0 }
   );
-  // Pacing is the documented OCR_SUCCESS_DELAY: at its 2000ms default this
+  // Pacing is the documented KAID_SUCCESS_DELAY: at its 2000ms default this
   // loop would need ~98s, so finishing in under 2s proves the knob is the
   // pacing source. (testResolvePacingUsesSuccessDelay proves the other
   // direction — that a non-zero value actually sleeps.)
-  assert.strictEqual(Date.now() - started < 2000, true, "OCR_SUCCESS_DELAY must control pacing");
+  assert.strictEqual(Date.now() - started < 2000, true, "KAID_SUCCESS_DELAY must control pacing");
   assert.strictEqual(resolveLogLines(core).length, 1, "exactly one summary line per invocation");
   assert.match(resolveLogLines(core)[0], /mode=resolve threads=60 candidates=60 attempted=50 resolved=50/);
 }
@@ -5904,7 +5904,7 @@ async function testResolveOutdatedThreadsErrorHandling() {
   for (const c of cases) {
     const gh = makeGithub({ threads, resolveErrorSpec: c.spec });
     const core = mockCore();
-    const out = await withEnv({ OCR_SUCCESS_DELAY: "0" }, () =>
+    const out = await withEnv({ KAID_SUCCESS_DELAY: "0" }, () =>
       resolveOutdatedThreads(resolveArgs(gh, core))
     );
     assert.strictEqual(gh.resolveMutationCalls().length, c.mutations, c.name);
@@ -6013,7 +6013,7 @@ async function testResolveOutdatedOffByDefaultIssuesNoGraphql() {
 async function testResolveOutdatedNeverRunsOnEmptyRuns() {
   const threads = [botThread({ id: "STALE", originalLine: 99 })];
 
-  // Unparseable OCR output: the run exits before it knows anything about the
+  // Unparseable kaid output: the run exits before it knows anything about the
   // findings, so it must not close a single thread.
   const parseFail = await run({
     result: "{ not json",
@@ -6110,7 +6110,7 @@ const author = (login, typename) => ({ author: { login, __typename: typename } }
 
 // Identity is the ROOT comment's author, not getAuthenticatedLogin().
 // Under every real Actions token that call 403s (botLogin === null), so the old
-// isBotComment() path recognized only `github-actions[bot]` and read OCR's own
+// isBotComment() path recognized only `github-actions[bot]` and read kaid's own
 // root comment as a human reply on any App-token workflow.
 function testResolveIdentityComesFromTheRootAuthor() {
   const cases = [
@@ -6144,7 +6144,7 @@ function testResolveIdentityComesFromTheRootAuthor() {
       comments: { totalCount: 2, nodes: [author("my-app", "Bot"), author("octocat", "User")] },
       want: "human_reply",
     },
-    // PAT: users.getAuthenticated works, so botLogin IS the human OCR posts as.
+    // PAT: users.getAuthenticated works, so botLogin IS the huma kaid posts as.
     {
       name: "PAT run, the token owner's own thread",
       botLogin: "alice",
@@ -6525,7 +6525,7 @@ async function testResolveCleanupNeverBreaksOutputs() {
   assert.strictEqual(core.warnings.filter((w) => /cleanup failed unexpectedly/.test(w)).length, 1);
 }
 
-// Pacing rides on the documented OCR_SUCCESS_DELAY; there is no separate
+// Pacing rides on the documented KAID_SUCCESS_DELAY; there is no separate
 // undocumented resolve knob to discover.
 async function testResolvePacingUsesSuccessDelay() {
   const threads = [botThread({ id: "A" }), botThread({ id: "B" }), botThread({ id: "C" })];
@@ -6541,7 +6541,7 @@ async function testResolvePacingUsesSuccessDelay() {
       return realSetTimeout(callback, 0, ...args);
     };
     try {
-      await withEnv({ OCR_SUCCESS_DELAY: delay }, () => resolveOutdatedThreads(resolveArgs(gh, core)));
+      await withEnv({ KAID_SUCCESS_DELAY: delay }, () => resolveOutdatedThreads(resolveArgs(gh, core)));
     } finally {
       global.setTimeout = realSetTimeout;
     }
@@ -6549,7 +6549,7 @@ async function testResolvePacingUsesSuccessDelay() {
     return asked;
   };
   // Two sleeps between three mutations, none after the last.
-  assert.deepStrictEqual(await sleeps("40"), [40, 40], "OCR_SUCCESS_DELAY must pace the mutations");
+  assert.deepStrictEqual(await sleeps("40"), [40, 40], "KAID_SUCCESS_DELAY must pace the mutations");
   assert.deepStrictEqual(await sleeps("0"), [], "zero delay must not sleep");
 }
 
@@ -6575,7 +6575,7 @@ async function testAuthenticatedLoginIsResolvedOncePerRun() {
   assert.strictEqual(both.outputs.comments_resolved, "1", "sharing the lookup changes no outcome");
 
   // Resolve-only must still look it up. The call reads as dead because botLogin
-  // is null under every Actions token, but under a PAT it IS the login OCR posts
+  // is null under every Actions token, but under a PAT it IS the login kaid posts
   // as, and shouldResolveThread's rootLogin !== botLogin branch is the only
   // thing telling our own PAT-posted comment from a human quoting our marker.
   const resolveOnly = await run({

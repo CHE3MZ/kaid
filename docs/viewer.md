@@ -4,24 +4,24 @@ sidebar:
   order: 10
 ---
 
-`ocr viewer` is a small embedded HTTP server that renders past review
+`kaid viewer` is a small embedded HTTP server that renders past review
 sessions in a browser-friendly UI. No external dependencies — sessions
-are read directly from the JSONL files OCR writes to disk during every
+are read directly from the JSONL files kaid writes to disk during every
 review.
 
 ## Launching
 
 ```bash
-ocr viewer                       # start and open the browser
-ocr viewer --addr :3000          # bind to all interfaces on port 3000
-ocr viewer --addr 0.0.0.0:8080   # bind on all interfaces
-ocr viewer --open=never          # just print the URL
-ocr viewer --open=always         # force it when auto declines (piped output, WSL)
+kaid viewer                       # start and open the browser
+kaid viewer --addr :3000          # bind to all interfaces on port 3000
+kaid viewer --addr 0.0.0.0:8080   # bind on all interfaces
+kaid viewer --open=never          # just print the URL
+kaid viewer --open=always         # force it when auto declines (piped output, WSL)
 ```
 
 The default address is `localhost:5483`. The server holds the foreground -
 press ++ctrl+c++ to stop it. Sessions are scanned lazily from
-`~/.opencodereview/sessions/` on each request, so a review running in
+`~/.kaid/sessions/` on each request, so a review running in
 another terminal shows up the moment its JSONL file appears.
 
 !!! warning "DNS-rebinding protection"
@@ -31,12 +31,12 @@ another terminal shows up the moment its JSONL file appears.
     `--addr 192.168.1.10:5483`) is added automatically, but **wildcard** binds
     (`:3000`, `0.0.0.0`, `::`) are not - reaching the UI from a LAN IP or
     hostname then returns `forbidden host`. To expose a wildcard bind, set
-    `OCR_VIEWER_ALLOWED_HOSTS` to a comma-separated list of allowed hostnames
-    (e.g. `OCR_VIEWER_ALLOWED_HOSTS=box.local,192.168.1.10`).
+    `KAID_VIEWER_ALLOWED_HOSTS` to a comma-separated list of allowed hostnames
+    (e.g. `KAID_VIEWER_ALLOWED_HOSTS=box.local,192.168.1.10`).
 
 ## Opening the browser
 
-`ocr viewer` opens the URL in your default browser as soon as the server is
+`kaid viewer` opens the URL in your default browser as soon as the server is
 listening. `--open` controls this and takes the same three values as the global
 `--color`:
 
@@ -92,7 +92,7 @@ between pages.
 
 ### `/r/{repo}` — Session list for one repo
 
-For each session: ID (a UUID), branch name (when OCR was able to
+For each session: ID (a UUID), branch name (when kaid was able to
 detect it), review mode, model, file count, duration, and a started-at
 timestamp, and a `Check` link to the next-older session. Ten sessions
 fit on a page; the pager at the bottom right moves between pages.
@@ -125,7 +125,7 @@ The pager stays hidden while a section still fits on one page.
 
 ### `/r/{repo}/compare` — Compare two sessions
 
-The same four buckets `ocr session compare` prints, rendered as a page.
+The same four buckets `kaid session compare` prints, rendered as a page.
 The session list's **Action** column carries a `Check` link: each row
 opens a comparison against the next-older session, so the newest row
 shows what changed since the run before it. The oldest row shows `-`,
@@ -157,7 +157,7 @@ To compare any other pair, edit the query string:
 Both ids must belong to the repository in the URL.
 
 If the two runs used different review modes, the page shows the same
-warning `ocr session compare` prints: they may not have looked at the
+warning `kaid session compare` prints: they may not have looked at the
 same files, so the buckets are not directly comparable.
 
 ## What's in a task card
@@ -250,7 +250,7 @@ compression dropped the relevant detail.
 The viewer reads from:
 
 ```
-~/.opencodereview/sessions/
+~/.kaid/sessions/
 └── <path-encoded-repo-path>/
     └── <session-id>.jsonl
 ```
@@ -277,7 +277,7 @@ regenerates its index on the next request.
 
 The JSONL transcripts contain **everything** sent to and received from
 the LLM, including any code that was in the diff. They live entirely on
-your machine inside `~/.opencodereview/`. OCR does not upload them
+your machine inside `~/.kaid/`. kaid does not upload them
 anywhere.
 
 If your reviews include code you wouldn't want stored long-term,
@@ -294,7 +294,7 @@ exported traces.
 ## When the viewer is not the right tool
 
 - For programmatic post-processing (CI, dashboards), use
-  `ocr review --format json --audience agent`. The viewer renders for
+  `kaid review --format json --audience agent`. The viewer renders for
   humans, not machines.
 - For grepping across many sessions, use `jq` on the JSONL files
   directly. There's no search box in the UI yet.

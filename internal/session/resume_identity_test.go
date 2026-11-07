@@ -108,7 +108,7 @@ func TestValidateResume(t *testing.T) {
 		},
 		{
 			name:    "unknown manifest schema is rejected",
-			parent:  func(m *RunManifest) { m.SchemaVersion = "ocr.run-manifest/v99" },
+			parent:  func(m *RunManifest) { m.SchemaVersion = "kaid.run-manifest/v99" },
 			wantErr: "manifest schema",
 		},
 		{
@@ -309,7 +309,7 @@ func TestNewResumeLineage(t *testing.T) {
 }
 
 // End-to-end for the event itself: a lineage written by a live session must come
-// back out of the session file through the same reader `ocr session show` uses.
+// back out of the session file through the same reader `kaid session show` uses.
 func TestResumeLineageRoundTripsThroughSessionFile(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
 	repoDir := t.TempDir()
@@ -373,7 +373,7 @@ func TestUnknownLineageSchemaIsIgnored(t *testing.T) {
 	var s Summary
 	applyRecordToSummary(&s, summaryRecord{
 		Type:          "resume_lineage",
-		SchemaVersion: "ocr.resume-lineage/v99",
+		SchemaVersion: "kaid.resume-lineage/v99",
 		ParentRunID:   "run-parent",
 	})
 	if s.ResumeLineage != nil {

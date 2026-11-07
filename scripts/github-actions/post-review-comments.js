@@ -3,10 +3,10 @@
 
 "use strict";
 
-// OpenCodeReview PR review comment poster.
+// kaid PR review comment poster.
 //
 // Extracted from the inline actions/github-script step that used to live in
-// examples/github_actions/ocr-review.yml and .github/workflows/ocr-review.yml,
+// examples/github_actions/kaid-review.yml and .github/workflows/kaid-review.yml,
 // so that the reusable composite action (action/action.yml) and the in-repo
 // workflows share a single source of truth.
 //
@@ -17,7 +17,7 @@
 
 const crypto = require("crypto");
 
-const SUMMARY_MARKER = "<!-- ocr-summary -->";
+const SUMMARY_MARKER = "<!-- kaid-summary -->";
 
 // Reason attached to comments that have no valid line range and therefore can
 // never be posted as inline comments. Surfaced in the summary via the same
@@ -85,8 +85,8 @@ async function runPostReviewComments({
   // workflow_run.pull_requests[0]) because context.issue.number resolves
   // nothing on a workflow_run. Omitting it keeps the event-derived number.
   prNumber: prNumberOverride,
-  resultPath = "/tmp/ocr-result.json",
-  stderrPath = "/tmp/ocr-stderr.log",
+  resultPath = "/tmp/kaid-result.json",
+  stderrPath = "/tmp/kaid-stderr.log",
   stickySummary = true,
   incremental = false,
   incrementalOverlapThreshold = DEFAULT_OVERLAP_THRESHOLD,
@@ -249,7 +249,7 @@ async function runPostReviewComments({
   // A rerun on the same head reviewed an empty range, so this run has nothing
   // to say about the PR — and the sticky summary is rewritten wholesale, so
   // saying it would replace the previous run's findings with "No comments
-  // generated" (or, if OCR tripped over the empty range, with an error banner).
+  // generated" (or, if kaid tripped over the empty range, with an error banner).
   // Checked before the output is even read: every path below writes.
   if (checkpointNoop) {
     log("[checkpoint] same head as the recorded checkpoint; leaving the existing summary in place.");
@@ -257,13 +257,13 @@ async function runPostReviewComments({
     return;
   }
 
-  // Read OCR output.
+  // Read kaid output.
   let result;
   try {
     const raw = fs.readFileSync(resultPath, "utf8");
     result = JSON.parse(raw);
   } catch (e) {
-    log(`Failed to parse OCR output: ${e.message}`);
+    log(`Failed to parse kaid output: ${e.message}`);
     // stream_progress streams human-audience progress into stderr, so the file
     // can dwarf GitHub's 65536-char comment limit; keep the tail, which is
     // where the error that killed the run was written.
@@ -272,7 +272,7 @@ async function runPostReviewComments({
       // No manifest exists on this path (the output could not be parsed), so it
       // can only ever carry the previous checkpoint forward — never advance it.
       const body = appendCheckpoint(
-        `${SUMMARY_MARKER}\n⚠️ **OpenCodeReview** encountered an error:\n${fencedBlock(stderr)}`,
+        `${SUMMARY_MARKER}\n⚠️ **kaid** encountered an error:\n${fencedBlock(stderr)}`,
         null
       );
       const posted = await postSummary({ github, owner, repo, prNumber, body, sticky: stickySummary, preserveMarker, log });
@@ -297,7 +297,7 @@ async function runPostReviewComments({
   if (comments.length === 0) {
     const message = result.message || "No comments generated. Looks good to me.";
     // A clean run is still a complete run: this path advances the checkpoint.
-    const body = appendCheckpoint(`${SUMMARY_MARKER}\n✅ **OpenCodeReview**: ${message}${rangeNote}`, result.manifest);
+    const body = appendCheckpoint(`${SUMMARY_MARKER}\n✅ **kaid**: ${message}${rangeNote}`, result.manifest);
     const posted = await postSummary({ github, owner, repo, prNumber, body, sticky: stickySummary, preserveMarker, log });
     stats.summaryUrl = posted.url;
     setStatsOutputs(out, stats);
@@ -311,11 +311,11 @@ async function runPostReviewComments({
   } else if (context.eventName === "pull_request_target") {
     commitSha = context.payload?.pull_request?.head?.sha;
   } else {
-    throw new Error("OCR result manifest input.resolved_head is required to post inline comments for this event");
+    throw new Error("kaid result manifest input.resolved_head is required to post inline comments for this event");
   }
   if (commitSha == null) {
     throw new Error(result.manifest != null
-      ? "OCR result manifest input.resolved_head is missing; cannot post inline comments"
+      ? "kaid result manifest input.resolved_head is missing; cannot post inline comments"
       : "pull_request_target event payload.pull_request.head.sha is missing; cannot post inline comments");
   }
   if (typeof commitSha !== "string" || !/^[0-9a-f]{40}$/.test(commitSha)) {
@@ -650,12 +650,12 @@ async function publishBatch({
     // through a config bag) to keep this helper a behavior-preserving move of
     // the existing catch block — scoping config to only the batch size would
     // silently drop per-comment pacing.
-    const MAX_RETRIES = parseNonNegInt(process.env.OCR_MAX_RETRIES, 3);
-    const SUCCESS_DELAY = parseNonNegInt(process.env.OCR_SUCCESS_DELAY, 2000);
-    const FAILURE_DELAY = parseNonNegInt(process.env.OCR_FAILURE_DELAY, 1000);
-    const LOW_REMAINING_THRESHOLD = parseNonNegInt(process.env.OCR_LOW_REMAINING_THRESHOLD, 3);
-    const LOW_REMAINING_SPACING = parseNonNegInt(process.env.OCR_LOW_REMAINING_SPACING, 10000);
-    // Note: read-API pacing (OCR_READ_SUCCESS_DELAY / OCR_READ_LOW_REMAINING_SPACING)
+    const MAX_RETRIES = parseNonNegInt(process.env.KAID_MAX_RETRIES, 3);
+    const SUCCESS_DELAY = parseNonNegInt(process.env.KAID_SUCCESS_DELAY, 2000);
+    const FAILURE_DELAY = parseNonNegInt(process.env.KAID_FAILURE_DELAY, 1000);
+    const LOW_REMAINING_THRESHOLD = parseNonNegInt(process.env.KAID_LOW_REMAINING_THRESHOLD, 3);
+    const LOW_REMAINING_SPACING = parseNonNegInt(process.env.KAID_LOW_REMAINING_SPACING, 10000);
+    // Note: read-API pacing (KAID_READ_SUCCESS_DELAY / KAID_READ_LOW_REMAINING_SPACING)
     // is handled internally by readWithPacing() for the read calls below
     // (findExistingBatchReview / getPostedCommentIds / isCommentAlreadyPosted),
     // so it is not read here — only the write-path pacing knobs are.
@@ -964,8 +964,8 @@ function buildRunTags(runId, runAttempt) {
   const RUN_TAG = `${id}-${attempt}`;
   return {
     RUN_TAG,
-    REVIEW_TAG: `<!-- ocr-review-run:${RUN_TAG} -->`,
-    SUMMARY_TAG: `<!-- ocr-summary-run:${RUN_TAG} -->`,
+    REVIEW_TAG: `<!-- kaid-review-run:${RUN_TAG} -->`,
+    SUMMARY_TAG: `<!-- kaid-summary-run:${RUN_TAG} -->`,
   };
 }
 
@@ -1317,18 +1317,18 @@ function num(v) {
   return Number.isFinite(n) && n >= 1 ? n : null;
 }
 
-// The one description of OCR's inline-comment marker. Two call sites depend on
+// The one description of kaid's inline-comment marker. Two call sites depend on
 // it — the retry idempotency check (getPostedCommentIds) and the resolve
 // ownership check (threadIsOurs) — and a drift between them would be silent in
 // both directions, so they are built from this single source. Anchored to the
 // HTML comment wrapper so user content or a quoted suggestion cannot forge it.
-const OCR_COMMENT_ID_SOURCE = String.raw`<!--\s*(ocr-\d+-\d+-[a-f0-9]+)\s*-->`;
+const KAID_COMMENT_ID_SOURCE = String.raw`<!--\s*(kaid-\d+-\d+-[a-f0-9]+)\s*-->`;
 
 // Shared, non-global instance for the presence check. No /g means no lastIndex,
 // so .test() carries no state between the threads it is called on.
 // getPostedCommentIds builds its own /g copy instead, for exactly the reason
 // this one can be shared.
-const OCR_COMMENT_ID_RE = new RegExp(OCR_COMMENT_ID_SOURCE);
+const KAID_COMMENT_ID_RE = new RegExp(KAID_COMMENT_ID_SOURCE);
 
 // ---- Outdated thread resolution (#567) ----
 //
@@ -1355,7 +1355,7 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
           originalStartLine
           comments(first: 100) { totalCount nodes { author { login __typename } } }
           # Aliased second selection so only the ROOT comment's body crosses the
-          # wire: ownership is proved by the marker OCR stamps on the comment it
+          # wire: ownership is proved by the marker kaid stamps on the comment it
           # created, and replies cannot carry that proof. Fetching every body
           # would multiply the payload for a field only nodes[0] is read from.
           # Its author rides along so the proof of ownership and the identity
@@ -1379,7 +1379,7 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
 //   contents: read  + pull-requests: write  -> FORBIDDEN
 //   contents: write + pull-requests: read   -> resolved
 //   contents: write + pull-requests: write  -> resolved
-// https://github.com/chethanuk/open-code-review/actions/runs/35202780271
+// Measured on a scratch PR from the upstream action.
 //
 // Workflows elsewhere that appear to call this under `pull-requests: write`
 // wrap the mutation in try/catch and log a warning when it fails.
@@ -1439,8 +1439,8 @@ async function listBotReviewThreads({ github, owner, repo, prNumber, log, warn }
   return all;
 }
 
-// Does this thread's ROOT comment carry a marker OCR wrote? Only the root is
-// consulted: OCR creates a thread and never replies into one, so a marker
+// Does this thread's ROOT comment carry a marker kaid wrote? Only the root is
+// consulted: kaid creates a thread and never replies into one, so a marker
 // appearing deeper would mean someone quoted our comment back at us, which is
 // evidence of a human conversation rather than of ownership. A thread whose
 // root body did not come back (older data, a truncated response) is not
@@ -1452,7 +1452,7 @@ function rootComment(thread) {
 
 function threadIsOurs(thread) {
   const root = rootComment(thread);
-  return OCR_COMMENT_ID_RE.test((root && root.body) || "");
+  return KAID_COMMENT_ID_RE.test((root && root.body) || "");
 }
 
 // GraphQL's reviewThreads returns a bot's SLUG ("github-actions") where REST —
@@ -1501,7 +1501,7 @@ function shouldResolveThread(
   // identity, so a sibling workflow's outdated review threads are
   // indistinguishable from ours by author; and under a GitHub App token the
   // `github-actions[bot]` fallback in isBotComment would accept those threads
-  // outright. The marker OCR stamps into every inline comment it creates
+  // outright. The marker kaid stamps into every inline comment it creates
   // (newCommentId, via formatComment) is the actual proof of authorship, so it
   // is what the destructive path gates on. Checked before the human-reply loop
   // because "not ours" is the more fundamental answer: a thread we did not
@@ -1511,10 +1511,10 @@ function shouldResolveThread(
   // getAuthenticatedLogin(): that call is a user-token endpoint, so under the
   // Actions token (and under a GitHub App installation token) it 403s and
   // botLogin is null on every real run. isBotComment()'s only remaining rule is
-  // then the `github-actions[bot]` regex, which classifies OCR's OWN root
+  // then the `github-actions[bot]` regex, which classifies kaid's OWN root
   // comment as a human reply whenever the workflow runs under an App token —
   // the feature looks inert instead of broken. The marker check above already
-  // proved the root comment is ours, so the root author IS the identity OCR
+  // proved the root comment is ours, so the root author IS the identity kaid
   // posts under; every other comment must match it.
   // Read off the SAME node the marker proved ours: the root alias. Taking the
   // author from comments.nodes[0] instead would be correct only while GraphQL
@@ -1702,7 +1702,7 @@ async function resolveOutdatedThreads({
     // trips GitHub's secondary rate limiter on a write endpoint.
     // Reuses the documented posting knob rather than a private, undocumented
     // one: a second pacing dial nobody can find is a dial nobody can turn.
-    const delay = parseNonNegInt(process.env.OCR_SUCCESS_DELAY, 2000);
+    const delay = parseNonNegInt(process.env.KAID_SUCCESS_DELAY, 2000);
     for (let i = 0; i < attempted.length; i++) {
       try {
         await github.graphql(RESOLVE_THREAD_MUTATION, { threadId: attempted[i].id });
@@ -1793,8 +1793,8 @@ function computeRetryDelayMs(error, attempt) {
   const header = (name) => getHeader(headers, name);
   const nowSec = Math.floor(Date.now() / 1000);
 
-  const cap = parseNonNegInt(process.env.OCR_RETRY_MAX_DELAY, 300000);
-  const base = parseNonNegInt(process.env.OCR_RETRY_BASE_DELAY, 60000);
+  const cap = parseNonNegInt(process.env.KAID_RETRY_MAX_DELAY, 300000);
+  const base = parseNonNegInt(process.env.KAID_RETRY_BASE_DELAY, 60000);
 
   let info = null;
 
@@ -1880,7 +1880,7 @@ function logRateLimitQuota(response, tag, log) {
 // so rate-limit headers (retry-after / x-ratelimit-*) are honored uniformly.
 // Throws on final failure so the caller can decide how to degrade.
 async function withRetry(tag, fn, log) {
-  const MAX_RETRIES = parseNonNegInt(process.env.OCR_MAX_RETRIES, 3);
+  const MAX_RETRIES = parseNonNegInt(process.env.KAID_MAX_RETRIES, 3);
   let lastErr;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
@@ -1914,14 +1914,14 @@ async function withRetry(tag, fn, log) {
 async function readWithPacing(tag, fn, log) {
   const res = await withRetry(tag, fn, log);
   const remaining = logRateLimitQuota(res, tag, log);
-  const LOW_REMAINING_THRESHOLD = parseNonNegInt(process.env.OCR_LOW_REMAINING_THRESHOLD, 3);
+  const LOW_REMAINING_THRESHOLD = parseNonNegInt(process.env.KAID_LOW_REMAINING_THRESHOLD, 3);
   const lowQuota = remaining != null && remaining <= LOW_REMAINING_THRESHOLD;
   if (lowQuota) {
-    const READ_LOW_REMAINING_SPACING = parseNonNegInt(process.env.OCR_READ_LOW_REMAINING_SPACING, 5000);
+    const READ_LOW_REMAINING_SPACING = parseNonNegInt(process.env.KAID_READ_LOW_REMAINING_SPACING, 5000);
     log(`[rate-limit] quota low after read (${remaining} <= ${LOW_REMAINING_THRESHOLD}); spacing ${READ_LOW_REMAINING_SPACING}ms.`);
     await sleep(READ_LOW_REMAINING_SPACING);
   } else {
-    const READ_SUCCESS_DELAY = parseNonNegInt(process.env.OCR_READ_SUCCESS_DELAY, 500);
+    const READ_SUCCESS_DELAY = parseNonNegInt(process.env.KAID_READ_SUCCESS_DELAY, 500);
     await sleep(READ_SUCCESS_DELAY);
   }
   return res;
@@ -1988,12 +1988,12 @@ async function getPostedCommentIds({ github, owner, repo, prNumber, log }) {
     github.rest.pulls.listReviewComments({ owner, repo, pull_number: prNumber, per_page, page }), log
   );
   const ids = new Set();
-  // The ID format is `ocr-<RUN_TAG>-<random>` where RUN_TAG is
+  // The ID format is `kaid-<RUN_TAG>-<random>` where RUN_TAG is
   // `<runId>-<runAttempt>` and <random> is a per-comment random hex token.
   // Capture group 1 holds the bare ID, so we can add it directly without
   // stripping comment markers. Built with /g (own instance — /g carries
   // lastIndex, so it must never be shared) to walk every ID in one body.
-  const ID_RE = new RegExp(OCR_COMMENT_ID_SOURCE, "g");
+  const ID_RE = new RegExp(KAID_COMMENT_ID_SOURCE, "g");
   for (const c of comments) {
     const body = c.body || "";
     let m;
@@ -2037,13 +2037,13 @@ async function isCommentAlreadyPosted({ github, owner, repo, prNumber, id, log }
 // silently drop the second). Embedded in the comment body as an HTML comment
 // so getPostedCommentIds can match it back on retry.
 function newCommentId(runTag) {
-  return `ocr-${runTag}-${crypto.randomBytes(8).toString("hex")}`;
+  return `kaid-${runTag}-${crypto.randomBytes(8).toString("hex")}`;
 }
 
 // ---- Badge + publication policy helpers (#478) ----
 //
 // These are pure functions (no I/O, no side effects) so they can be unit-tested
-// directly. buildBadge byte-matches the CLI's cmd/opencodereview/output.go
+// directly. buildBadge byte-matches the CLI's cmd/kaid/output.go
 // buildBadge degeneration so review output is consistent across surfaces (I6).
 // buildPolicy/routeComment implement fail-open finding-publication routing
 // (I1, I4): a finding never matches the policy on unknown/malformed metadata,
@@ -2051,7 +2051,7 @@ function newCommentId(runTag) {
 // path), so a routed finding can never be double-posted on retry.
 
 // Strip C0/C1 control characters from a metadata value. The CLI's
-// sanitizeTerminal (cmd/opencodereview/output.go:197-206) strips control chars
+// sanitizeTerminal (cmd/kaid/output.go:197-206) strips control chars
 // but PRESERVES \t and \n (harmless in a terminal). This Action sanitizer is
 // intentionally STRICTER: it strips ALL control chars including \t and \n,
 // because a newline/tab in a category or severity would break the comment
@@ -2065,7 +2065,7 @@ function sanitizeMetadata(value) {
 }
 
 // Build the category/severity badge for a comment, byte-matching the CLI's
-// buildBadge degeneration (cmd/opencodereview/output.go:98-114):
+// buildBadge degeneration (cmd/kaid/output.go:98-114):
 //   both non-empty -> "[category · severity]" (with a middot, U+00B7)
 //   only category  -> "[category]"
 //   only severity  -> "[severity]"
@@ -2288,7 +2288,7 @@ function formatCommentMarkdown(comment, error) {
 //   failed  — comments that had line info but could not be posted (also
 //             rendered in the body below, each tagged with its failure reason)
 function buildSummaryBody({ total, inline, summary, skipped, routed = 0, failed, warnings }) {
-  let body = `🔍 **OpenCodeReview** found **${total}** issue(s) in this PR.`;
+  let body = `🔍 **kaid** found **${total}** issue(s) in this PR.`;
   if (total > 0) {
     body += `\n- ✅ Successfully posted inline: ${inline} comment(s)`;
     if (summary > 0) {
@@ -2319,7 +2319,7 @@ function buildSummaryBody({ total, inline, summary, skipped, routed = 0, failed,
 // made in the partition loop) so they are rendered here too, keeping the
 // pre-review anchor accurate.
 function buildPreReviewSummaryBody(totalCount, summaryComments, routedComments, warnings) {
-  let body = `🔍 **OpenCodeReview** found **${totalCount}** issue(s) in this PR.`;
+  let body = `🔍 **kaid** found **${totalCount}** issue(s) in this PR.`;
   if (totalCount > 0) {
     body += `\n- ⏳ _Posting review comments…_`;
     if (routedComments && routedComments.length > 0) {
@@ -2346,7 +2346,7 @@ function formatSummaryComments(summaryComments) {
 
 // Render the warning contents as a bulleted list under a "⚠️ Warnings" heading.
 // Returns "" when there are no warnings, so callers can append unconditionally.
-// OCR warning objects carry `file`, `message`, and `type`; each present field is
+// kaid warning objects carry `file`, `message`, and `type`; each present field is
 // surfaced so the summary shows where/why the warning happened. Plain-string
 // warnings (and any unknown shape) degrade gracefully to their textual form.
 function formatWarnings(warnings) {
@@ -2395,7 +2395,7 @@ const MAX_COMMENT_STDERR_CHARS = 20000;
 function tailForComment(text, limit = MAX_COMMENT_STDERR_CHARS) {
   const s = String(text || "");
   if (s.length <= limit) return s;
-  return `[... ${s.length - limit} earlier characters truncated; see the ocr-stderr.log artifact ...]\n${s.slice(-limit)}`;
+  return `[... ${s.length - limit} earlier characters truncated; see the kaid-stderr.log artifact ...]\n${s.slice(-limit)}`;
 }
 
 function safeFence(content) {
@@ -2872,7 +2872,7 @@ const CHECKPOINT_VERSION = 1;
 // intermittent bug waiting for the first `.exec` loop that returns early.
 // The flagless uses have no such state — `test` and `exec` on a RegExp without
 // `g` never touch lastIndex — so they share one instance.
-const CHECKPOINT_MARKER_PATTERN = "<!-- ocr-checkpoint:v1 ([A-Za-z0-9+/]+={0,2}) -->";
+const CHECKPOINT_MARKER_PATTERN = "<!-- kaid-checkpoint:v1 ([A-Za-z0-9+/]+={0,2}) -->";
 const CHECKPOINT_MARKER_RE = new RegExp(CHECKPOINT_MARKER_PATTERN);
 const CHECKPOINT_SHA_RE = /^[0-9a-f]{40}$/;
 // Event actions that mean "look at this PR again from scratch": a reopen or a
@@ -2882,7 +2882,7 @@ const EVENT_FULL_SCOPE = new Set(["reopened", "ready_for_review"]);
 
 function buildCheckpointMarker(payload) {
   const encoded = Buffer.from(JSON.stringify(payload), "utf8").toString("base64");
-  return `<!-- ocr-checkpoint:v1 ${encoded} -->`;
+  return `<!-- kaid-checkpoint:v1 ${encoded} -->`;
 }
 
 // Never erase a checkpoint we cannot re-derive. The sticky summary is rewritten

@@ -5,7 +5,7 @@
 
 """post_review.py
 
-Runs Open Code Review (`ocr review --format json`) against the current
+Runs kaid (`kaid review --format json`) against the current
 CodeUp change request and posts the results as a single summary comment
 via the CodeUp CreateChangeRequestComment OpenAPI:
 
@@ -27,15 +27,15 @@ request trigger context):
     CODEUP_TARGET_BRANCH    merge request target branch (review base)
     CODEUP_SOURCE_BRANCH    merge request source branch (review head)
 
-`ocr review` is run over `origin/<target>..origin/<source>`, so the
+`kaid review` is run over `origin/<target>..origin/<source>`, so the
 pipeline step needs at least a fetch of both branches (see README's
 "non-shallow clone" note).
 
 Optional:
-    OCR_REVIEW_EXTRA_ARGS   extra flags to pass to `ocr review`, shell-quoted,
+    KAID_REVIEW_EXTRA_ARGS   extra flags to pass to `kaid review`, shell-quoted,
                             e.g. "--concurrency 4"
-    OCR_MAX_ITEMS           cap on issues rendered in the comment (default 50)
-    OCR_FAIL_ON_POST_ERROR  "1"/"true" to fail the pipeline step if
+    KAID_MAX_ITEMS           cap on issues rendered in the comment (default 50)
+    KAID_FAIL_ON_POST_ERROR  "1"/"true" to fail the pipeline step if
                             posting the comment fails (default: don't fail)
 
 --from-ref/--to-ref and --extra-args CLI flags are provided mainly so this
@@ -62,19 +62,19 @@ SEVERITY_EMOJI = {
 }
 
 
-class OcrReviewError(RuntimeError):
-    """Raised when the ocr CLI fails to run or produce usable output."""
+class KaidReviewError(RuntimeError):
+    """Raised when the kaid CLI fails to run or produce usable output."""
 
 
 class CodeupApiError(RuntimeError):
     """Raised when the CodeUp OpenAPI call fails."""
 
 
-def run_ocr_review(from_ref: str | None = None, to_ref: str | None = None,
+def run_kaid_review(from_ref: str | None = None, to_ref: str | None = None,
                     extra_args: list[str] | None = None,
                     timeout: int = 1800) -> dict:
-    """Run `ocr review --format json` and return the parsed JSON output."""
-    cmd = ["ocr", "review", "--audience", "agent", "--format", "json"]
+    """Run `kaid review --format json` and return the parsed JSON output."""
+    cmd = ["kaid", "review", "--audience", "agent", "--format", "json"]
     if from_ref and to_ref:
         cmd += ["--from", from_ref, "--to", to_ref]
     if extra_args:
@@ -83,31 +83,31 @@ def run_ocr_review(from_ref: str | None = None, to_ref: str | None = None,
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
     except FileNotFoundError as exc:
-        raise OcrReviewError(
-            "`ocr` CLI not found on PATH. Install it first "
+        raise KaidReviewError(
+            "`kaid` CLI not found on PATH. Install it first "
             "(curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh)."
         ) from exc
     except subprocess.TimeoutExpired as exc:
-        raise OcrReviewError(f"`ocr review` timed out after {timeout}s.") from exc
+        raise KaidReviewError(f"`kaid review` timed out after {timeout}s.") from exc
 
     if proc.returncode != 0:
-        raise OcrReviewError(
-            f"`ocr review` exited with code {proc.returncode}.\n"
+        raise KaidReviewError(
+            f"`kaid review` exited with code {proc.returncode}.\n"
             f"stderr:\n{proc.stderr.strip()}"
         )
 
     stdout = proc.stdout.strip()
     if not stdout:
-        raise OcrReviewError("`ocr review` produced no output on stdout.")
+        raise KaidReviewError("`kaid review` produced no output on stdout.")
 
     try:
         return json.loads(stdout)
     except json.JSONDecodeError as exc:
-        raise OcrReviewError(f"Could not parse ocr JSON output: {exc}") from exc
+        raise KaidReviewError(f"Could not parse kaid JSON output: {exc}") from exc
 
 
 def _get_comments(review_result) -> list:
-    """Normalize the top-level shape of ocr's JSON output to a list of comments."""
+    """Normalize the top-level shape of kaid's JSON output to a list of comments."""
     if isinstance(review_result, list):
         return review_result
     if isinstance(review_result, dict):
@@ -127,11 +127,11 @@ def _field(comment: dict, *names, default=""):
 
 
 def format_summary_comment(review_result, max_items: int = 50) -> str:
-    """Render ocr's JSON review output as a single Markdown summary comment."""
+    """Render kaid's JSON review output as a single Markdown summary comment."""
     comments = _get_comments(review_result)
 
     if not comments:
-        return "**Open Code Review**: No issues found. \u2705"
+        return "**kaid**: No issues found. \u2705"
 
     def sort_key(c):
         severity = str(_field(c, "severity", default="info")).lower()
@@ -140,7 +140,7 @@ def format_summary_comment(review_result, max_items: int = 50) -> str:
     comments = sorted(comments, key=sort_key)
     shown = comments[:max_items] if max_items > 0 else comments
 
-    lines = [f"**Open Code Review** found {len(comments)} issue(s):", ""]
+    lines = [f"**kaid** found {len(comments)} issue(s):", ""]
 
     for c in shown:
         path = _field(c, "path", "file", default="(unknown file)")
@@ -161,11 +161,11 @@ def format_summary_comment(review_result, max_items: int = 50) -> str:
     if remaining > 0:
         lines.append("")
         lines.append(
-            f"...and {remaining} more issue(s). Run `ocr review` locally for the full report."
+            f"...and {remaining} more issue(s). Run `kaid review` locally for the full report."
         )
 
     lines.append("")
-    lines.append("_Posted automatically by Open Code Review._")
+    lines.append("_Posted automatically by kaid._")
     return "\n".join(lines)
 
 
@@ -233,7 +233,7 @@ def _default_ref(branch_env_var: str) -> str | None:
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(
-        description="Run Open Code Review and post a summary comment to CodeUp."
+        description="Run kaid and post a summary comment to CodeUp."
     )
     parser.add_argument(
         "--from-ref", dest="from_ref",
@@ -247,16 +247,16 @@ def parse_args(argv=None):
     )
     parser.add_argument(
         "--extra-args", dest="extra_args",
-        default=os.environ.get("OCR_REVIEW_EXTRA_ARGS", ""),
-        help="Extra shell-quoted flags to pass to `ocr review`.",
+        default=os.environ.get("KAID_REVIEW_EXTRA_ARGS", ""),
+        help="Extra shell-quoted flags to pass to `kaid review`.",
     )
     parser.add_argument(
-        "--max-items", type=int, default=int(os.environ.get("OCR_MAX_ITEMS", "50"))
+        "--max-items", type=int, default=int(os.environ.get("KAID_MAX_ITEMS", "50"))
     )
     parser.add_argument(
         "--fail-on-post-error",
         action="store_true",
-        default=_env_flag("OCR_FAIL_ON_POST_ERROR"),
+        default=_env_flag("KAID_FAIL_ON_POST_ERROR"),
     )
     return parser.parse_args(argv)
 
@@ -266,10 +266,10 @@ def main(argv=None) -> int:
     extra_args = shlex.split(args.extra_args) if args.extra_args else None
 
     try:
-        review_result = run_ocr_review(
+        review_result = run_kaid_review(
             from_ref=args.from_ref, to_ref=args.to_ref, extra_args=extra_args
         )
-    except OcrReviewError as exc:
+    except KaidReviewError as exc:
         print(f"::error:: {exc}", file=sys.stderr)
         return 1
 

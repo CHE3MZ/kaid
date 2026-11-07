@@ -639,7 +639,7 @@ func TestWorkspaceTrackedFileChangedToSymlinkDoesNotReadExternalTarget(t *testin
 }
 
 // TestRangeDiffDetectsRename guards against issue #99: when a file is renamed
-// on the target branch, `ocr review --from master --to BRANCH` must recognize
+// on the target branch, `kaid review --from master --to BRANCH` must recognize
 // the rename and read content at the NEW path. Before the fix the rename could
 // surface as delete(old)+add(new) (e.g. diff.renames=false) and the parser's
 // broken /dev/null detection sent the deleted half into `git show ref:oldpath`
@@ -727,7 +727,7 @@ func TestRangeDiffSurvivesExternalDiffTool(t *testing.T) {
 	}
 }
 
-// TestCommitDiffMergeCommitReviewsFirstParentDiff covers `ocr review --commit
+// TestCommitDiffMergeCommitReviewsFirstParentDiff covers `kaid review --commit
 // <merge>`: plain `git show` renders merge commits as a combined diff
 // ("diff --cc"), which ParseDiffText cannot parse, so the review silently
 // reported "No supported files changed" for exactly the commits whose

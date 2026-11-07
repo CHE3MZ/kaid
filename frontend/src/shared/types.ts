@@ -54,7 +54,7 @@ export interface ProviderEntry {
   authHeader?: string;
 }
 
-export interface OcrConfig {
+export interface KaidConfig {
   provider?: string;
   model?: string;
   providers: Record<string, ProviderEntry>;
@@ -98,7 +98,7 @@ export interface EnvToolStatus {
 }
 
 export interface EnvCheckResult {
-  ocr: EnvToolStatus;
+  kaid: EnvToolStatus;
 }
 
 export interface CliRunOptions {

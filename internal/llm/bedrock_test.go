@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-// writeConfig writes an OCR config file to a temp dir and returns its path.
+// writeConfig writes a kaid config file to a temp dir and returns its path.
 func writeConfig(t *testing.T, cfg map[string]any) string {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "config.json")
@@ -203,17 +203,17 @@ func TestAmbientAuthFollowsTheEffectiveProtocol(t *testing.T) {
 // re-hosted while the url and token the block declares went unused, with no
 // region or profile anywhere to state where it went instead.
 func TestBedrockIsRejectedOnTheURLAndTokenPaths(t *testing.T) {
-	t.Run("OCR_LLM_PROTOCOL", func(t *testing.T) {
-		t.Setenv("OCR_LLM_URL", "https://example.invalid/v1")
-		t.Setenv("OCR_LLM_TOKEN", "sk-test")
-		t.Setenv("OCR_LLM_MODEL", "us.anthropic.claude-sonnet-4-6")
-		t.Setenv("OCR_LLM_PROTOCOL", ProtocolAnthropicBedrock)
+	t.Run("KAID_LLM_PROTOCOL", func(t *testing.T) {
+		t.Setenv("KAID_LLM_URL", "https://example.invalid/v1")
+		t.Setenv("KAID_LLM_TOKEN", "sk-test")
+		t.Setenv("KAID_LLM_MODEL", "us.anthropic.claude-sonnet-4-6")
+		t.Setenv("KAID_LLM_PROTOCOL", ProtocolAnthropicBedrock)
 
 		_, err := ResolveEndpoint(writeConfig(t, map[string]any{}))
 		if err == nil {
-			t.Fatal("resolved with OCR_LLM_PROTOCOL=anthropic-bedrock; want an error naming the variable")
+			t.Fatal("resolved with KAID_LLM_PROTOCOL=anthropic-bedrock; want an error naming the variable")
 		}
-		for _, want := range []string{"OCR_LLM_PROTOCOL", "aws_region", `"provider": "bedrock"`} {
+		for _, want := range []string{"KAID_LLM_PROTOCOL", "aws_region", `"provider": "bedrock"`} {
 			if !strings.Contains(err.Error(), want) {
 				t.Errorf("error %q does not mention %q", err, want)
 			}
@@ -221,7 +221,7 @@ func TestBedrockIsRejectedOnTheURLAndTokenPaths(t *testing.T) {
 	})
 
 	t.Run("llm.protocol", func(t *testing.T) {
-		for _, k := range []string{"OCR_LLM_URL", "OCR_LLM_TOKEN", "OCR_LLM_MODEL", "OCR_LLM_PROTOCOL"} {
+		for _, k := range []string{"KAID_LLM_URL", "KAID_LLM_TOKEN", "KAID_LLM_MODEL", "KAID_LLM_PROTOCOL"} {
 			t.Setenv(k, "")
 		}
 		path := writeConfig(t, map[string]any{
@@ -500,7 +500,7 @@ func TestExplainErrorLeavesNonBedrockErrorsAlone(t *testing.T) {
 	}
 }
 
-// TestBedrockContextReportsResolvedRegion covers what `ocr llm test` prints:
+// TestBedrockContextReportsResolvedRegion covers what `kaid llm test` prints:
 // bedrock has no configured URL, so the resolved region is the only way to see
 // where a request went.
 func TestBedrockContextReportsResolvedRegion(t *testing.T) {

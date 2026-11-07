@@ -4,7 +4,7 @@ sidebar:
   order: 4
 ---
 
-Run OCR on every Pull Request or Merge Request. The upstream repo
+Run kaid on every Pull Request or Merge Request. The upstream repo
 ships two ready-made pipelines you copy and configure — one for
 GitHub Actions, one for GitLab CI. Both are thin wrappers around the
 core command documented in the [CLI Reference](../cli-reference.md#json).
@@ -16,19 +16,19 @@ Actions and GitLab CI sections below are just the concrete
 implementations of it:
 
 1. **Trigger on a PR / MR event.** A new pull request, an updated
-   merge request, or a manual `/open-code-review` comment kicks off
+   merge request, or a manual `/kaid` comment kicks off
    the job.
-2. **Install `ocr`** in the runner, typically
+2. **Install `kaid`** in the runner, typically
    `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh`. The runner is
    ephemeral, so this happens on every run.
-3. **Configure the LLM** from CI secrets via `ocr config set`
+3. **Configure the LLM** from CI secrets via `kaid config set`
    (endpoint, token, model). There is no persisted
-   `~/.opencodereview` to fall back on.
+   `~/.kaid` to fall back on.
 4. **Run the review in range mode** with machine-readable output, so
    stdout is a clean JSON envelope:
 
    ```bash
-   ocr review \
+   kaid review \
      --from "origin/<base-branch>" \
      --to "origin/<head-branch>" \
      --format json \
@@ -50,21 +50,21 @@ implementations of it:
 sequenceDiagram
     autonumber
     participant CI as CI runner
-    participant OCR as ocr CLI
+    participant kaid as kaid CLI
     participant LLM as LLM endpoint
     participant SCM as GitHub / GitLab
 
-    CI->>OCR: install and configure
-    CI->>OCR: ocr review --format json --audience agent
-    OCR->>LLM: review requests
-    LLM-->>OCR: findings
-    OCR-->>CI: JSON envelope
+    CI->>kaid: install and configure
+    CI->>kaid: kaid review --format json --audience agent
+    kaid->>LLM: review requests
+    LLM-->>kaid: findings
+    kaid-->>CI: JSON envelope
     CI->>SCM: post inline review comments
 ```
 
 !!! tip "Two credential types"
 
-    The **LLM credentials** let OCR generate findings. The **PR/MR write
+    The **LLM credentials** let kaid generate findings. The **PR/MR write
     token** lets the posting step comment back. The GitHub recipe gets the
     latter for free via `GITHUB_TOKEN`; GitLab recommends an explicit
     `GITLAB_API_TOKEN`, but the built-in `CI_JOB_TOKEN` is used as a fallback
@@ -74,18 +74,18 @@ sequenceDiagram
 ## GitHub Actions
 
 The upstream workflow lives at
-[`examples/github_actions/ocr-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/ocr-review.yml).
+[`examples/github_actions/kaid-review.yml`](https://github.com/CHE3MZ/kaid/blob/master/examples/github_actions/kaid-review.yml).
 
 ### What it does
 
 - Triggers on `pull_request_target` (`opened`) **and** `issue_comment` events
-  whose body starts with `/open-code-review` or `@open-code-review` —
-  the latter lets reviewers re-run OCR on demand by commenting on a PR.
+  whose body starts with `/kaid` or `@kaid` —
+  the latter lets reviewers re-run kaid on demand by commenting on a PR.
   (`pull_request_target` is used instead of `pull_request` so that
-  secrets are available even for PRs opened from forks; OCR only reads
+  secrets are available even for PRs opened from forks; kaid only reads
   the diff and does not execute code from the PR.)
-- Installs OCR via `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh`,
-  writes config with `ocr config set`, then runs the core command in
+- Installs kaid via `curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh`,
+  writes config with `kaid config set`, then runs the core command in
   branch-range mode.
 - Parses the JSON envelope and posts each finding as an inline review
   comment via the GitHub Pull Request Review API. Comments without
@@ -99,8 +99,8 @@ Drop the workflow into your repo:
 
 ```bash
 mkdir -p .github/workflows
-curl -o .github/workflows/ocr-review.yml \
-  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/ocr-review.yml
+curl -o .github/workflows/kaid-review.yml \
+  https://raw.githubusercontent.com/CHE3MZ/kaid/master/examples/github_actions/kaid-review.yml
 ```
 
 ### Required secrets
@@ -109,10 +109,10 @@ Set under **Settings → Secrets and variables → Actions**:
 
 | Secret | Required | Description |
 |---|---|---|
-| `OCR_LLM_URL` | Yes | LLM API endpoint (e.g. `https://api.openai.com/v1/chat/completions`). |
-| `OCR_LLM_AUTH_TOKEN` | Yes | Authentication token for the LLM API. This CI secret is passed to `ocr config set llm.auth_token`. (OCR's direct env var is `OCR_LLM_TOKEN`, not `OCR_LLM_AUTH_TOKEN`.) |
-| `OCR_LLM_MODEL` | No | Model name. No default — must be set explicitly. |
-| `OCR_LLM_USE_ANTHROPIC` | No | Set to `true` for Anthropic Claude models. |
+| `KAID_LLM_URL` | Yes | LLM API endpoint (e.g. `https://api.openai.com/v1/chat/completions`). |
+| `KAID_LLM_AUTH_TOKEN` | Yes | Authentication token for the LLM API. This CI secret is passed to `kaid config set llm.auth_token`. (kaid's direct env var is `KAID_LLM_TOKEN`, not `KAID_LLM_AUTH_TOKEN`.) |
+| `KAID_LLM_MODEL` | No | Model name. No default — must be set explicitly. |
+| `KAID_LLM_USE_ANTHROPIC` | No | Set to `true` for Anthropic Claude models. |
 
 `GITHUB_TOKEN` is auto-provided; the workflow declares
 `pull-requests: write` so it can post review comments.
@@ -120,7 +120,7 @@ Set under **Settings → Secrets and variables → Actions**:
 !!! note "Thinking mode is disabled by default"
 
     The workflow also runs
-    `ocr config set llm.extra_body '{"thinking": {"type": "disabled"}}'` at
+    `kaid config set llm.extra_body '{"thinking": {"type": "disabled"}}'` at
     startup, which turns off thinking-mode requests for compatibility across
     LLM providers that don't support that field. Remove the line if your
     provider needs thinking mode left on.
@@ -135,18 +135,18 @@ step:
 
 | Input | Default | Description |
 |---|---|---|
-| `effort` | `''` | Review effort preset passed to `ocr review --effort`: `low`, `medium`, or `high` (case-insensitive). Empty keeps the CLI default (the configured value, or medium). Requires OCR v1.10.0 or newer; the action fails early with a clear error on older versions. |
-| `max_tokens_budget` | `''` | Total token cap (input + output) passed to `ocr review --max-tokens-budget`. Empty or `'0'` means unlimited. Checked before every LLM round: a subtask already over the cap gets one final round to submit findings, no further subtasks are dispatched, over-budget and skipped files are reported as `failed(budget)`, partial results are still published, and the review exits 0. |
+| `effort` | `''` | Review effort preset passed to `kaid review --effort`: `low`, `medium`, or `high` (case-insensitive). Empty keeps the CLI default (the configured value, or medium). Requires kaid v1.10.0 or newer; the action fails early with a clear error on older versions. |
+| `max_tokens_budget` | `''` | Total token cap (input + output) passed to `kaid review --max-tokens-budget`. Empty or `'0'` means unlimited. Checked before every LLM round: a subtask already over the cap gets one final round to submit findings, no further subtasks are dispatched, over-budget and skipped files are reported as `failed(budget)`, partial results are still published, and the review exits 0. |
 | `llm_reasoning_effort` | `''` | Reasoning depth for models with a steerable `reasoning_effort` request field (e.g. GLM-5.x, OpenAI reasoning models): `minimal`, `low`, `medium`, `high`, `max` (case-insensitive). Merged into the request body through `llm_extra_body`, so it works with every published CLI version; an explicit `reasoning_effort` key in `llm_extra_body` wins over this input. Empty (default) sends nothing. OpenAI-compatible protocols only — the Anthropic API rejects unknown body fields, so the action fails fast on that protocol; steer Anthropic thinking through an explicit `llm_extra_body` key instead. |
-| `stream_progress` | `'false'` | `'true'` streams live `[ocr]` progress lines to the workflow log (human audience on stderr) instead of staying silent until the run finishes. Display-only: stderr is still captured to a file for artifacts and comment posting. |
+| `stream_progress` | `'false'` | `'true'` streams live `[kaid]` progress lines to the workflow log (human audience on stderr) instead of staying silent until the run finishes. Display-only: stderr is still captured to a file for artifacts and comment posting. |
 
 ```yaml
 - uses: CHE3MZ/kaid@master
   with:
-    llm_url: ${{ secrets.OCR_LLM_URL }}
-    llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
-    llm_model: ${{ vars.OCR_LLM_MODEL }}
-    llm_use_anthropic: ${{ vars.OCR_LLM_USE_ANTHROPIC }}
+    llm_url: ${{ secrets.KAID_LLM_URL }}
+    llm_auth_token: ${{ secrets.KAID_LLM_AUTH_TOKEN }}
+    llm_model: ${{ vars.KAID_LLM_MODEL }}
+    llm_use_anthropic: ${{ vars.KAID_LLM_USE_ANTHROPIC }}
     effort: high
     max_tokens_budget: '10000000'
     llm_reasoning_effort: low
@@ -160,7 +160,7 @@ severity/category routing, and cross-push checkpoints included.
 ### Customization
 
 All of the following are edits to the workflow file you just copied
-(`.github/workflows/ocr-review.yml`).
+(`.github/workflows/kaid-review.yml`).
 
 #### Background context
 
@@ -170,13 +170,13 @@ Feed the PR title (works especially well when titles follow a
 semantic convention like `feat(auth): add OAuth2 support`):
 
 ```yaml
-- name: Run OCR review
+- name: Run kaid review
   env:
     PR_TITLE: ${{ github.event.pull_request.title }}
     BASE_REF: ${{ github.base_ref }}
     HEAD_REF: ${{ github.head_ref }}
   run: |
-    ocr review \
+    kaid review \
       --background "$PR_TITLE" \
       --from "origin/$BASE_REF" \
       --to "origin/$HEAD_REF" \
@@ -194,12 +194,12 @@ execute on your runner.
 Pass a project-specific rule file with `--rule`:
 
 ```yaml
-- name: Run OCR review
+- name: Run kaid review
   env:
     BASE_REF: ${{ github.base_ref }}
     HEAD_REF: ${{ github.head_ref }}
   run: |
-    ocr review --rule ./my-rules.json \
+    kaid review --rule ./my-rules.json \
       --from "origin/$BASE_REF" \
       --to "origin/$HEAD_REF"
 ```
@@ -212,12 +212,12 @@ The default is 8 parallel sub-agents, one per subtask. Lower it on
 large PRs to stay under your LLM provider's rate limits:
 
 ```yaml
-- name: Run OCR review
+- name: Run kaid review
   env:
     BASE_REF: ${{ github.base_ref }}
     HEAD_REF: ${{ github.head_ref }}
   run: |
-    ocr review --concurrency 5 \
+    kaid review --concurrency 5 \
       --from "origin/$BASE_REF" \
       --to "origin/$HEAD_REF"
 ```
@@ -225,7 +225,7 @@ large PRs to stay under your LLM provider's rate limits:
 #### Trigger pattern
 
 The default workflow triggers on PR **opened** and on PR comments
-beginning with `/open-code-review` or `@open-code-review`. Two common
+beginning with `/kaid` or `@kaid`. Two common
 adjustments:
 
 Run on more PR lifecycle events (e.g., re-review when new commits
@@ -250,19 +250,19 @@ if: |
 The `github.event.issue.pull_request` check ensures the comment is
 on a PR, not a regular issue.
 
-#### Pin the OCR version
+#### Pin the kaid version
 
 The default workflow installs the latest published version. To pin:
 
 ```yaml
-- name: Install OpenCodeReview
-  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.0.0 sh
+- name: Install kaid
+  run: curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_VERSION=1.0.0 sh
 ```
 
 #### Post under a GitHub App identity
 
 By default, review comments come from `github-actions[bot]`. To post
-under a branded bot like `OpenCodeReview Bot`, swap `GITHUB_TOKEN`
+under a branded bot like `kaid Bot`, swap `GITHUB_TOKEN`
 for a GitHub App installation token.
 
 1. **Create the app** at *Settings → Developer settings → GitHub
@@ -275,7 +275,7 @@ for a GitHub App installation token.
 2. **Generate a private key** from the app settings page and download
    the `.pem` file. Note the **App ID** from the same page.
 
-3. **Install the app** on the repositories you want OCR to review.
+3. **Install the app** on the repositories you want kaid to review.
    The Installation ID appears in the post-install URL, e.g.
    `https://github.com/settings/installations/12345` → ID is `12345`.
 
@@ -318,12 +318,12 @@ report to stdout. Pipe it to a file and upload it with the CodeQL
 **Security → Code scanning**:
 
 ```yaml
-- name: Run OCR review
+- name: Run kaid review
   env:
     BASE_REF: ${{ github.base_ref }}
     HEAD_REF: ${{ github.head_ref }}
   run: |
-    ocr review \
+    kaid review \
       --from "origin/$BASE_REF" \
       --to "origin/$HEAD_REF" \
       --format sarif --audience agent > results.sarif
@@ -333,9 +333,9 @@ report to stdout. Pipe it to a file and upload it with the CodeQL
     sarif_file: results.sarif
 ```
 
-SARIF is machine-readable, so OCR suppresses progress lines on stdout
+SARIF is machine-readable, so kaid suppresses progress lines on stdout
 and `results.sarif` contains only the report. `--preview` does not
-support `--format sarif` — run a full review (or `ocr scan`) to
+support `--format sarif` — run a full review (or `kaid scan`) to
 produce a report.
 
 ### Troubleshooting
@@ -343,15 +343,15 @@ produce a report.
 | Symptom | Cause / Fix |
 |---|---|
 | `Cannot find merge-base` | The checkout step used a shallow clone, but range-mode review needs full history. The upstream workflow sets `fetch-depth: 0` on `actions/checkout` — preserve that setting if you edit the file. |
-| `Failed to parse OCR output` | `OCR_LLM_URL` or `OCR_LLM_AUTH_TOKEN` is missing or wrong. Re-check the values under *Settings → Secrets and variables → Actions*. |
+| `Failed to parse kaid output` | `KAID_LLM_URL` or `KAID_LLM_AUTH_TOKEN` is missing or wrong. Re-check the values under *Settings → Secrets and variables → Actions*. |
 | Review comments land on the wrong lines | Usually means the diff shifted between the moment the review started and when comments were posted. The posting script falls back to a plain issue comment in that case — no action needed. |
 
-> **Note.** The `OCR_DEBUG` env var is **not currently implemented**
-> in OCR — setting `OCR_DEBUG: "1"` has no effect. It's documented
+> **Note.** The `KAID_DEBUG` env var is **not currently implemented**
+> in kaid — setting `KAID_DEBUG: "1"` has no effect. It's documented
 > here in case it is wired up later. For verbose output today, inspect
 > the raw review JSON and stderr that the workflow writes to
-> `/tmp/ocr-result.json` and `/tmp/ocr-stderr.log` (see troubleshooting
-> below), or run `ocr review` locally.
+> `/tmp/kaid-result.json` and `/tmp/kaid-stderr.log` (see troubleshooting
+> below), or run `kaid review` locally.
 
 ## GitLab CI
 
@@ -362,8 +362,8 @@ The upstream pipeline lives at
 
 - Triggers on `merge_requests` events (all MR events — creation,
   updates, reopen).
-- Runs in a `node:20` image, installs OCR, configures it via
-  `ocr config set`, then runs the core command in MR diff mode.
+- Runs in a `node:20` image, installs kaid, configures it via
+  `kaid config set`, then runs the core command in MR diff mode.
 - Parses the JSON envelope with an inlined Python script and posts
   each finding as a GitLab Discussion (inline on the diff), using
   the MR's `versions` endpoint to compute correct `base_sha` /
@@ -385,7 +385,7 @@ the recipe to a different path and pull it in with `include:`:
 
 ```yaml
 include:
-  - local: 'ci/ocr-review.gitlab-ci.yml'
+  - local: 'ci/kaid-review.gitlab-ci.yml'
 ```
 
 ### Required CI/CD variables
@@ -394,9 +394,9 @@ Set under **Settings → CI/CD → Variables**:
 
 | Variable | Required | Masked | Description |
 |---|---|---|---|
-| `OCR_LLM_URL` | Yes | No | LLM API endpoint URL. |
-| `OCR_LLM_AUTH_TOKEN` | Yes | Yes | API authentication token. This CI variable is passed to `ocr config set llm.auth_token`. (OCR's direct env var is `OCR_LLM_TOKEN`, not `OCR_LLM_AUTH_TOKEN`.) |
-| `OCR_LLM_MODEL` | No | No | Model name. No default — must be set explicitly. |
+| `KAID_LLM_URL` | Yes | No | LLM API endpoint URL. |
+| `KAID_LLM_AUTH_TOKEN` | Yes | Yes | API authentication token. This CI variable is passed to `kaid config set llm.auth_token`. (kaid's direct env var is `KAID_LLM_TOKEN`, not `KAID_LLM_AUTH_TOKEN`.) |
+| `KAID_LLM_MODEL` | No | No | Model name. No default — must be set explicitly. |
 | `GITLAB_API_TOKEN` | No | Yes | Project / personal / group access token with `api` scope. Optional — the built-in `CI_JOB_TOKEN` is used as a fallback when this is absent (e.g. for fork MRs). A dedicated `GITLAB_API_TOKEN` is recommended for reliability. |
 
 > GitLab rejects variables shorter than 8 characters, so
@@ -404,14 +404,14 @@ Set under **Settings → CI/CD → Variables**:
 > Anthropic Claude models, edit the script directly.
 
 > The pipeline also runs
-> `ocr config set llm.extra_body '{"thinking": {"type": "disabled"}}'`
+> `kaid config set llm.extra_body '{"thinking": {"type": "disabled"}}'`
 > at startup, which turns off thinking-mode requests for
 > compatibility across LLM providers that don't support that field.
 > Remove the line if your provider needs thinking-mode left on.
 
 > **Quick bot-naming tip.** For Project Access Tokens and Group
 > Access Tokens, the token's **name** is what appears next to MR
-> discussions. Naming the token `OpenCodeReview Bot` is a fast way
+> discussions. Naming the token `kaid Bot` is a fast way
 > to brand the reviewer without setting up anything else — handy
 > when you don't need the more durable service-account setup
 > documented under [Post under a service account identity](#post-under-a-service-account-identity).
@@ -429,7 +429,7 @@ follow a semantic convention like `feat(auth): add OAuth2 support`:
 ```yaml
 script:
   - |
-    ocr review \
+    kaid review \
       --background "$CI_MERGE_REQUEST_TITLE" \
       --from "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" \
       --to "${CI_COMMIT_SHA}" \
@@ -445,18 +445,18 @@ sub-agents (default 8, one per subtask):
 ```yaml
 script:
   - |
-    ocr review --rule ./my-rules.json --concurrency 5 \
+    kaid review --rule ./my-rules.json --concurrency 5 \
       --from "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" \
       --to "${CI_COMMIT_SHA}"
 ```
 
 See [Review Rules](../review-rules.md) for the rule schema.
 
-#### Pin the OCR version
+#### Pin the kaid version
 
 ```yaml
 script:
-  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.0.0 sh
+  - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_VERSION=1.0.0 sh
 ```
 
 #### Avoid re-reviewing on every push
@@ -464,8 +464,8 @@ script:
 `only: [merge_requests]` triggers on **every** MR update, which can
 burn a lot of LLM tokens on long-running MRs. GitLab has no native
 "only on creation" event, so the recommended pattern is to detect
-existing OCR notes before running the review and bail out if any are
-found. Replace the `ocr review` invocation with a Python wrapper:
+existing kaid notes before running the review and bail out if any are
+found. Replace the `kaid review` invocation with a Python wrapper:
 
 ```python
 import json, os, sys, urllib.request
@@ -483,16 +483,16 @@ req = urllib.request.Request(url, headers={"PRIVATE-TOKEN": API_TOKEN})
 with urllib.request.urlopen(req) as resp:
     notes = json.loads(resp.read().decode())
 
-if any("OpenCodeReview" in n.get("body", "") for n in notes):
-    print("OCR already reviewed this MR. Skipping to save tokens.")
+if any("kaid" in n.get("body", "") for n in notes):
+    print("kaid already reviewed this MR. Skipping to save tokens.")
     sys.exit(0)
 
-# ...otherwise call `ocr review ...` as usual and write the JSON to
+# ...otherwise call `kaid review ...` as usual and write the JSON to
 # the file the posting step expects.
 ```
 
-To force a re-review after this, delete the previous OCR notes from
-the MR — the next pipeline run will see no OCR notes and proceed.
+To force a re-review after this, delete the previous kaid notes from
+the MR — the next pipeline run will see no kaid notes and proceed.
 
 #### Self-hosted GitLab
 
@@ -506,11 +506,11 @@ your own instance out of the box. Just make sure
 
 By default, review discussions appear under whichever user owns
 `GITLAB_API_TOKEN`. Swap in a project-scoped service account for a
-branded bot identity like `OpenCodeReview Bot`.
+branded bot identity like `kaid Bot`.
 
 1. **Create the service account** at *Project → Settings → Service
    Accounts → New service account*. The name you pick (e.g.
-   `OpenCodeReview Bot`) is what appears next to MR discussions.
+   `kaid Bot`) is what appears next to MR discussions.
 
 2. **Invite it to the project** at *Settings → Members → Invite
    member*. Search for the service-account name and assign
@@ -534,17 +534,17 @@ of the user who originally created the token.
 |---|---|
 | `Cannot find merge-base` | The runner used a shallow clone. The upstream pipeline sets `GIT_DEPTH: 0` to force a full clone — preserve that setting if you edit the file. |
 | `API error 403` when posting | `GITLAB_API_TOKEN` is missing the `api` scope, isn't a member of the project, or — on self-hosted — was issued by a different instance. Reissue with `api` scope and re-add it under *Settings → CI/CD → Variables*. |
-| `Failed to parse OCR output` | `OCR_LLM_URL` or `OCR_LLM_AUTH_TOKEN` is wrong. Re-check the values under *Settings → CI/CD → Variables*. |
+| `Failed to parse kaid output` | `KAID_LLM_URL` or `KAID_LLM_AUTH_TOKEN` is wrong. Re-check the values under *Settings → CI/CD → Variables*. |
 | Inline comments land on the wrong lines | GitLab requires exact SHA matching for inline discussions; the posting script fetches `versions` metadata to get the right `base_sha` / `start_sha` / `head_sha`. If a finding still can't be anchored, it falls back to a plain MR note. |
 
-The pipeline writes raw review JSON to `/tmp/ocr-result.json` and
-stderr to `/tmp/ocr-stderr.log`. Cat them in a debug step to inspect
-what OCR returned:
+The pipeline writes raw review JSON to `/tmp/kaid-result.json` and
+stderr to `/tmp/kaid-stderr.log`. Cat them in a debug step to inspect
+what kaid returned:
 
 ```yaml
 script:
-  - cat /tmp/ocr-result.json
-  - cat /tmp/ocr-stderr.log
+  - cat /tmp/kaid-result.json
+  - cat /tmp/kaid-stderr.log
 ```
 
 ## See Also
@@ -552,7 +552,7 @@ script:
 - [CLI Reference](../cli-reference.md#json) - the JSON output shape both pipelines
   consume, useful when writing your own CI script from scratch.
 - [Configuration](../configuration.md) - every env var and config
-  key OCR honors.
+  key kaid honors.
 
 *[API]: Application Programming Interface
 *[CD]: Continuous Delivery

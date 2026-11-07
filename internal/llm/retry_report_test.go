@@ -769,7 +769,7 @@ func TestValidateReportCatchesInconsistency(t *testing.T) {
 		"unknown attempt outcome":       func(r *RetryReport) { r.Requests[0].Attempts[1].Outcome = AttemptOutcome("weird") },
 		"unknown outcome":               func(r *RetryReport) { r.Requests[0].Outcome = Outcome("weird") },
 		"request with no attempt":       func(r *RetryReport) { r.Requests[0].Attempts = nil },
-		"unexpected schema version":     func(r *RetryReport) { r.SchemaVersion = "ocr.llm-retry-report/v0" },
+		"unexpected schema version":     func(r *RetryReport) { r.SchemaVersion = "kaid.llm-retry-report/v0" },
 		"incomplete identity":           func(r *RetryReport) { r.Requests[0].FilePath = "" },
 		// The other half of the succeeded contract: the listing rule keeps a
 		// clean single-attempt success out of the report, and an error attempt

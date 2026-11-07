@@ -47,7 +47,7 @@ type Summary struct {
 	ResumeLineage *ResumeLineage `json:"resume_lineage,omitempty"`
 }
 
-// ItemDetail describes one file-level record within a session, used by `ocr session show`.
+// ItemDetail describes one file-level record within a session, used by `kaid session show`.
 type ItemDetail struct {
 	Type            string    `json:"type"`
 	Timestamp       time.Time `json:"timestamp"`
@@ -100,7 +100,7 @@ func SessionsDir(repoDir string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("resolve home dir: %w", err)
 	}
-	return filepath.Join(home, ".opencodereview", sessionSubDir, encodeRepoPath(repoDir)), nil
+	return filepath.Join(home, ".kaid", sessionSubDir, encodeRepoPath(repoDir)), nil
 }
 
 // ListSessions enumerates all persisted sessions for the given repository

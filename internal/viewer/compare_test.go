@@ -65,7 +65,7 @@ func writeCompareSession(t *testing.T, dir, id, reviewMode, coverage string, fin
 	t.Helper()
 	end := `{"type":"session_end","duration_seconds":1,"files_reviewed":["a.go"]}`
 	if coverage != "" {
-		end = `{"type":"session_end","duration_seconds":1,"run_manifest":{"schema_version":"ocr.run-manifest/v1",` +
+		end = `{"type":"session_end","duration_seconds":1,"run_manifest":{"schema_version":"kaid.run-manifest/v1",` +
 			`"run_id":"r","operation":"review","terminal_state":"complete","repository":{},"input":{},` +
 			`"execution":{},"coverage":` + coverage + `,"elapsed_ms":1}}`
 	}
@@ -193,7 +193,7 @@ func compareFixture(t *testing.T) string {
 	writeJSONL(t, filepath.Join(repoDir, "otherrepo.jsonl"),
 		`{"type":"session_start","timestamp":"2025-03-01T09:00:00Z","cwd":"/home/user/other","model":"gpt-4","reviewMode":"commit"}`,
 		`{"type":"review_item_done","filePath":"a.go","comments":[`+kept+`]}`,
-		`{"type":"session_end","duration_seconds":1,"run_manifest":{"schema_version":"ocr.run-manifest/v1",`+
+		`{"type":"session_end","duration_seconds":1,"run_manifest":{"schema_version":"kaid.run-manifest/v1",`+
 			`"run_id":"r","operation":"review","terminal_state":"complete","repository":{},"input":{},`+
 			`"execution":{},"coverage":`+fullCoverage("a.go")+`,"elapsed_ms":1}}`)
 	writeCompareSession(t, repoDir, "xss", "commit", fullCoverage("a.go"),

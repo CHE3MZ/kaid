@@ -4,16 +4,16 @@ sidebar:
   order: 6
 ---
 
-The complete reference for every `ocr` subcommand, flag, and exit
+The complete reference for every `kaid` subcommand, flag, and exit
 behaviour.
 
 ## Global usage
 
 ```text
-OpenCodeReview - AI-Powered Code Review CLI
+kaid - AI-Powered Code Review CLI
 
 Usage:
-  ocr [command]
+  kaid [command]
 
 Commands:
   review, r    Start a code review
@@ -25,23 +25,23 @@ Commands:
   version      Show version information
 
 Examples:
-  ocr review --from master --to dev        Review diff range
-  ocr review --commit abc123               Review a single commit
-  ocr review --background "Focus on auth"                                           Review with inline context
-  ocr review -B ./docs/requirements.md                                              Review with context file
-  ocr config provider                      Interactive provider setup
-  ocr config model                         Interactive model selection
-  ocr config set llm.model opus-4-6        Set a config value
-  ocr llm test                             Test LLM connectivity
-  ocr llm providers                        List built-in providers
-  ocr session list                         List saved review sessions
-  ocr version                              Show version info
+  kaid review --from master --to dev        Review diff range
+  kaid review --commit abc123               Review a single commit
+  kaid review --background "Focus on auth"                                           Review with inline context
+  kaid review -B ./docs/requirements.md                                              Review with context file
+  kaid config provider                      Interactive provider setup
+  kaid config model                         Interactive model selection
+  kaid config set llm.model opus-4-6        Set a config value
+  kaid llm test                             Test LLM connectivity
+  kaid llm providers                        List built-in providers
+  kaid session list                         List saved review sessions
+  kaid version                              Show version info
 
-Use "ocr review -h" for more information about review.
-Use "ocr rules -h" for more information about rules.
-Use "ocr config" for more information about config.
-Use "ocr llm" for more information about LLM utilities.
-Use "ocr session -h" for more information about session inspection.
+Use "kaid review -h" for more information about review.
+Use "kaid rules -h" for more information about rules.
+Use "kaid config" for more information about config.
+Use "kaid llm" for more information about LLM utilities.
+Use "kaid session -h" for more information about session inspection.
 
 GitHub: https://github.com/CHE3MZ/kaid
 ```
@@ -49,7 +49,7 @@ GitHub: https://github.com/CHE3MZ/kaid
 ## Global flags
 
 Available on every command, and accepted either before or after the subcommand
-(`ocr --color=never review` and `ocr review --color=never` are equivalent).
+(`kaid --color=never review` and `kaid review --color=never` are equivalent).
 
 | Flag | Default | What it does |
 |---|---|---|
@@ -59,7 +59,7 @@ Text output is plain whenever stdout is not a terminal, so it can be piped
 safely:
 
 ```bash
-ocr review --commit HEAD | gh issue comment 123 --body-file -
+kaid review --commit HEAD | gh issue comment 123 --body-file -
 ```
 
 `TERM=dumb` also disables color.
@@ -68,28 +68,28 @@ ocr review --commit HEAD | gh issue comment 123 --body-file -
 
 | Command | Alias | What it does |
 |---|---|---|
-| `ocr review` | `ocr r` | Run a code review and emit comments. |
-| `ocr scan` | `ocr s` | Scan complete files without requiring a Git diff. |
-| `ocr rules check <file>` | — | Show which rule applies to a given file path and where it came from. |
-| `ocr config set <key> <value>` | — | Persist a config value to `~/.opencodereview/config.json`. |
-| `ocr config unset custom_providers.<name>` | — | Delete a custom provider (clears active `provider`/`model` if it was active). |
-| `ocr config provider` | — | Interactive provider-setup TUI. |
-| `ocr config model` | — | Interactive model-selection TUI. |
-| `ocr llm test` | — | Send a small chat request to verify the configured endpoint. |
-| `ocr llm providers` | — | List all built-in LLM providers. |
-| `ocr session list` | `ocr sessions list`, `ocr session ls` | List saved review sessions. |
-| `ocr session show <id>` | `ocr sessions show <id>` | Inspect one session and its per-file checkpoints. |
-| `ocr session comments <id>` | `ocr sessions comments <id>` | Print the review comments recorded in one session. |
-| `ocr session compare <before> <after>` | `ocr session diff <before> <after>` | Compare two sessions' findings: new, persisting, resolved, not reviewed. |
-| `ocr session export [id]` | — | Export one session as a self-contained HTML file. |
-| `ocr session rm <id>` | `ocr session delete <id>`, `ocr session remove <id>` | Delete one saved review session. |
-| `ocr viewer` | — | Launch the local web UI for past review sessions (`localhost:5483`). |
-| `ocr version` | — | Print version, commit, platform, build date, and GitHub URL. |
+| `kaid review` | `kaid r` | Run a code review and emit comments. |
+| `kaid scan` | `kaid s` | Scan complete files without requiring a Git diff. |
+| `kaid rules check <file>` | — | Show which rule applies to a given file path and where it came from. |
+| `kaid config set <key> <value>` | — | Persist a config value to `~/.kaid/config.json`. |
+| `kaid config unset custom_providers.<name>` | — | Delete a custom provider (clears active `provider`/`model` if it was active). |
+| `kaid config provider` | — | Interactive provider-setup TUI. |
+| `kaid config model` | — | Interactive model-selection TUI. |
+| `kaid llm test` | — | Send a small chat request to verify the configured endpoint. |
+| `kaid llm providers` | — | List all built-in LLM providers. |
+| `kaid session list` | `kaid sessions list`, `kaid session ls` | List saved review sessions. |
+| `kaid session show <id>` | `kaid sessions show <id>` | Inspect one session and its per-file checkpoints. |
+| `kaid session comments <id>` | `kaid sessions comments <id>` | Print the review comments recorded in one session. |
+| `kaid session compare <before> <after>` | `kaid session diff <before> <after>` | Compare two sessions' findings: new, persisting, resolved, not reviewed. |
+| `kaid session export [id]` | — | Export one session as a self-contained HTML file. |
+| `kaid session rm <id>` | `kaid session delete <id>`, `kaid session remove <id>` | Delete one saved review session. |
+| `kaid viewer` | — | Launch the local web UI for past review sessions (`localhost:5483`). |
+| `kaid version` | — | Print version, commit, platform, build date, and GitHub URL. |
 
-`ocr` and `ocr -h` print top-level usage. Each subcommand also accepts
+`kaid` and `kaid -h` print top-level usage. Each subcommand also accepts
 `-h` / `--help`.
 
-## `ocr review`
+## `kaid review`
 
 The main command. Resolves a Git diff, groups the changed files
 semantically, dispatches one sub-agent per group, collects review
@@ -98,11 +98,11 @@ comments, and prints them.
 ### Synopsis
 
 ```text
-ocr review [flags]
-ocr r      [flags]   (alias)
+kaid review [flags]
+kaid r      [flags]   (alias)
 ```
 
-If no flags are passed, OCR runs in **workspace mode** — review of all
+If no flags are passed, kaid runs in **workspace mode** — review of all
 staged + unstaged + untracked changes in the current directory's repo.
 
 ### Flags
@@ -111,7 +111,7 @@ staged + unstaged + untracked changes in the current directory's repo.
 |---|---|---|---|
 | `--repo <path>` | — | current dir | Git repository root. |
 | `--from <ref>` | — | — | Source ref to start the diff from (e.g., `main`). |
-| `--to <ref>` | — | — | Target ref to end the diff at (e.g., `feature-branch`). When set, OCR computes `merge-base(from, to)..to`. |
+| `--to <ref>` | — | — | Target ref to end the diff at (e.g., `feature-branch`). When set, kaid computes `merge-base(from, to)..to`. |
 | `--commit <sha>` | `-c` | — | Single commit to review (vs its parent). |
 | `--preview` | `-p` | `false` | Run the filter pipeline but skip the LLM. Prints the file list and exclusion reasons. Honors `--format json`; `--format sarif` is not supported (a preview has no completed findings to emit). |
 | `--no-filter` | — | `false` | Keep all review comments and skip the per-subtask `REVIEW_FILTER_TASK` LLM post-processing call. A subtask reviews a single file or a bundle of related files. |
@@ -123,7 +123,7 @@ staged + unstaged + untracked changes in the current directory's repo.
 | `--background-file <path>` | `-B` | — | Path to a Markdown file used as review background. Takes precedence over `--background` when both are set. |
 | `--exclude <patterns>` | — | — | Comma-separated gitignore-style patterns to exclude; merged with the `excludes` section of `rule.json` |
 | `--concurrency <n>` | — | `8` | Maximum number of subtasks reviewed in parallel. |
-| `--timeout <minutes>` | — | `15` | Per-subtask budget, including LLM calls, tools, and retry waits. `0` disables the task deadline, not request timeouts. Independent request timeout: `OCR_LLM_TIMEOUT` or provider `timeout_sec`, in seconds (default `300`). Scaled linearly by the number of effort review rounds (e.g. 15/30/45 min for low/medium/high). |
+| `--timeout <minutes>` | — | `15` | Per-subtask budget, including LLM calls, tools, and retry waits. `0` disables the task deadline, not request timeouts. Independent request timeout: `KAID_LLM_TIMEOUT` or provider `timeout_sec`, in seconds (default `300`). Scaled linearly by the number of effort review rounds (e.g. 15/30/45 min for low/medium/high). |
 | `--effort <level>` | — | `medium` | Review effort preset: `low` (1 review round), `medium` (2 rounds), `high` (3 rounds). More rounds improve recall at proportionally higher cost. Overrides the saved `effort` setting for this run. |
 | `--rule <path>` | — | — | Path to a custom JSON review rule file. Overrides the project-level and global `rule.json`. |
 | `--max-tools <n>` | — | template default | Max tool-call rounds per subtask. `0` uses the template default (`100`); values 1–49 are clamped up to `50`. The flag only ever *raises* the cap — a value below the template default is ignored. |
@@ -145,13 +145,13 @@ Both `review` and `scan` accept `--provider` and `--model`. The overrides
 apply only to the current invocation and do not modify saved configuration:
 
 ```bash
-ocr review --provider anthropic --model claude-opus-4-6 --format json
-ocr scan --provider openai --model gpt-5.4 --format json
+kaid review --provider anthropic --model claude-opus-4-6 --format json
+kaid scan --provider openai --model gpt-5.4 --format json
 ```
 
 An explicit `--provider` selects a saved entry from `providers` or
-`custom_providers` before normal source resolution. Without `--provider`, OCR
-preserves the legacy source order: saved configuration, complete `OCR_LLM_*`
+`custom_providers` before normal source resolution. Without `--provider`, kaid
+preserves the legacy source order: saved configuration, complete `KAID_LLM_*`
 environment configuration, complete Anthropic-compatible environment configuration, then
 shell rc files. `--model` overrides the model within whichever source wins; it
 does not change that source order. Incomplete strategies fall through without
@@ -159,8 +159,8 @@ being mixed. A selected built-in provider's credentials may still come from its
 supported environment variable.
 
 For built-in providers, `--model` accepts IDs outside the suggested models in
-`ocr config model`. If the ID is absent from both the built-in list and
-`providers.<name>.models`, OCR warns on stderr and leaves validation to the
+`kaid config model`. If the ID is absent from both the built-in list and
+`providers.<name>.models`, kaid warns on stderr and leaves validation to the
 provider. Custom providers retain their existing `--model` validation rules.
 
 ### Modes
@@ -168,13 +168,13 @@ provider. Custom providers retain their existing `--model` validation rules.
 === "Workspace (default)"
 
     ```bash
-    ocr review
+    kaid review
     ```
 
-    OCR assembles the working-tree changes from two git commands:
+    kaid assembles the working-tree changes from two git commands:
 
     - tracked changes via `git diff HEAD` (staged + unstaged combined against
-      `HEAD`; if that comes back empty, OCR falls back to `git diff --staged`)
+      `HEAD`; if that comes back empty, kaid falls back to `git diff --staged`)
     - untracked files via `git ls-files --others --exclude-standard`, read
       from disk and treated as full-file additions
 
@@ -184,18 +184,18 @@ provider. Custom providers retain their existing `--model` validation rules.
 === "Range"
 
     ```bash
-    ocr review --from main --to feature-branch
+    kaid review --from main --to feature-branch
     ```
 
-    OCR computes `merge-base(main, feature-branch)..feature-branch` so you only
+    kaid computes `merge-base(main, feature-branch)..feature-branch` so you only
     see the diff *introduced by* the feature branch - not unrelated changes
     that landed on `main` since branching.
 
 === "Commit"
 
     ```bash
-    ocr review --commit abc123
-    ocr review -c abc123
+    kaid review --commit abc123
+    kaid review -c abc123
     ```
 
     Reviews the diff produced by `git show abc123` (i.e., the changes that
@@ -203,19 +203,19 @@ provider. Custom providers retain their existing `--model` validation rules.
 
 ### Resuming interrupted reviews
 
-Every `ocr review` run persists a local session log under
-`~/.opencodereview/sessions/`. Successful text output stays focused on review
-results and does not print the session ID; use `ocr session list/show` to find
+Every `kaid review` run persists a local session log under
+`~/.kaid/sessions/`. Successful text output stays focused on review
+results and does not print the session ID; use `kaid session list/show` to find
 saved sessions, or `--format json` to include `session_id` in machine-readable
 output. If a range or commit review is interrupted, list saved sessions and
 resume from one that matches the same review target:
 
 ```bash
-ocr session list
-ocr session show <session-id>
-ocr session comments <session-id>
-ocr review --from main --to feature-branch --resume <session-id>
-ocr review --commit abc123 --resume <session-id>
+kaid session list
+kaid session show <session-id>
+kaid session comments <session-id>
+kaid review --from main --to feature-branch --resume <session-id>
+kaid review --commit abc123 --resume <session-id>
 ```
 
 Resume is strict by design. Checkpoints are only reused when the resumed run
@@ -250,11 +250,11 @@ body wrapped to 100 columns, and — when present — a colored inline diff
 of the suggested replacement). A run summary lands on stdout at the end:
 
 ```
-[ocr] 17 file(s) changed, reviewing 9 in /path/to/repo
-[ocr] Skipping image.png — filtered by path/extension rules
-[ocr]   ▶ file_read "src/foo.go"
-[ocr]   ✔ file_read (12ms)
-[ocr] Plan completed for src/foo.go
+[kaid] 17 file(s) changed, reviewing 9 in /path/to/repo
+[kaid] Skipping image.png — filtered by path/extension rules
+[kaid]   ▶ file_read "src/foo.go"
+[kaid]   ✔ file_read (12ms)
+[kaid] Plan completed for src/foo.go
 …
 
 ─── src/foo.go:42-47 ───
@@ -264,7 +264,7 @@ Concurrent map access without a lock — wrap with sync.RWMutex.
 + mu.Lock(); defer mu.Unlock(); m[k] = v
 
 …
-[ocr] Summary: 9 file(s) reviewed, 14 comment(s), ~21344 token(s) used (input: ~18012, output: ~3332), 1m12s elapsed
+[kaid] Summary: 9 file(s) reviewed, 14 comment(s), ~21344 token(s) used (input: ~18012, output: ~3332), 1m12s elapsed
 ```
 
 #### Text (agent, `--audience agent`)
@@ -276,16 +276,16 @@ Use this in CI / when piping into another agent.
 #### JSON
 
 ```bash
-ocr review --format json --audience agent
+kaid review --format json --audience agent
 ```
 
 The document is always written to stdout on its own. With the default
-`--audience human` the `[ocr]` progress lines stream to **stderr** as the review
+`--audience human` the `[kaid]` progress lines stream to **stderr** as the review
 runs, so you can watch a long run and still pipe stdout straight into a parser:
 
 ```bash
-ocr review --format json > result.json   # progress still visible on the terminal
-ocr review --format json | jq .summary   # stdout is a single JSON document
+kaid review --format json > result.json   # progress still visible on the terminal
+kaid review --format json | jq .summary   # stdout is a single JSON document
 ```
 
 Pass `--audience agent` to drop the progress lines altogether, or `2>/dev/null`
@@ -330,7 +330,7 @@ Top-level fields:
 | `summary` | Optional. Run aggregates: `files_reviewed`, `comments`, `total_tokens`, `input_tokens`, `output_tokens`, `cache_read_tokens` (omitempty), `cache_write_tokens` (omitempty), `elapsed`. Omitted for `skipped` runs. |
 | `comments` | Always present, possibly empty. Per-comment fields are the ones in the example above. |
 | `warnings` | Optional. Present when one or more sub-agents failed; each entry describes the affected file and the error. |
-| `session_id` | Optional. Present on persisted review runs; pass this to `ocr review --resume <session-id>` when retrying compatible range or commit reviews. |
+| `session_id` | Optional. Present on persisted review runs; pass this to `kaid review --resume <session-id>` when retrying compatible range or commit reviews. |
 | `resume` | Optional. Present on resumed runs with `resumed_from`, `reused_files`, `rerun_files`, `previous_model`, and `current_model`. |
 
 When no files were eligible for review, JSON mode emits a `skipped`
@@ -362,15 +362,15 @@ envelope instead so callers can distinguish "no changes" from "no findings":
     `warnings` array. They do not change the exit code. Treat `1` as "the
     review could not run", not "the review found problems".
 
-## `ocr scan`
+## `kaid scan`
 
 Full-file review without a Git diff. Each file's current content is read
 from the working tree and sent to the LLM — useful for auditing an
 unfamiliar codebase or a directory with no meaningful diff.
 
 ```text
-ocr scan [flags]
-ocr s      [flags]   (alias)
+kaid scan [flags]
+kaid s      [flags]   (alias)
 ```
 
 With no `--path`, the whole repository is scanned.
@@ -385,23 +385,23 @@ With no `--path`, the whole repository is scanned.
 | `--preview` | `-p` | `false` | Enumerate and filter files without calling the LLM. Prints the file list, reviewable/excluded counts, total lines, and per-file exclusion reasons. Honors `--format json`; `--format sarif` is not supported. |
 
 ```bash
-ocr scan --preview                              # see what would be scanned
-ocr scan --path internal/agent                  # scan one directory
-ocr scan --path internal/agent,internal/llm/client.go
-ocr scan --exclude '**/generated/*,*.pb.go'
+kaid scan --preview                              # see what would be scanned
+kaid scan --path internal/agent                  # scan one directory
+kaid scan --path internal/agent,internal/llm/client.go
+kaid scan --exclude '**/generated/*,*.pb.go'
 ```
 
-See `ocr scan -h` for the full flag list.
+See `kaid scan -h` for the full flag list.
 
-## `ocr session`
+## `kaid session`
 
 Lists and inspects local review session logs saved under
-`~/.opencodereview/sessions/`. Use it to find a session ID, inspect
+`~/.kaid/sessions/`. Use it to find a session ID, inspect
 per-file checkpoint status, and resume interrupted range or commit reviews.
 
 ```text
-ocr session <sub-command>
-ocr sessions <sub-command>   (alias)
+kaid session <sub-command>
+kaid sessions <sub-command>   (alias)
 
 Sub-commands:
   list, ls        List recent review sessions for the current repo
@@ -409,12 +409,12 @@ Sub-commands:
   comments <id>   Show the review comments recorded in one session
 ```
 
-### `ocr session list`
+### `kaid session list`
 
 ```bash
-ocr session list
-ocr session list --limit 50
-ocr session list --json
+kaid session list
+kaid session list --limit 50
+kaid session list --json
 ```
 
 | Flag | Default | Description |
@@ -423,15 +423,15 @@ ocr session list --json
 | `--json` | `false` | Emit session summaries as JSON. |
 | `--limit <n>` | `20` | Cap the number of listed sessions. Use `0` for unlimited. |
 
-### `ocr session show`
+### `kaid session show`
 
 A resumed run also prints the run it continued, and the provider/model
 transition when the resume crossed one.
 
 ```bash
-ocr session show <session-id>
-ocr session show --json <session-id>
-ocr session show --repo /path/to/repo <session-id>
+kaid session show <session-id>
+kaid session show --json <session-id>
+kaid session show --repo /path/to/repo <session-id>
 ```
 
 | Flag | Default | Description |
@@ -439,17 +439,17 @@ ocr session show --repo /path/to/repo <session-id>
 | `--repo <path>` | current dir | Repository whose session should be inspected. |
 | `--json` | `false` | Emit session metadata and per-file items as JSON. |
 
-### `ocr session comments`
+### `kaid session comments`
 
 Prints every review comment persisted in a session, rendered in the same
-style as `ocr review` terminal output (path, line range, severity badge,
+style as `kaid review` terminal output (path, line range, severity badge,
 suggestion diff).
 
 ```bash
-ocr session comments <session-id>
-ocr session comments --json <session-id>
-ocr session comments --severity high <session-id>
-ocr session comments --severity critical,high --category bug,security <session-id>
+kaid session comments <session-id>
+kaid session comments --json <session-id>
+kaid session comments --severity high <session-id>
+kaid session comments --severity critical,high --category bug,security <session-id>
 ```
 
 | Flag | Default | Description |
@@ -459,7 +459,7 @@ ocr session comments --severity critical,high --category bug,security <session-i
 | `--severity <list>` | all | Comma-separated severities to include (`critical`, `high`, `medium`, `low`). |
 | `--category <list>` | all | Comma-separated categories to include (e.g. `bug`, `security`). |
 
-### `ocr session compare`
+### `kaid session compare`
 
 Groups the findings of two sessions into four buckets: **new** (only in the
 after session), **persisting** (in both), **resolved** (only in the before
@@ -472,9 +472,9 @@ persisting. When the after session's manifest records a file rename, the old
 path is mapped to the new path before matching.
 
 ```bash
-ocr session compare <before-session-id> <after-session-id>
-ocr session diff <before-session-id> <after-session-id>
-ocr session compare --json <before-session-id> <after-session-id>
+kaid session compare <before-session-id> <after-session-id>
+kaid session diff <before-session-id> <after-session-id>
+kaid session compare --json <before-session-id> <after-session-id>
 ```
 
 Both sessions must belong to the same repository; otherwise the command
@@ -486,19 +486,19 @@ output stays pipeable.
 | `--repo <path>` | current dir | Repository whose sessions should be compared. |
 | `--json` | `false` | Emit the comparison as JSON (`new`, `persisting`, `resolved`, `not_reviewed`). |
 
-### `ocr session export`
+### `kaid session export`
 
 Renders one session as a single self-contained HTML file. The viewer's
 stylesheet and script are inlined, so the artifact opens over `file://` with no
 network access at all and CI can archive a review as a build artifact.
 
 ```bash
-ocr session export -o review.html
-ocr session export 20250601-100000-abc123 -o review.html
+kaid session export -o review.html
+kaid session export 20250601-100000-abc123 -o review.html
 ```
 
 With no session id the newest session for the repository is exported. That is
-the default because a *successful* `ocr review` never prints its session id.
+the default because a *successful* `kaid review` never prints its session id.
 Without `-o` the HTML goes to stdout.
 
 The exported page embeds the reviewed source excerpts the session recorded, so
@@ -509,14 +509,14 @@ treat the file with the same care as the repository itself before publishing it.
 | `--repo <path>` | current dir | Repository whose session should be exported. |
 | `--output <path>`, `-o` | stdout | Write the HTML to a file instead of stdout. |
 
-### `ocr session rm`
+### `kaid session rm`
 
-Deletes one persisted session from `~/.opencodereview/sessions/`.
+Deletes one persisted session from `~/.kaid/sessions/`.
 
 ```bash
-ocr session rm 9f2c1b4a-7e35-4d61-b2f0-6c8a41d9e72b
-ocr session rm 9f2c1b4a-7e35-4d61-b2f0-6c8a41d9e72b --yes
-ocr session rm 9f2c1b4a-7e35-4d61-b2f0-6c8a41d9e72b --repo ~/work/my-project
+kaid session rm 9f2c1b4a-7e35-4d61-b2f0-6c8a41d9e72b
+kaid session rm 9f2c1b4a-7e35-4d61-b2f0-6c8a41d9e72b --yes
+kaid session rm 9f2c1b4a-7e35-4d61-b2f0-6c8a41d9e72b --repo ~/work/my-project
 ```
 
 The id is enough on its own, so the command runs from any directory. If the same
@@ -536,19 +536,19 @@ different repository, or none, is refused: delete it by id alone.
 | `--repo <path>` | every repository | Only look for the session under this repository. |
 | `--yes`, `-y` | `false` | Skip the confirmation prompt. |
 
-## `ocr rules`
+## `kaid rules`
 
 Rule introspection. There is exactly one subcommand:
 
 ```text
-ocr rules check [flags] <file-path>
+kaid rules check [flags] <file-path>
 
 Flags:
   --repo <path>    Git repository root (default: current dir)
   --rule <path>    Path to a custom rule JSON file
 ```
 
-For the given file path, OCR:
+For the given file path, kaid:
 
 1. Walks the four-layer rule chain (custom → project → global → system).
 2. Picks the first match.
@@ -556,7 +556,7 @@ For the given file path, OCR:
    resolved **rule text**.
 
 ```bash
-$ ocr rules check src/main/java/com/example/Foo.java
+$ kaid rules check src/main/java/com/example/Foo.java
 File: src/main/java/com/example/Foo.java
 Source: System built-in
 Pattern: **/*.java
@@ -569,16 +569,16 @@ Rule:
 Useful for debugging "why isn't my custom rule firing?" — see
 [Review Rules](review-rules.md) for the full priority story.
 
-## `ocr config`
+## `kaid config`
 
-Persists keys to `~/.opencodereview/config.json` and offers interactive
+Persists keys to `~/.kaid/config.json` and offers interactive
 setup TUIs. Four subcommands:
 
 ```text
-ocr config set <key> <value>
-ocr config unset <key>                     Clear a saved key
-ocr config provider                        Interactive provider setup
-ocr config model                           Interactive model selection
+kaid config set <key> <value>
+kaid config unset <key>                     Clear a saved key
+kaid config provider                        Interactive provider setup
+kaid config model                           Interactive model selection
 ```
 
 - **`set`** — write a single config value non-interactively. `effort`
@@ -588,12 +588,12 @@ ocr config model                           Interactive model selection
   `custom_providers.<name>`, and `mcp_servers.<name>` are supported.
   Clearing `effort` restores the default `medium` preset. If a deleted
   provider was the active one, `provider` and `model` are cleared (run
-  `ocr config provider` to pick a new one).
+  `kaid config provider` to pick a new one).
 - **`provider`** — launch the interactive provider-setup TUI (no extra
-  arguments; use `ocr config set provider <name>` for non-interactive
+  arguments; use `kaid config set provider <name>` for non-interactive
   setup).
 - **`model`** — launch the interactive model-selection TUI (no extra
-  arguments; use `ocr config set model <name>` for non-interactive
+  arguments; use `kaid config set model <name>` for non-interactive
   setup).
 
 See [Configuration](configuration.md) for the full key reference,
@@ -601,31 +601,31 @@ schemas, and examples.
 
 
 
-## `ocr auth`
+## `kaid auth`
 
-Sign in with ChatGPT is the default for `ocr auth login`, `status` and `logout`. Explicit `--provider chatgpt` remains supported.
+Sign in with ChatGPT is the default for `kaid auth login`, `status` and `logout`. Explicit `--provider chatgpt` remains supported.
 
 Use the documented Sign in with ChatGPT flow with the `chatgpt` provider. See the [ChatGPT preview guide](chatgpt-preview.md).
 
 ```bash
-ocr auth login --provider chatgpt
-ocr auth login --provider chatgpt --no-browser
-ocr auth login --provider chatgpt --enable-plan
-ocr auth login --provider chatgpt --new-account
-ocr auth status --provider chatgpt
-ocr auth select <saved-client-id> --provider chatgpt
-ocr auth logout --provider chatgpt --account <saved-client-id>
-ocr llm models
+kaid auth login --provider chatgpt
+kaid auth login --provider chatgpt --no-browser
+kaid auth login --provider chatgpt --enable-plan
+kaid auth login --provider chatgpt --new-account
+kaid auth status --provider chatgpt
+kaid auth select <saved-client-id> --provider chatgpt
+kaid auth logout --provider chatgpt --account <saved-client-id>
+kaid llm models
 ```
 
-`ocr auth` accepts `--provider chatgpt` and `--account <client-id>`; `login` also accepts `--no-browser`, `--new-account` and `--enable-plan`. ChatGPT does not support `--device`. `--enable-plan` requests consent for a saved registration and cannot be combined with `--new-account`. The model list is account-specific; an explicit model is accepted even if the list omits it. This provider accepts `extra_body` only for `reasoning`, `text` and `prompt_cache_key`. See the [ChatGPT preview guide](chatgpt-preview.md) for account handling, permissions and restrictions.
+`kaid auth` accepts `--provider chatgpt` and `--account <client-id>`; `login` also accepts `--no-browser`, `--new-account` and `--enable-plan`. ChatGPT does not support `--device`. `--enable-plan` requests consent for a saved registration and cannot be combined with `--new-account`. The model list is account-specific; an explicit model is accepted even if the list omits it. This provider accepts `extra_body` only for `reasoning`, `text` and `prompt_cache_key`. See the [ChatGPT preview guide](chatgpt-preview.md) for account handling, permissions and restrictions.
 
-## `ocr llm`
+## `kaid llm`
 
 LLM utility commands. Three subcommands:
 
 ```text
-ocr llm <sub-command>
+kaid llm <sub-command>
 
 Sub-commands:
   test         Send a test conversation to the configured LLM model
@@ -633,13 +633,13 @@ Sub-commands:
   models       List current account-specific ChatGPT models
 ```
 
-### `ocr llm test`
+### `kaid llm test`
 
 ```text
-ocr llm test
+kaid llm test
 ```
 
-Resolves the LLM endpoint exactly the way `ocr review` does, sends a single
+Resolves the LLM endpoint exactly the way `kaid review` does, sends a single
 canned chat request from
 [`internal/config/testconnection/task.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/testconnection/task.json),
 and prints:
@@ -656,10 +656,10 @@ A non-zero exit means either the endpoint isn't fully configured or the
 request failed (network / auth / model error). The error message tells you
 which.
 
-### `ocr llm providers`
+### `kaid llm providers`
 
 ```text
-ocr llm providers
+kaid llm providers
 ```
 
 Lists every built-in LLM provider in a three-column table:
@@ -672,27 +672,27 @@ Built-in providers:
   …
 ```
 
-Followed by a hint to configure one interactively with `ocr config
-provider` or non-interactively with `ocr config set provider <name>`.
+Followed by a hint to configure one interactively with `kaid config
+provider` or non-interactively with `kaid config set provider <name>`.
 
-## `ocr viewer`
+## `kaid viewer`
 
 ```text
-ocr viewer [flags]
+kaid viewer [flags]
 
 Flags:
   --addr <address>   listen address (default: localhost:5483)
   --open <mode>      when to open the browser: auto, always, never (default: auto)
 
 Examples:
-  ocr viewer                     # start and open the browser
-  ocr viewer --addr :3000        # bind to all interfaces on port 3000
-  ocr viewer --open=never        # just print the URL
-  ocr viewer --open=always       # force it when auto declines (piped output, WSL)
+  kaid viewer                     # start and open the browser
+  kaid viewer --addr :3000        # bind to all interfaces on port 3000
+  kaid viewer --open=never        # just print the URL
+  kaid viewer --open=always       # force it when auto declines (piped output, WSL)
 ```
 
 Starts an embedded HTTP server that reads
-`~/.opencodereview/sessions/...` and renders past review sessions in a
+`~/.kaid/sessions/...` and renders past review sessions in a
 browser-friendly UI. See [Session Viewer](viewer.md).
 
 `--open=auto` skips the browser when stdout is not a terminal, when
@@ -700,12 +700,12 @@ browser-friendly UI. See [Session Viewer](viewer.md).
 `DISPLAY` nor `WAYLAND_DISPLAY`; the reason is printed alongside the URL. Use
 `--open=always` where auto declines but a browser is in fact reachable.
 
-## `ocr version`
+## `kaid version`
 
 ```text
-ocr version
-ocr --version
-ocr -V
+kaid version
+kaid --version
+kaid -V
 ```
 
 Prints the version stamped at build time, the short Git commit (when
@@ -713,9 +713,9 @@ present), the platform (`<GOOS>/<GOARCH>`), the build date (when present),
 and the GitHub URL (`https://github.com/CHE3MZ/kaid`).
 
 
-## ocr completion
+## kaid completion
 
-Generate shell completion scripts for `ocr`, so command names, flags,
+Generate shell completion scripts for `kaid`, so command names, flags,
 and arguments can be tab-completed in your shell.
 
 ### Bash
@@ -723,19 +723,19 @@ and arguments can be tab-completed in your shell.
 One-shot, current session only:
 
 ```bash
-source <(ocr completion bash)
+source <(kaid completion bash)
 ```
 
 Persistent (Linux):
 
 ```bash
-ocr completion bash > /etc/bash_completion.d/ocr
+kaid completion bash > /etc/bash_completion.d/kaid
 ```
 
 Persistent (macOS):
 
 ```bash
-ocr completion bash > $(brew --prefix)/etc/bash_completion.d/ocr
+kaid completion bash > $(brew --prefix)/etc/bash_completion.d/kaid
 ```
 
 ### Zsh
@@ -750,7 +750,7 @@ echo "autoload -U compinit; compinit" >> ~/.zshrc
 Then load completions persistently:
 
 ```bash
-ocr completion zsh > "${fpath[1]}/_ocr"
+kaid completion zsh > "${fpath[1]}/_kaid"
 ```
 
 Start a new shell for this to take effect.
@@ -760,13 +760,13 @@ Start a new shell for this to take effect.
 One-shot, current session only:
 
 ```bash
-ocr completion fish | source
+kaid completion fish | source
 ```
 
 Persistent:
 
 ```bash
-ocr completion fish > ~/.config/fish/completions/ocr.fish
+kaid completion fish > ~/.config/fish/completions/kaid.fish
 ```
 
 ### PowerShell
@@ -774,16 +774,16 @@ ocr completion fish > ~/.config/fish/completions/ocr.fish
 One-shot, current session only:
 
 ```powershell
-ocr completion powershell | Out-String | Invoke-Expression
+kaid completion powershell | Out-String | Invoke-Expression
 ```
 
 Persistent — generate the script once, then source it from your profile:
 
 ```powershell
-ocr completion powershell > ocr.ps1
+kaid completion powershell > kaid.ps1
 ```
 
-Add a line to your PowerShell profile that dot-sources `ocr.ps1`.
+Add a line to your PowerShell profile that dot-sources `kaid.ps1`.
 
 
 ## Tips & gotchas

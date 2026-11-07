@@ -1,10 +1,10 @@
-# Install the ocr (Open Code Review) CLI from GitHub releases on Windows.
+# Install the kaid CLI from GitHub releases on Windows.
 #   irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 | iex
 # Prefer to inspect first:
 #   irm https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.ps1 -OutFile install.ps1
 #   notepad install.ps1   # review, then: .\install.ps1
-# Env: OCR_INSTALL_DIR (default $env:LOCALAPPDATA\Programs\ocr), OCR_VERSION (default latest),
-# OCR_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
+# Env: KAID_INSTALL_DIR (default $env:LOCALAPPDATA\Programs\kaid), KAID_VERSION (default latest),
+# KAID_GITHUB_MIRROR (default unset; download the binary through a mirror domain).
 # Requires PowerShell 5.1+ or PowerShell 7+.
 
 $ErrorActionPreference = 'Stop'
@@ -15,7 +15,7 @@ function Err([string]$Message) {
     exit 1
 }
 
-function Get-OcrArch {
+function Get-KaidArch {
     $arch = $env:PROCESSOR_ARCHITECTURE
     if ([string]::IsNullOrEmpty($arch)) {
         Err 'unable to detect architecture (PROCESSOR_ARCHITECTURE is empty); please set it manually'
@@ -27,8 +27,8 @@ function Get-OcrArch {
     }
 }
 
-function Resolve-OcrVersion([string]$Repo) {
-    $version = $env:OCR_VERSION
+function Resolve-KaidVersion([string]$Repo) {
+    $version = $env:KAID_VERSION
     if (-not [string]::IsNullOrWhiteSpace($version)) {
         $version = $version.Trim()
         if ($version -ne 'latest') {
@@ -60,13 +60,13 @@ function Get-ChecksumFromFile([string]$ChecksumFile, [string]$AssetName) {
     return $null
 }
 
-function Install-OcrBinary([string]$Source, [string]$InstallDir, [string]$BinName) {
+function Install-KaidBinary([string]$Source, [string]$InstallDir, [string]$BinName) {
     try {
         New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
         $dest = Join-Path $InstallDir $BinName
         Copy-Item -LiteralPath $Source -Destination $dest -Force
     } catch {
-        Err "$InstallDir is not writable; set OCR_INSTALL_DIR to a writable path"
+        Err "$InstallDir is not writable; set KAID_INSTALL_DIR to a writable path"
     }
 }
 
@@ -98,26 +98,26 @@ try {
 }
 
 $Repo = 'CHE3MZ/kaid'
-$Bin = 'ocr.exe'
-$AssetPrefix = 'opencodereview'
-$DefaultInstallDir = Join-Path $env:LOCALAPPDATA 'Programs\ocr'
-$InstallDir = if (-not [string]::IsNullOrWhiteSpace($env:OCR_INSTALL_DIR)) {
-    $env:OCR_INSTALL_DIR.Trim()
+$Bin = 'kaid.exe'
+$AssetPrefix = 'kaid'
+$DefaultInstallDir = Join-Path $env:LOCALAPPDATA 'Programs\kaid'
+$InstallDir = if (-not [string]::IsNullOrWhiteSpace($env:KAID_INSTALL_DIR)) {
+    $env:KAID_INSTALL_DIR.Trim()
 } else {
     $DefaultInstallDir
 }
 
-$arch = Get-OcrArch
+$arch = Get-KaidArch
 $os = 'windows'
-$Version = Resolve-OcrVersion $Repo
+$Version = Resolve-KaidVersion $Repo
 $asset = "$AssetPrefix-$os-$arch.exe"
-$Mirror = if (-not [string]::IsNullOrWhiteSpace($env:OCR_GITHUB_MIRROR)) {
-    $env:OCR_GITHUB_MIRROR.Trim() -replace '^https?://' -replace '/$'
+$Mirror = if (-not [string]::IsNullOrWhiteSpace($env:KAID_GITHUB_MIRROR)) {
+    $env:KAID_GITHUB_MIRROR.Trim() -replace '^https?://' -replace '/$'
 } else {
     $null
 }
 if ($Mirror -and $Mirror -match '\s') {
-    Err "OCR_GITHUB_MIRROR contains spaces: '$Mirror'"
+    Err "KAID_GITHUB_MIRROR contains spaces: '$Mirror'"
 }
 if ($Mirror) {
     [Console]::Error.WriteLine("warning: downloading from unofficial GitHub mirror `"$Mirror`" (checksum integrity is not guaranteed)")
@@ -126,7 +126,7 @@ if ($Mirror) {
     $base = "https://github.com/$Repo/releases/download/$Version"
 }
 
-$tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("ocr-install-" + [guid]::NewGuid().ToString('N'))
+$tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("kaid-install-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $tmp | Out-Null
 
 try {
@@ -155,7 +155,7 @@ try {
         Err "checksum mismatch for $asset (got $got, want $want)"
     }
 
-    Install-OcrBinary $assetPath $InstallDir $Bin
+    Install-KaidBinary $assetPath $InstallDir $Bin
 
     Write-Host "installed $Bin $Version -> $InstallDir\$Bin"
     Show-PostInstallPathNotice $Bin $InstallDir

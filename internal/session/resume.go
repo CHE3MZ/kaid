@@ -86,7 +86,7 @@ func SessionFilePath(repoDir, sessionID string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("resolve home dir: %w", err)
 	}
-	return filepath.Join(home, ".opencodereview", sessionSubDir, encodeRepoPath(repoDir), sessionID+".jsonl"), nil
+	return filepath.Join(home, ".kaid", sessionSubDir, encodeRepoPath(repoDir), sessionID+".jsonl"), nil
 }
 
 // LoadResumeState replays a previous session JSONL into a fingerprint index. A

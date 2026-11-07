@@ -211,7 +211,7 @@ func TestLoadSummaryIgnoresUnknownManifestVersion(t *testing.T) {
 	repoDir := t.TempDir()
 
 	sh := New(repoDir, "main", "test-model", SessionOptions{ReviewMode: ReviewModeWorkspace})
-	sh.SetFinalManifest(&RunManifest{SchemaVersion: "ocr.run-manifest/v999", TerminalState: StateComplete})
+	sh.SetFinalManifest(&RunManifest{SchemaVersion: "kaid.run-manifest/v999", TerminalState: StateComplete})
 	if err := sh.Finalize(); err != nil {
 		t.Fatal(err)
 	}

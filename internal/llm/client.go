@@ -81,7 +81,7 @@ var httpClientWithHeaderTimeout = func(timeout time.Duration) *http.Client {
 const defaultAnthropicMaxTokens = 8192
 
 func userAgent(provider string) string {
-	ua := "open-code-review/" + AppVersion
+	ua := "kaid/" + AppVersion
 	if provider != "" {
 		ua += " | " + provider
 	}
@@ -414,7 +414,7 @@ type ClientConfig struct {
 	// for requests whose context carries none (see ContextWithSessionKey).
 	//
 	// Review and scan runs tag every request context with the real session's ID,
-	// so this fallback only serves session-less callers such as `ocr llm test`.
+	// so this fallback only serves session-less callers such as `kaid llm test`.
 	//
 	// Auto-generated when empty. The effective key replaces `SessionKeyTemplateVar` in Extra* values.
 	SessionKey string

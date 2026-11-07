@@ -148,7 +148,7 @@ func (p *CodeSearchProvider) gitGrep(ctx context.Context, searchText string, cas
 	outStr, errStr, err := p.runGitGrep(ctx, cmdArgs)
 
 	// Non-git directory: `git grep` exits 128 with "not a git repository".
-	// `ocr scan` supports plain directories, so retry in --no-index mode, which
+	// `kaid scan` supports plain directories, so retry in --no-index mode, which
 	// searches the working tree directly while still honoring .gitignore.
 	// Ref-based search needs a real repo, so it is not retried.
 	if err != nil && p.FileReader.Ref == "" && isNotGitRepoError(err, errStr) {

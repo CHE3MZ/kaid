@@ -1,14 +1,14 @@
 # CodeUp CI Integration
 
-Run `open-code-review` (`ocr`) automatically on every merge request in
-[Alibaba Cloud Yunxiao CodeUp](https://codeup.aliyun.com), posting results
+Run `kaid` automatically on every merge request in
+[Yunxiao CodeUp](https://codeup.aliyun.com), posting results
 as a merge request comment via Flow.
 
 ## How it works
 
 1. A Yunxiao Flow pipeline is triggered on merge request open/update.
-2. The pipeline installs the `ocr` CLI.
-3. `post_review.py` runs `ocr review --format json` against the diff
+2. The pipeline installs the `kaid` CLI.
+3. `post_review.py` runs `kaid review --format json` against the diff
    between the merge request's target and source branches.
 4. Findings are formatted into a single Markdown summary and posted to the
    merge request via the
@@ -35,10 +35,10 @@ limitation below.
    | `CODEUP_TOKEN` | Yes (secret) | Personal access token used for the `x-yunxiao-token` header. |
    | `CODEUP_ORG_ID` | Yes | Your Yunxiao organization ID. |
    | `CODEUP_REPO_ID` | Yes | Numeric ID of the CodeUp repository. |
-   | `OCR_LLM_URL` | Yes | Your LLM endpoint, e.g. `https://api.anthropic.com/v1/messages`. |
-   | `OCR_LLM_TOKEN` | Yes (secret) | API key for the LLM endpoint. |
-   | `OCR_LLM_MODEL` | Yes | Model name, e.g. `<provider-model-name>`. |
-   | `OCR_USE_ANTHROPIC` | If using Anthropic | Set to `true` when `OCR_LLM_URL` is an Anthropic-compatible endpoint. |
+   | `KAID_LLM_URL` | Yes | Your LLM endpoint, e.g. `https://api.anthropic.com/v1/messages`. |
+   | `KAID_LLM_TOKEN` | Yes (secret) | API key for the LLM endpoint. |
+   | `KAID_LLM_MODEL` | Yes | Model name, e.g. `<provider-model-name>`. |
+   | `KAID_USE_ANTHROPIC` | If using Anthropic | Set to `true` when `KAID_LLM_URL` is an Anthropic-compatible endpoint. |
 
    `CODEUP_MR_LOCAL_ID`, `CODEUP_TARGET_BRANCH`, and `CODEUP_SOURCE_BRANCH`
    are populated automatically from the merge request trigger context —
@@ -50,8 +50,8 @@ limitation below.
 
 ## Optional flags
 
-Set `OCR_REVIEW_EXTRA_ARGS` as a pipeline variable to pass extra flags to
-`ocr review`, e.g. `--concurrency 4`.
+Set `KAID_REVIEW_EXTRA_ARGS` as a pipeline variable to pass extra flags to
+`kaid review`, e.g. `--concurrency 4`.
 
 ## Known limitations
 

@@ -20,7 +20,7 @@ import (
 
 func initPreviewRepo(t *testing.T) string {
 	t.Helper()
-	// A temporary OCR home keeps any session these tests open out of the real
+	// A temporary kaid home keeps any session these tests open out of the real
 	// one; git resolves its global config independently of HOME, so neutralize
 	// that too or a developer's signing directive fails the fixture commit.
 	t.Setenv("HOME", t.TempDir())

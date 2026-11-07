@@ -167,7 +167,7 @@ func sessionJSONLPath(t *testing.T, repoDir, sessionID string) string {
 	if err != nil {
 		t.Fatalf("home dir: %v", err)
 	}
-	return filepath.Join(home, ".opencodereview", "test-sessions", encodeRepoPath(repoDir), sessionID+".jsonl")
+	return filepath.Join(home, ".kaid", "test-sessions", encodeRepoPath(repoDir), sessionID+".jsonl")
 }
 
 func TestSetErrorIncrementsCounter(t *testing.T) {
@@ -252,7 +252,7 @@ func TestSessionFilePermissions(t *testing.T) {
 	jw.WriteSessionStart(time.Now())
 	defer jw.flushAndClose()
 
-	sessionDir := filepath.Join(tmpHome, ".opencodereview", "test-sessions", encodeRepoPath(repoDir))
+	sessionDir := filepath.Join(tmpHome, ".kaid", "test-sessions", encodeRepoPath(repoDir))
 	sessionFile := filepath.Join(sessionDir, sessionID+".jsonl")
 
 	dirInfo, err := os.Stat(sessionDir)
@@ -278,7 +278,7 @@ func TestFinalizeSurfacesWriterCreationErrorWithoutStdout(t *testing.T) {
 
 	// A regular file at this path makes creation of the sessions directory fail
 	// deterministically on every platform.
-	if err := os.WriteFile(filepath.Join(tmpHome, ".opencodereview"), []byte("blocked"), 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpHome, ".kaid"), []byte("blocked"), 0o600); err != nil {
 		t.Fatalf("create blocking file: %v", err)
 	}
 
@@ -510,7 +510,7 @@ func TestScanPathScopeResumeRoundTrip(t *testing.T) {
 	repoDir := t.TempDir()
 	sh := New(repoDir, "main", "test-model", SessionOptions{
 		ReviewMode: ReviewModeFullScan,
-		ScanPaths:  []string{"./internal/scan/", "cmd/opencodereview"},
+		ScanPaths:  []string{"./internal/scan/", "cmd/kaid"},
 	})
 	sh.RecordReviewItemDone("internal/scan/agent.go", "internal/scan/agent.go", "internal/scan/agent.go", "fp-scan", nil)
 	sh.Finalize()
@@ -522,7 +522,7 @@ func TestScanPathScopeResumeRoundTrip(t *testing.T) {
 	if !state.HasScanPathScope {
 		t.Fatal("HasScanPathScope = false, want true")
 	}
-	if err := state.ValidateScanOptions([]string{"cmd/opencodereview", "internal/scan"}); err != nil {
+	if err := state.ValidateScanOptions([]string{"cmd/kaid", "internal/scan"}); err != nil {
 		t.Fatalf("ValidateScanOptions: %v", err)
 	}
 	if err := state.ValidateScanOptions(nil); err == nil {

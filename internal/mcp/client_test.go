@@ -91,13 +91,13 @@ func TestHeaderTransport_403(t *testing.T) {
 }
 
 func TestNewRemoteClient_HeaderExpandsToEmpty(t *testing.T) {
-	t.Setenv("OCR_TEST_EMPTY_VAR", "")
+	t.Setenv("KAID_TEST_EMPTY_VAR", "")
 
 	_, err := NewRemoteClient(
 		context.Background(),
 		"test-srv",
 		"http://localhost:9999/mcp",
-		map[string]string{"Authorization": "$OCR_TEST_EMPTY_VAR"},
+		map[string]string{"Authorization": "$KAID_TEST_EMPTY_VAR"},
 		"v0.0.1-test",
 	)
 	if err == nil {
@@ -115,14 +115,14 @@ func TestNewRemoteClient_HeaderExpandsToEmpty(t *testing.T) {
 // expansion (non-empty value) plus HTTP client / transport construction, then
 // the connect-failure return when the endpoint refuses the connection.
 func TestNewRemoteClient_ConnectFailure(t *testing.T) {
-	t.Setenv("OCR_TEST_TOKEN", "secret-value")
+	t.Setenv("KAID_TEST_TOKEN", "secret-value")
 
 	_, err := NewRemoteClient(
 		context.Background(),
 		"test-srv",
 		// Port 1 is reserved and refuses connections immediately.
 		"http://127.0.0.1:1/mcp",
-		map[string]string{"Authorization": "Bearer $OCR_TEST_TOKEN"},
+		map[string]string{"Authorization": "Bearer $KAID_TEST_TOKEN"},
 		"v0.0.1-test",
 	)
 	if err == nil {
@@ -134,16 +134,16 @@ func TestNewRemoteClient_ConnectFailure(t *testing.T) {
 }
 
 func TestNewRemoteClient_HeaderExpandsUnsetVar(t *testing.T) {
-	t.Setenv("OCR_TEST_UNSET_MARKER", "")
+	t.Setenv("KAID_TEST_UNSET_MARKER", "")
 	// Ensure the variable is truly unset (Setenv("", "") sets it to empty;
 	// os.Expand with os.Getenv returns "" for both unset and empty).
-	// The point: $OCR_TEST_NONEXISTENT_VAR_XYZ is never set.
+	// The point: $KAID_TEST_NONEXISTENT_VAR_XYZ is never set.
 
 	_, err := NewRemoteClient(
 		context.Background(),
 		"test-srv",
 		"http://localhost:9999/mcp",
-		map[string]string{"X-Token": "$OCR_TEST_NONEXISTENT_VAR_XYZ"},
+		map[string]string{"X-Token": "$KAID_TEST_NONEXISTENT_VAR_XYZ"},
 		"v0.0.1-test",
 	)
 	if err == nil {
@@ -391,7 +391,7 @@ func TestListAllTools_FollowsPagination(t *testing.T) {
 	}
 	defer func() { _ = serverSession.Close() }()
 
-	client := mcp.NewClient(&mcp.Implementation{Name: "open-code-review", Version: "v0.0.1"}, nil)
+	client := mcp.NewClient(&mcp.Implementation{Name: "kaid", Version: "v0.0.1"}, nil)
 	session, err := client.Connect(ctx, clientTransport, nil)
 	if err != nil {
 		t.Fatalf("connect client: %v", err)

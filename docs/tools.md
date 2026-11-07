@@ -4,7 +4,7 @@ sidebar:
   order: 9
 ---
 
-OCR ships with **six built-in tools** the LLM can call during a review.
+kaid ships with **six built-in tools** the LLM can call during a review.
 This page documents each tool's purpose, input schema, and example
 input/output. The full machine-readable definitions live in
 [`internal/config/toolsconfig/tools.json`](https://github.com/CHE3MZ/kaid/blob/master/internal/config/toolsconfig/tools.json).
@@ -62,7 +62,7 @@ codes either.
 ## `code_comment`
 
 Emit one or more review comments. Each comment is anchored to a code
-snippet (`existing_code`) so OCR can compute line numbers automatically.
+snippet (`existing_code`) so kaid can compute line numbers automatically.
 
 ### Schema
 
@@ -89,13 +89,13 @@ is optional but encouraged. `path` is a top-level optional override —
 if omitted, the agent injects the file currently under review. The
 agent also injects `path` automatically when the model leaves it out, so
 the model rarely needs to set it explicitly. `thinking` (per-comment)
-captures the model's reasoning and is preserved on the comment; OCR
+captures the model's reasoning and is preserved on the comment; kaid
 backfills it from the reasoning content the model emits on the current
 turn (it stays empty when the model emits none), and includes it in
 the JSON output (the terminal output does not
 render it).
 
-> **`thinking` is a runtime-only field.** OCR parses and stores it, but
+> **`thinking` is a runtime-only field.** kaid parses and stores it, but
 > it is deliberately **not** listed in the `code_comment` schema
 > advertised to the model in `tools.json` (only `content`,
 > `existing_code`, and `suggestion_code` are). Stronger models that
@@ -104,18 +104,18 @@ render it).
 
 ### Anchoring algorithm
 
-OCR walks the diff looking for the text in `existing_code` using a
+kaid walks the diff looking for the text in `existing_code` using a
 **dynamic sliding window**. The match tries, in order:
 
 1. **Hunk new-side** — a run of consecutive **context + added** lines
    (not deleted-only, not unchanged-only), yielding new-file line
-   numbers. If that fails, OCR retries the **hunk old-side** — context +
+   numbers. If that fails, kaid retries the **hunk old-side** — context +
    deleted lines — yielding old-file line numbers.
-2. **Full new-file scan** — if no hunk matched, OCR scans the entire
+2. **Full new-file scan** — if no hunk matched, kaid scans the entire
    post-change file content line-by-line for consecutive matches
    (`resolveFromFileContent`).
 3. **Re-location task** — if text matching still fails on a non-trivial
-   diff, OCR runs the `RE_LOCATION_TASK` prompt asking the model to
+   diff, kaid runs the `RE_LOCATION_TASK` prompt asking the model to
    re-anchor the snippet.
 
 Matching is **whitespace-insensitive**: lines are trimmed and diff
@@ -357,7 +357,7 @@ the result is delivered to the model as a regular tool result with text
 like `"Error: file not found: src/missing.go"`. The model then decides
 whether to retry, ask for a different file, or call `task_done`.
 
-If a tool name isn't in the registry, OCR returns the constant
+If a tool name isn't in the registry, kaid returns the constant
 `tool.NotAvailableMsg` rather than crashing. This makes runtime tool
 disabling (via `--tools`) safe.
 
@@ -370,7 +370,7 @@ Two paths to extend:
 Copy `tools.json`, drop the entry you don't want, then run:
 
 ```bash
-ocr review --tools ./my-tools.json
+kaid review --tools ./my-tools.json
 ```
 
 For example, if you want a "comment-only" reviewer that never reads

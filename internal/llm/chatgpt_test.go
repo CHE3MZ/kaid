@@ -35,7 +35,7 @@ func TestChatGPTRequestNamespaceAndReplay(t *testing.T) {
 	}
 	tools := body["tools"].([]any)
 	namespace := tools[0].(map[string]any)
-	if namespace["type"] != "namespace" || namespace["name"] != "ocr" {
+	if namespace["type"] != "namespace" || namespace["name"] != "kaid" {
 		t.Fatal(string(b))
 	}
 	if namespace["tools"].([]any)[0].(map[string]any)["name"] != "file_read" {
@@ -45,7 +45,7 @@ func TestChatGPTRequestNamespaceAndReplay(t *testing.T) {
 		t.Fatal(string(b))
 	}
 	var sdk responses.Response
-	err = sdk.UnmarshalJSON([]byte(`{"id":"r","model":"gpt-6-luna","status":"completed","output":[{"type":"reasoning","id":"rs","summary":[],"encrypted_content":"opaque"},{"type":"function_call","namespace":"ocr","name":"file_read","call_id":"call","id":"fc","arguments":"{}","status":"completed"}],"usage":{"input_tokens":15,"output_tokens":4,"total_tokens":19,"output_tokens_details":{"reasoning_tokens":2}}}`))
+	err = sdk.UnmarshalJSON([]byte(`{"id":"r","model":"gpt-6-luna","status":"completed","output":[{"type":"reasoning","id":"rs","summary":[],"encrypted_content":"opaque"},{"type":"function_call","namespace":"kaid","name":"file_read","call_id":"call","id":"fc","arguments":"{}","status":"completed"}],"usage":{"input_tokens":15,"output_tokens":4,"total_tokens":19,"output_tokens_details":{"reasoning_tokens":2}}}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +55,7 @@ func TestChatGPTRequestNamespaceAndReplay(t *testing.T) {
 	}
 	replay := c.buildResponsesParams("gpt-6-luna", ChatRequest{Messages: []Message{NewTextMessage("user", "hello"), NewToolCallMessage("", out.ToolCalls(), out.Native(), ""), NewToolResultMessage("call", "done")}})
 	b, _ = json.Marshal(replay)
-	if !strings.Contains(string(b), `"namespace":"ocr"`) || !strings.Contains(string(b), `"encrypted_content":"opaque"`) || !strings.Contains(string(b), `"call_id":"call"`) {
+	if !strings.Contains(string(b), `"namespace":"kaid"`) || !strings.Contains(string(b), `"encrypted_content":"opaque"`) || !strings.Contains(string(b), `"call_id":"call"`) {
 		t.Fatal(string(b))
 	}
 }

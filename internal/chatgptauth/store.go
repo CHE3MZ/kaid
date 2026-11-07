@@ -16,7 +16,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var ErrNotFound = errors.New("no ChatGPT registration found; run ocr auth login --provider chatgpt")
+var ErrNotFound = errors.New("no ChatGPT registration found; run kaid auth login --provider chatgpt")
 
 type Auth struct {
 	Revision          uint64          `json:"revision,omitempty"`
@@ -87,7 +87,7 @@ func DefaultStore() (Store, error) {
 	if err != nil {
 		return Store{}, err
 	}
-	return Store{Dir: filepath.Join(home, ".opencodereview", "auth", "chatgpt")}, nil
+	return Store{Dir: filepath.Join(home, ".kaid", "auth", "chatgpt")}, nil
 }
 func (s Store) secure() error {
 	if s.Dir == "" {

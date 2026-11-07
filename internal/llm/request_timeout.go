@@ -9,7 +9,7 @@ import (
 	"fmt"
 )
 
-var ErrRequestTimeout = errors.New("LLM request timeout (configure OCR_LLM_TIMEOUT or provider timeout_sec)")
+var ErrRequestTimeout = errors.New("LLM request timeout (configure KAID_LLM_TIMEOUT or provider timeout_sec)")
 
 func describeTimeout(ctx context.Context, err error) error {
 	if !errors.Is(err, context.DeadlineExceeded) {

@@ -1,4 +1,4 @@
-site_name: Kaid
+site_name: kaid
 site_description: Open source AI code review agent.
 site_author: CHE3MZ
 site_url: https://che3mz.github.io/kaid/
@@ -84,7 +84,7 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/CHE3MZ/kaid
-      name: Kaid on GitHub
+      name: kaid on GitHub
 
 markdown_extensions:
   - abbr

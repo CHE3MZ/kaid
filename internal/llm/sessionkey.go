@@ -17,8 +17,8 @@ import (
 // and extra_body values. Clients replace it with the run's session key, so
 // providers that route prompt-cache traffic by an explicit key:
 // OpenAI-style request body field (e.g. prompt_cache_key) or an HTTP header (e.g. x-session-affinity)
-// can be configured without OCR knowing each provider's convention.
-const SessionKeyTemplateVar = "{ocr_session_key}"
+// can be configured without kaid knowing each provider's convention.
+const SessionKeyTemplateVar = "{kaid_session_key}"
 
 const (
 	// maxSessionTaskKeyLength is OpenAI's prompt_cache_key limit.
@@ -37,7 +37,7 @@ type sessionKeyCtxKey struct{}
 // ContextWithSessionKey returns a context carrying the given session key.
 // Review and scan runs bind their session history's SessionID at the top of
 // Run as a base key, and each task refines it with SessionTaskKey where its
-// conversation starts, so every LLM request is tagged with the real OCR
+// conversation starts, so every LLM request is tagged with the real kaid
 // session's key at the granularity prompt caches actually work at.
 func ContextWithSessionKey(ctx context.Context, key string) context.Context {
 	if key == "" {
@@ -47,7 +47,7 @@ func ContextWithSessionKey(ctx context.Context, key string) context.Context {
 }
 
 // SessionTaskKey derives the prompt-cache affinity key for one task
-// conversation within a session. Prompt caches match on prefixes, and OCR's
+// conversation within a session. Prompt caches match on prefixes, and kaid's
 // task types (plan, main tool-loop, compression, dedup, ...) use unrelated
 // prompts — routing a whole run under one key would pin every concurrent
 // per-file conversation to one cache node with no shared prefix to reuse,
@@ -89,7 +89,7 @@ func SessionKeyFromContext(ctx context.Context) string {
 
 // NewSessionKey returns a fresh UUIDv4 session key. Clients use it as a
 // per-client fallback for requests whose context carries no session key
-// (e.g. `ocr llm test`, which has no review session).
+// (e.g. `kaid llm test`, which has no review session).
 func NewSessionKey() string {
 	b := make([]byte, 16)
 	if _, err := io.ReadFull(rand.Reader, b); err != nil {

@@ -2,11 +2,11 @@
 // Copyright 2026 alibaba/open-code-review Contributors
 
 import { listCustomProviderNames } from '../../shared/configUtils';
-import { OcrConfig, ProviderEntry } from '../../shared/types';
+import { KaidConfig, ProviderEntry } from '../../shared/types';
 import { useT } from '../I18nProvider';
 
 interface Props {
-  config: OcrConfig | null;
+  config: KaidConfig | null;
   onAdd: () => void;
   onEdit: (name: string) => void;
   onActivate: (name: string) => void;

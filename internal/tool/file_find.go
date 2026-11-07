@@ -128,7 +128,7 @@ func (p *FileFindProvider) listGitFiles(parentCtx context.Context) ([]string, er
 		}
 		// Non-git directory (git ls-files exits 128) and no specific ref:
 		// fall back to a filesystem walk so file_find still works for
-		// `ocr scan` on plain directories. Ref-based lookups can't be
+		// `kaid scan` on plain directories. Ref-based lookups can't be
 		// satisfied without git, so those still error.
 		if p.FileReader.Ref == "" {
 			return p.listWalkFiles(ctx)

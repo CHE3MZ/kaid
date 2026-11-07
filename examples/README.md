@@ -1,6 +1,6 @@
 # CI/CD Integration Examples
 
-This directory contains examples for integrating OpenCodeReview (OCR) into various CI/CD pipelines.
+This directory contains examples for integrating kaid into various CI/CD pipelines.
 
 ## Contents
 

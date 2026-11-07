@@ -82,47 +82,47 @@ type TraceSummary struct {
 }
 
 // PrintTraceSummary prints a one-line summary of the review to stdout.
-// If SessionID is non-empty, an "[ocr] Session: <id>" line follows the summary.
+// If SessionID is non-empty, an "[kaid] Session: <id>" line follows the summary.
 func PrintTraceSummary(s TraceSummary) {
 	elapsed := s.Duration.Round(time.Second).String()
 	if s.InputTokens > 0 || s.OutputTokens > 0 {
-		base := fmt.Sprintf("[ocr] Summary: %d file(s) reviewed, %d comment(s), ~%d token(s) used (input: ~%d, output: ~%d)",
+		base := fmt.Sprintf("[kaid] Summary: %d file(s) reviewed, %d comment(s), ~%d token(s) used (input: ~%d, output: ~%d)",
 			s.FilesReviewed, s.CommentsGenerated, s.TotalTokens, s.InputTokens, s.OutputTokens)
 		if s.CacheReadTokens > 0 || s.CacheWriteTokens > 0 {
 			base += fmt.Sprintf(", cache(read: ~%d, write: ~%d)", s.CacheReadTokens, s.CacheWriteTokens)
 		}
 		fmt.Fprintf(stdout.Writer(), "%s, %s elapsed\n", base, elapsed)
 	} else {
-		fmt.Fprintf(stdout.Writer(), "[ocr] Summary: %d file(s) reviewed, %d comment(s), ~%d token(s) used, %s elapsed\n",
+		fmt.Fprintf(stdout.Writer(), "[kaid] Summary: %d file(s) reviewed, %d comment(s), ~%d token(s) used, %s elapsed\n",
 			s.FilesReviewed, s.CommentsGenerated, s.TotalTokens, elapsed)
 	}
 	if s.SessionID != "" {
-		fmt.Fprintf(stdout.Writer(), "[ocr] Session: %s\n", s.SessionID)
+		fmt.Fprintf(stdout.Writer(), "[kaid] Session: %s\n", s.SessionID)
 	}
 }
 
 // PrintToolCallStarted prints a line when a tool begins execution.
 // Args are summarized as key-value pairs (path, search terms, etc.).
-// Example: [ocr]   ▶ file_read "internal/config/rules/loader.go"
+// Example: [kaid]   ▶ file_read "internal/config/rules/loader.go"
 func PrintToolCallStarted(toolName string, args map[string]any) {
 	summary := summarizeArgs(args)
 	if summary != "" {
-		fmt.Fprintf(stdout.Writer(), "[ocr]   ▶ %s %s\n", toolName, summary)
+		fmt.Fprintf(stdout.Writer(), "[kaid]   ▶ %s %s\n", toolName, summary)
 	} else {
-		fmt.Fprintf(stdout.Writer(), "[ocr]   ▶ %s\n", toolName)
+		fmt.Fprintf(stdout.Writer(), "[kaid]   ▶ %s\n", toolName)
 	}
 }
 
 // PrintToolCallFinished prints a line when a tool finishes successfully.
-// Example: [ocr]   ✔ file_read "internal/config/rules/loader.go" (12ms)
+// Example: [kaid]   ✔ file_read "internal/config/rules/loader.go" (12ms)
 func PrintToolCallFinished(toolName string, dur time.Duration) {
-	fmt.Fprintf(stdout.Writer(), "[ocr]   ✔ %s (%s)\n", toolName, FormatDuration(dur))
+	fmt.Fprintf(stdout.Writer(), "[kaid]   ✔ %s (%s)\n", toolName, FormatDuration(dur))
 }
 
 // PrintToolCallError prints a line when a tool fails.
-// Example: [ocr]   ✘ file_read "internal/config/rules/loader.go" failed: permission denied
+// Example: [kaid]   ✘ file_read "internal/config/rules/loader.go" failed: permission denied
 func PrintToolCallError(toolName string, err error) {
-	fmt.Fprintf(os.Stderr, "[ocr]   ✘ %s failed: %v\n", toolName, err)
+	fmt.Fprintf(os.Stderr, "[kaid]   ✘ %s failed: %v\n", toolName, err)
 }
 
 // summarizeArgs extracts a concise key=value summary from tool arguments for console display.

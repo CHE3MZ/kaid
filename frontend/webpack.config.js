@@ -49,8 +49,8 @@ module.exports = (_env, argv) => {
       ],
     },
     plugins: [
-      htmlPlugin('index.html', ['webview'], 'Open Code Review'),
-      htmlPlugin('configPanel.html', ['configPanel'], 'Open Code Review Configuration'),
+      htmlPlugin('index.html', ['webview'], 'kaid'),
+      htmlPlugin('configPanel.html', ['configPanel'], 'kaid Configuration'),
     ],
     devtool: mode === 'production' ? false : 'inline-source-map',
     performance: { hints: false },

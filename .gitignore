@@ -13,10 +13,10 @@ temp/
 tmp/
 
 # Ignore downloaded Go binary, but keep JS entry point
-!bin/ocr.js
-bin/ocr
-bin/opencodereview
-/opencodereview
+!bin/kaid.js
+bin/kaid
+bin/kaid
+/kaid
 
 # Frontend
 node_modules

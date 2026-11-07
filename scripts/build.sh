@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 CHE3MZ (kaid)
 
-# Build the OCR CLI for every release platform into dist/.
+# Build the kaid CLI for every release platform into dist/.
 set -eu
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 DIST_DIR="$ROOT_DIR/dist"
-BINARY_NAME="opencodereview"
-PACKAGE="./cmd/opencodereview"
+BINARY_NAME="kaid"
+PACKAGE="./cmd/kaid"
 
 cd "$ROOT_DIR"
 

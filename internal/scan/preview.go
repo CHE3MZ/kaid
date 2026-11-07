@@ -12,11 +12,11 @@ import (
 
 // Preview enumerates files and applies the standard reviewability filter
 // without dispatching any LLM calls. Returns a *model.Preview ready for
-// cmd/opencodereview.outputPreviewText to render.
+// cmd/kaid.outputPreviewText to render.
 //
 // It builds none of the scan runtime — no session or runner — so previewing
 // cannot open session persistence. Going through NewAgent instead would
-// auto-create a session and leave an unfinalized JSONL file under the OCR home.
+// auto-create a session and leave an unfinalized JSONL file under the kaid home.
 func Preview(ctx context.Context, args Args) (*model.Preview, error) {
 	return (&Agent{args: args}).preview(ctx)
 }

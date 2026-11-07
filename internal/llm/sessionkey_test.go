@@ -143,8 +143,8 @@ func TestSessionTaskKeySessionPrefixCollisionBoundary(t *testing.T) {
 
 func TestExpandSessionKeyInHeaders(t *testing.T) {
 	in := map[string]string{
-		"x-session-affinity": "{ocr_session_key}",
-		"X-Tenant":           "tenant-{ocr_session_key}-suffix",
+		"x-session-affinity": "{kaid_session_key}",
+		"X-Tenant":           "tenant-{kaid_session_key}-suffix",
 		"X-Static":           "unchanged",
 	}
 	out := expandSessionKeyInHeaders(in, "key-123")
@@ -159,7 +159,7 @@ func TestExpandSessionKeyInHeaders(t *testing.T) {
 		t.Errorf("X-Static = %q, want %q", got, "unchanged")
 	}
 	// The input map must not be mutated.
-	if in["x-session-affinity"] != "{ocr_session_key}" {
+	if in["x-session-affinity"] != "{kaid_session_key}" {
 		t.Error("input map was mutated")
 	}
 	if expandSessionKeyInHeaders(nil, "key") != nil {
@@ -169,12 +169,12 @@ func TestExpandSessionKeyInHeaders(t *testing.T) {
 
 func TestExpandSessionKeyInBody(t *testing.T) {
 	in := map[string]any{
-		"prompt_cache_key": "{ocr_session_key}",
+		"prompt_cache_key": "{kaid_session_key}",
 		"count":            42,
 		"nested": map[string]any{
-			"session": "{ocr_session_key}",
+			"session": "{kaid_session_key}",
 		},
-		"list": []any{"{ocr_session_key}", 1, true},
+		"list": []any{"{kaid_session_key}", 1, true},
 	}
 	out := expandSessionKeyInBody(in, "key-456")
 
@@ -193,10 +193,10 @@ func TestExpandSessionKeyInBody(t *testing.T) {
 		t.Errorf("list = %v, want [key-456 1 true]", out["list"])
 	}
 	// The input map must not be mutated.
-	if in["prompt_cache_key"] != "{ocr_session_key}" {
+	if in["prompt_cache_key"] != "{kaid_session_key}" {
 		t.Error("input map was mutated")
 	}
-	if in["nested"].(map[string]any)["session"] != "{ocr_session_key}" {
+	if in["nested"].(map[string]any)["session"] != "{kaid_session_key}" {
 		t.Error("nested input map was mutated")
 	}
 	if expandSessionKeyInBody(nil, "key") != nil {

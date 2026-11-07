@@ -37,7 +37,7 @@
         return items;
     };
 
-    window.ocrPager = ({ table, rows: suppliedRows, pager, numbers, pageSize = 10, filter, onRender }) => {
+    window.kaidPager = ({ table, rows: suppliedRows, pager, numbers, pageSize = 10, filter, onRender }) => {
         const rows = suppliedRows || Array.from(table.querySelectorAll("tbody tr"));
         const steps = Array.from(pager.querySelectorAll("[data-page-step]"));
         const matches = filter || (() => true);
@@ -120,6 +120,6 @@
         const rows = Array.from(source.querySelectorAll(selector));
         if (!numbers || rows.length === 0) return;
         const pageSize = Number(source.dataset.paginationPageSize) || 20;
-        ocrPager({ rows, pager, numbers, pageSize });
+        kaidPager({ rows, pager, numbers, pageSize });
     });
 })();

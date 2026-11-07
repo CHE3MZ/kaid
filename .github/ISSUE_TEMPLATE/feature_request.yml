@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for OpenCodeReview
+description: Suggest a new feature or enhancement for kaid
 labels: ["enhancement"]
 type: Feature
 body:
@@ -24,7 +24,7 @@ body:
     attributes:
       label: Proposed Solution
       description: Describe the solution you'd like. How should it work from a user's perspective?
-      placeholder: "I'd like to be able to run `ocr review --xxx` which would..."
+      placeholder: "I'd like to be able to run `kaid review --xxx` which would..."
     validations:
       required: true
 

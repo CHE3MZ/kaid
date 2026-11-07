@@ -4,7 +4,7 @@ sidebar:
   order: 10
 ---
 
-OCR can act as a **Model Context Protocol (MCP) client**. You point it at
+kaid can act as a **Model Context Protocol (MCP) client**. You point it at
 one or more external MCP servers, and the tools those servers expose
 become available to the review agent — right alongside the
 [built-in tools](tools.md) like `file_read` and `code_search`.
@@ -28,24 +28,24 @@ cover it — MCP is for reaching beyond the checkout.
 
 === "Local server"
 
-    The `ocr config set` command writes these fields non-interactively. Array
+    The `kaid config set` command writes these fields non-interactively. Array
     fields (`args`, `env`, `tools`) take a JSON array string:
 
     ```bash
     # Minimal: just a command
-    ocr config set mcp_servers.docs.command npx
+    kaid config set mcp_servers.docs.command npx
 
     # Arguments
-    ocr config set mcp_servers.docs.args '["-y", "@acme/docs-mcp-server"]'
+    kaid config set mcp_servers.docs.args '["-y", "@acme/docs-mcp-server"]'
 
     # Restrict which tools are exposed to the reviewer
-    ocr config set mcp_servers.docs.tools '["search_docs", "get_page"]'
+    kaid config set mcp_servers.docs.tools '["search_docs", "get_page"]'
 
     # A setup command to run before the server starts
-    ocr config set mcp_servers.docs.setup "npm install -g @acme/docs-mcp-server"
+    kaid config set mcp_servers.docs.setup "npm install -g @acme/docs-mcp-server"
 
     # Environment variables (KEY=VALUE entries)
-    ocr config set mcp_servers.docs.env '["DOCS_TOKEN=secret", "DOCS_REGION=eu"]'
+    kaid config set mcp_servers.docs.env '["DOCS_TOKEN=secret", "DOCS_REGION=eu"]'
     ```
 
 === "Remote server"
@@ -58,13 +58,13 @@ cover it — MCP is for reaching beyond the checkout.
     connection:
 
     ```bash
-    ocr config set mcp_servers.search.type remote
-    ocr config set mcp_servers.search.url https://mcp.example.com/mcp
-    ocr config set mcp_servers.search.tools '["search", "fetch"]'
+    kaid config set mcp_servers.search.type remote
+    kaid config set mcp_servers.search.url https://mcp.example.com/mcp
+    kaid config set mcp_servers.search.tools '["search", "fetch"]'
     ```
 
     These commands save the connection in your user config. On the next
-    review, OCR connects and makes `search` and `fetch` available to the
+    review, kaid connects and makes `search` and `fetch` available to the
     agent alongside the built-in tools. The tool allowlist keeps any
     additional tools the server might offer out of the review. Other
     configured servers and your review settings are unchanged.
@@ -85,10 +85,10 @@ cover it — MCP is for reaching beyond the checkout.
 Remove a server with `unset`:
 
 ```bash
-ocr config unset mcp_servers.docs
+kaid config unset mcp_servers.docs
 ```
 
-MCP servers live under the `mcp_servers` key in your user config file (`~/.opencodereview/config.json`).
+MCP servers live under the `mcp_servers` key in your user config file (`~/.kaid/config.json`).
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -96,15 +96,15 @@ MCP servers live under the `mcp_servers` key in your user config file (`~/.openc
 | `command` | string | For `stdio` | Executable that starts the MCP server (e.g. `npx`, `uvx`, an absolute path). |
 | `args` | string array | | Arguments passed to `command` (`stdio` only). |
 | `url` | string | For `remote` | HTTP or HTTPS MCP endpoint. |
-| `headers` | object | | HTTP header names and string values (`remote` only). Values expand `$VAR` or `${VAR}` from OCR's environment at connection time; a value that expands to empty **fails the connection** rather than being sent empty or dropped. Omit for anonymous access. |
+| `headers` | object | | HTTP header names and string values (`remote` only). Values expand `$VAR` or `${VAR}` from kaid's environment at connection time; a value that expands to empty **fails the connection** rather than being sent empty or dropped. Omit for anonymous access. |
 | `tools` | string array | | Allowlist of tool names to register. Empty = register every tool the server offers. |
 | `setup` | string | | Shell command run once before the server starts (`stdio` only, e.g. install deps). Runs in the repo root with a 5-minute timeout. |
 | `env` | string array | | Extra subprocess environment variables in `KEY=VALUE` form (`stdio` only). |
 
 For remote servers that require authentication, follow that server's
 instructions for `headers`. Use single quotes around JSON passed to
-`ocr config set` when it contains environment variable references, so
-your shell does not expand them before OCR saves the configuration.
+`kaid config set` when it contains environment variable references, so
+your shell does not expand them before kaid saves the configuration.
 Servers that allow anonymous access need no `headers` at all.
 
 ## Filtering tools
@@ -120,7 +120,7 @@ typo surfaces on stderr rather than silently doing nothing.
 MCP tool names share one namespace with the built-in tools. If a server
 advertises a tool whose name collides with a **built-in/reserved** tool
 (`file_read`, `code_search`, `task_done`, …) or with a tool already
-registered by another MCP server, OCR **skips** it and logs a warning.
+registered by another MCP server, kaid **skips** it and logs a warning.
 First registration wins; give servers distinct tool names to avoid losing
 tools this way.
 
@@ -133,13 +133,13 @@ repository root. Use it to install or build the server on demand:
 "setup": "npm install -g @acme/docs-mcp-server"
 ```
 
-It has a **5-minute timeout**. If it exits non-zero, OCR logs the command,
+It has a **5-minute timeout**. If it exits non-zero, kaid logs the command,
 working directory, and output, then skips that server and proceeds with
 the review.
 
 ## Troubleshooting
 
-All MCP diagnostics go to **stderr**, prefixed with `[ocr]`, so they never
+All MCP diagnostics go to **stderr**, prefixed with `[kaid]`, so they never
 pollute `--format json` output on stdout:
 
 - `Running setup for MCP server "x": …` — the setup command is executing.
@@ -152,7 +152,7 @@ pollute `--format json` output on stdout:
   connect or list its tools within the 30-second init timeout. Check the
   URL, network access, and any required headers.
 - `MCP server "x" header "h" expanded to empty value` — a `$VAR` in
-  `headers` isn't set in OCR's environment. This fails the connection; it
+  `headers` isn't set in kaid's environment. This fails the connection; it
   is not treated as an absent header.
 - `remote MCP server "x" returned HTTP 401 Unauthorized` — check the token
   or header configuration.
@@ -170,11 +170,11 @@ without its tools.
 
 - [Tools](tools.md) - the six built-in tools MCP tools sit beside.
 - [Configuration](configuration.md) - the full config file and every key.
-- [CLI Reference](cli-reference.md) - `ocr config` and the review flags.
+- [CLI Reference](cli-reference.md) - `kaid config` and the review flags.
 
 *[HTTP]: Hypertext Transfer Protocol
 *[JSON]: JavaScript Object Notation
 *[MCP]: Model Context Protocol
-*[OCR]: Open Code Review
+*[kaid]: kaid
 *[stdio]: Standard Input/Output
 *[URL]: Uniform Resource Locator

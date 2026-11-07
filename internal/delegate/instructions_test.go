@@ -63,7 +63,7 @@ func (r delegateRepo) must(t *testing.T, args ...string) string {
 func newDelegateRepo(t *testing.T) delegateRepo {
 	t.Helper()
 	r := delegateRepo{dir: t.TempDir(), env: append(delegateGitEnv(),
-		"GIT_EXTERNAL_DIFF=ocr-forbidden-external-diff", "GIT_PAGER=ocr-forbidden-pager")}
+		"GIT_EXTERNAL_DIFF=kaid-forbidden-external-diff", "GIT_PAGER=kaid-forbidden-pager")}
 	r.must(t, "init", "-q", "--template=")
 	r.must(t, "config", "user.name", "Test User")
 	r.must(t, "config", "user.email", "test@example.com")
@@ -76,7 +76,7 @@ func newDelegateRepo(t *testing.T) delegateRepo {
 		}
 	}
 	write("sample file.txt", "before\n")
-	write(".gitattributes", "*.txt diff=ocr-test\n")
+	write(".gitattributes", "*.txt diff=kaid-test\n")
 	r.must(t, "add", ".")
 	r.must(t, "commit", "-qm", "initial")
 	r.base = strings.TrimSpace(r.must(t, "rev-parse", "HEAD"))
@@ -86,7 +86,7 @@ func newDelegateRepo(t *testing.T) delegateRepo {
 	r.commit = strings.TrimSpace(r.must(t, "rev-parse", "HEAD"))
 	write("sample file.txt", "workspace\n")
 	r.must(t, "config", "color.ui", "always")
-	r.must(t, "config", "diff.ocr-test.textconv", "ocr-forbidden-textconv")
+	r.must(t, "config", "diff.kaid-test.textconv", "kaid-forbidden-textconv")
 	return r
 }
 
@@ -217,7 +217,7 @@ func TestDelegateDiffExamples(t *testing.T) {
 				}
 				ctx, cancel := context.WithTimeout(t.Context(), 15*time.Second)
 				defer cancel()
-				cmd := exec.CommandContext(ctx, bash, "-c", strings.ReplaceAll(example, "<path>", "$1"), "ocr-read", name)
+				cmd := exec.CommandContext(ctx, bash, "-c", strings.ReplaceAll(example, "<path>", "$1"), "kaid-read", name)
 				cmd.Dir, cmd.Env = r.dir, r.env
 				if out, err := cmd.CombinedOutput(); err != nil || string(out) != "untracked\n" {
 					t.Fatalf("read untracked file: %v\n%s", err, out)
@@ -276,7 +276,7 @@ func TestDelegateDiffExamples(t *testing.T) {
 				badArgs := append([]string(nil), args...)
 				for i, arg := range badArgs {
 					if failure == "invalid-ref" {
-						badArgs[i] = strings.NewReplacer(r.base, "ocr-missing-ref", r.commit, "ocr-missing-ref", "HEAD", "ocr-missing-ref").Replace(arg)
+						badArgs[i] = strings.NewReplacer(r.base, "kaid-missing-ref", r.commit, "kaid-missing-ref", "HEAD", "kaid-missing-ref").Replace(arg)
 					} else if strings.HasPrefix(arg, "--output=") {
 						badArgs[i] = "--output=" + t.TempDir()
 					}
@@ -357,10 +357,10 @@ func TestDelegateGitIsolation(t *testing.T) {
 }
 
 func TestDelegatePagerProcess(t *testing.T) {
-	if os.Getenv("OCR_DELEGATE_PAGER_HELPER") != "1" {
+	if os.Getenv("KAID_DELEGATE_PAGER_HELPER") != "1" {
 		return
 	}
-	if err := os.WriteFile(os.Getenv("OCR_DELEGATE_PAGER_MARKER"), []byte("started"), 0o600); err != nil {
+	if err := os.WriteFile(os.Getenv("KAID_DELEGATE_PAGER_MARKER"), []byte("started"), 0o600); err != nil {
 		os.Exit(2)
 	}
 	if _, err := io.Copy(os.Stdout, os.Stdin); err != nil {
@@ -373,7 +373,7 @@ func TestDelegatePagerPTY(t *testing.T) {
 	examples := delegateExamples(t)
 	unavailable := func(reason string) {
 		t.Helper()
-		if os.Getenv("OCR_DELEGATE_REQUIRE_PTY") == "1" {
+		if os.Getenv("KAID_DELEGATE_REQUIRE_PTY") == "1" {
 			t.Fatal(reason)
 		}
 		t.Skip(reason)
@@ -404,7 +404,7 @@ func TestDelegatePagerPTY(t *testing.T) {
 		defer cancel()
 		cmd := exec.CommandContext(ctx, script, "-q", "-e", "-c", strings.Join(command, " "), os.DevNull)
 		cmd.Dir = r.dir
-		cmd.Env = append(delegateGitEnv(), "TERM=xterm", "OCR_DELEGATE_PAGER_HELPER=1", "OCR_DELEGATE_PAGER_MARKER="+marker,
+		cmd.Env = append(delegateGitEnv(), "TERM=xterm", "KAID_DELEGATE_PAGER_HELPER=1", "KAID_DELEGATE_PAGER_MARKER="+marker,
 			"GIT_PAGER="+quote(os.Args[0])+" -test.run=^TestDelegatePagerProcess$")
 		if out, err := cmd.CombinedOutput(); err != nil {
 			t.Fatalf("PTY command %v: %v\n%s", args, err, out)

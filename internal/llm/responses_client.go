@@ -189,8 +189,8 @@ func (c *OpenAIResponsesClient) CompletionsWithCtx(ctx context.Context, req Chat
 
 	if c.cfg.ChatGPTPlan {
 		for _, item := range sdkResp.Output {
-			if item.Type == "function_call" && item.AsFunctionCall().Namespace != "ocr" {
-				return nil, errors.New("chatgpt returned a function call outside the offered OCR namespace")
+			if item.Type == "function_call" && item.AsFunctionCall().Namespace != "kaid" {
+				return nil, errors.New("chatgpt returned a function call outside the offered kaid namespace")
 			}
 		}
 	}
@@ -436,7 +436,7 @@ func (c *OpenAIResponsesClient) buildResponsesParams(model string, req ChatReque
 			for _, tc := range msg.ToolCalls {
 				item := responses.ResponseInputItemParamOfFunctionCall(tc.Function.Arguments, tc.ID, tc.Function.Name)
 				if c.cfg.ChatGPTPlan {
-					item.OfFunctionCall.Namespace = openai.String("ocr")
+					item.OfFunctionCall.Namespace = openai.String("kaid")
 				}
 				input = append(input, item)
 			}
@@ -476,7 +476,7 @@ func (c *OpenAIResponsesClient) buildResponsesParams(model string, req ChatReque
 				Name: t.Function.Name, Parameters: t.Function.Parameters, Strict: openai.Bool(false), Description: openai.String(t.Function.Description),
 			}})
 		}
-		tools = []responses.ToolUnionParam{{OfNamespace: &responses.NamespaceToolParam{Name: "ocr", Description: "OpenCodeReview local review tools", Tools: functions}}}
+		tools = []responses.ToolUnionParam{{OfNamespace: &responses.NamespaceToolParam{Name: "kaid", Description: "kaid local review tools", Tools: functions}}}
 	}
 	if instructions != "" {
 		params.Instructions = openai.String(instructions)

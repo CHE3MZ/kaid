@@ -7,6 +7,6 @@
     const numbers = document.getElementById("sessions-page-numbers");
     if (!table || !pager || !numbers) return;
 
-    ocrPager({ table, pager, numbers });
-    ocrArrowScroll(document.querySelector(".sessions-page .table-scroll"));
+    kaidPager({ table, pager, numbers });
+    kaidArrowScroll(document.querySelector(".sessions-page .table-scroll"));
 })();

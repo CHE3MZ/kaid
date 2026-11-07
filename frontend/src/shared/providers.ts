@@ -6,7 +6,7 @@ import { PROVIDER_PRESETS } from './providers.generated';
 // Update internal/llm/providers.go and run go generate ./internal/llm to change presets.
 export { PROVIDER_PRESETS };
 
-export interface OcrProviderPreset {
+export interface KaidProviderPreset {
   name: string;
   displayName: string;
   protocol: 'anthropic' | 'openai' | 'openai-responses' | 'anthropic-bedrock';
@@ -19,7 +19,7 @@ export interface OcrProviderPreset {
 
 const presetMap = new Map(PROVIDER_PRESETS.map((p) => [p.name.toLowerCase(), p]));
 
-export function lookupPreset(name: string): OcrProviderPreset | undefined {
+export function lookupPreset(name: string): KaidProviderPreset | undefined {
   return presetMap.get(name.trim().toLowerCase());
 }
 
@@ -27,7 +27,7 @@ export function isPresetProvider(name: string): boolean {
   return presetMap.has(name.trim().toLowerCase());
 }
 
-export function usesAmbientAuth(preset: OcrProviderPreset, protocolOverride?: string): boolean {
+export function usesAmbientAuth(preset: KaidProviderPreset, protocolOverride?: string): boolean {
   const protocol = protocolOverride?.trim().toLowerCase();
   if (protocol) return protocol === 'anthropic-bedrock';
   return preset.protocol === 'anthropic-bedrock' || preset.ambientAuth === true;

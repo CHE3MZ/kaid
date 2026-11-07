@@ -68,7 +68,7 @@ func resolveChatGPT(cfg configFile, entry providerEntryConfig, override string, 
 			return ResolvedEndpoint{}, false, err
 		}
 		if len(models) == 0 {
-			return ResolvedEndpoint{}, false, fmt.Errorf("selected ChatGPT account catalog is empty; configure an explicit model or run ocr llm models")
+			return ResolvedEndpoint{}, false, fmt.Errorf("selected ChatGPT account catalog is empty; configure an explicit model or run kaid llm models")
 		}
 		model = models[0].Slug
 	}

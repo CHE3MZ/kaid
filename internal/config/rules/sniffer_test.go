@@ -70,7 +70,7 @@ func objcRuleText(t *testing.T) string {
 // resolveIn builds a real resolver for dir/ref and resolves path.
 func resolveIn(t *testing.T, dir, ref, path string, runner *gitcmd.Runner) string {
 	t.Helper()
-	setTestHome(t, t.TempDir()) // isolate from a real ~/.opencodereview/rule.json
+	setTestHome(t, t.TempDir()) // isolate from a real ~/.kaid/rule.json
 	r, _, err := NewResolver(dir, "", ResolverOptions{Ref: ref, Runner: runner})
 	if err != nil {
 		t.Fatalf("NewResolver: %v", err)
@@ -114,7 +114,7 @@ func TestSniffer_WorkingTree(t *testing.T) {
 }
 
 // TestSniffer_ReadsAtRefNotCheckedOut is the reason the sniffer reads through
-// `git show <ref>:<path>` rather than the working tree: `ocr review --from/--to`
+// `git show <ref>:<path>` rather than the working tree: `kaid review --from/--to`
 // can target a ref that is not checked out, and the file may not exist on disk
 // at all. Reading the working tree would silently fall back to matlab.md.
 func TestSniffer_ReadsAtRefNotCheckedOut(t *testing.T) {
@@ -162,7 +162,7 @@ func TestSniffer_UserRuleOutranksSniff(t *testing.T) {
 	dir, _ := initRepo(t, map[string]string{"ios/ViewController.m": objcSource})
 	setTestHome(t, t.TempDir())
 
-	writeFile(t, dir, ".opencodereview/rule.json",
+	writeFile(t, dir, ".kaid/rule.json",
 		`{"rules":[{"path":"**/*.m","rule":"MY PROJECT RULE"}]}`)
 
 	r, _, err := NewResolver(dir, "", ResolverOptions{})
@@ -180,7 +180,7 @@ func TestSniffer_MergeSystemRuleUsesSniffedRule(t *testing.T) {
 	dir, _ := initRepo(t, map[string]string{"ios/ViewController.m": objcSource})
 	setTestHome(t, t.TempDir())
 
-	writeFile(t, dir, ".opencodereview/rule.json",
+	writeFile(t, dir, ".kaid/rule.json",
 		`{"rules":[{"path":"**/*.m","rule":"MY PROJECT RULE","merge_system_rule":true}]}`)
 
 	r, _, err := NewResolver(dir, "", ResolverOptions{})

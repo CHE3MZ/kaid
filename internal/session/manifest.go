@@ -20,7 +20,7 @@ import (
 // ManifestSchemaVersion identifies the versioned, machine-readable coverage
 // contract emitted for a review (or scan) run. Consumers should gate on this
 // value; unknown future versions must be ignored rather than misread.
-const ManifestSchemaVersion = "ocr.run-manifest/v1"
+const ManifestSchemaVersion = "kaid.run-manifest/v1"
 
 // OperationReview is the manifest operation for a diff review run. It is the
 // only operation wired in v1 (scan stays legacy with no manifest).
@@ -259,7 +259,7 @@ type ManifestInput struct {
 // ManifestExecution records how the run was executed. Only non-secret values
 // and hashes are stored here — never tokens, endpoints or raw config.
 type ManifestExecution struct {
-	OCRVersion            string `json:"ocr_version,omitempty"`
+	KAIDVersion           string `json:"kaid_version,omitempty"`
 	Provider              string `json:"provider,omitempty"`
 	Model                 string `json:"model,omitempty"`
 	ConfiguredConcurrency int    `json:"configured_concurrency,omitempty"`

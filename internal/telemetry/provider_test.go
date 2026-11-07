@@ -57,7 +57,7 @@ func TestContentLogging_Disabled(t *testing.T) {
 
 func TestContentLogging_EnabledWithEnv(t *testing.T) {
 	setupEnabledTelemetry(t)
-	t.Setenv("OCR_CONTENT_LOGGING", "1")
+	t.Setenv("KAID_CONTENT_LOGGING", "1")
 	if !ContentLogging() {
 		t.Error("expected ContentLogging()=true when enabled and env var set")
 	}
@@ -65,8 +65,8 @@ func TestContentLogging_EnabledWithEnv(t *testing.T) {
 
 func TestContentLogging_EnabledWithoutEnv(t *testing.T) {
 	setupEnabledTelemetry(t)
-	t.Setenv("OCR_CONTENT_LOGGING", "")
-	_ = os.Unsetenv("OCR_CONTENT_LOGGING")
+	t.Setenv("KAID_CONTENT_LOGGING", "")
+	_ = os.Unsetenv("KAID_CONTENT_LOGGING")
 	if ContentLogging() {
 		t.Error("expected ContentLogging()=false when enabled but env var not set")
 	}
@@ -109,9 +109,9 @@ func TestInit_DisabledByDefault(t *testing.T) {
 	meterProvider = nil
 
 	envKeys := []string{
-		"OCR_ENABLE_TELEMETRY", "OTEL_SERVICE_NAME",
+		"KAID_ENABLE_TELEMETRY", "OTEL_SERVICE_NAME",
 		"OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_PROTOCOL",
-		"OCR_CONTENT_LOGGING",
+		"KAID_CONTENT_LOGGING",
 	}
 	for _, k := range envKeys {
 		t.Setenv(k, "")
@@ -137,7 +137,7 @@ func TestInit_EnabledConsole(t *testing.T) {
 	tracerProvider = nil
 	meterProvider = nil
 
-	t.Setenv("OCR_ENABLE_TELEMETRY", "1")
+	t.Setenv("KAID_ENABLE_TELEMETRY", "1")
 	envKeys := []string{
 		"OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_PROTOCOL",
 	}

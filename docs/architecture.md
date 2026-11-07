@@ -4,7 +4,7 @@ sidebar:
   order: 8
 ---
 
-A walk-through of how `ocr review` actually works inside, from the moment
+A walk-through of how `kaid review` actually works inside, from the moment
 you press Enter to the JSON that lands in your terminal. The goal is to
 give you enough mental model to debug behaviour, tune flags, and read
 the source code with confidence.
@@ -20,7 +20,7 @@ the source code with confidence.
 
 ```mermaid
 flowchart TD
-    A["<b>ocr review</b>"]
+    A["<b>kaid review</b>"]
     B["<b>bootstrap</b><br/><span style='font-size:0.85em'>Resolve LLM endpoint (config → env → rc files)<br/>Load template, tool registry, system rules</span>"]
     C["<b>diff provider</b><br/><span style='font-size:0.85em'>git diff / ls-files / show — produce []model.Diff<br/>Modes: Workspace · Commit · Range</span>"]
     D["<b>filter & rules</b><br/><span style='font-size:0.85em'>5-gate filter (selection.go) — drop binaries,<br/>excluded paths, unsupported extensions. Pick rule per file.</span>"]
@@ -101,7 +101,7 @@ The difference is user-visible. Preview reports the first as
 `provider_directory` and an `include` rule cannot make it reviewable; it
 reports the second as `default_path`, which an `include` rule can override.
 
-Run `ocr review --preview` to see the full filter result without spending
+Run `kaid review --preview` to see the full filter result without spending
 a token. See [Review Rules](review-rules.md#how-files-are-filtered) for
 the full algorithm.
 
@@ -132,7 +132,7 @@ grouping is also surfaced in JSON output.
 
 ## Per-group subtask: plan + main
 
-For every group, OCR fires a sub-agent. Each sub-agent runs in its own
+For every group, kaid fires a sub-agent. Each sub-agent runs in its own
 goroutine, bounded by `--concurrency` (default **8**), and has its own
 LLM message buffer.
 
@@ -156,7 +156,7 @@ the two so the plan phase doesn't become unconditional for multi-file
 groups.
 
 For small changes the plan adds latency without value, so it's skipped
-silently and the main loop runs straight away. Otherwise OCR
+silently and the main loop runs straight away. Otherwise kaid
 makes a **single** `PLAN_TASK` LLM call — no `Tools` field is sent, so
 the model cannot call tools during planning. The read-only tool subset
 (`code_search`, `file_read_diff`, `file_find` — the three tools whose
@@ -218,7 +218,7 @@ aggregate token budget (`--max-tokens-budget`) is exhausted.
 
 ## Memory compression
 
-A long tool-use loop will eventually overflow the context window. OCR
+A long tool-use loop will eventually overflow the context window. kaid
 manages this with a **three-zone partitioning** strategy that triggers
 on the prompt budget defined by `MAX_TOKENS = 200000`:
 
@@ -298,7 +298,7 @@ main tool-use loop never blocks on post-processing:
    user must locate manually (there is no stored flag; downstream
    consumers check `start_line == 0`).
 2. **Re-location task** *(optional fallback)* — when line resolution
-   fails on a non-trivial diff, OCR runs the `RE_LOCATION_TASK` prompt
+   fails on a non-trivial diff, kaid runs the `RE_LOCATION_TASK` prompt
    asking the model to re-anchor the snippet. Useful for paraphrased
    `existing_code` strings.
 3. **Review filter** — after the main loop finishes (and the worker pool
@@ -307,14 +307,14 @@ main tool-use loop never blocks on post-processing:
    incorrect. Errors here are logged and ignored.
 4. **Second line-resolution pass** — once `Agent.Run` returns, the
    top-level command re-runs `diff.ResolveLineNumbers` over the full
-   comment set (see `cmd/opencodereview/review_cmd.go`) to catch
+   comment set (see `cmd/kaid/review_cmd.go`) to catch
    comments whose `existing_code` spans multiple files or was updated by
    the re-location step.
 5. **Render** — into text or JSON depending on `--format`.
 
 ## Token budget guards
 
-Before the LLM is even called, OCR runs a fail-fast check:
+Before the LLM is even called, kaid runs a fail-fast check:
 
 ```go
 tokenLimit := MaxTokens * 4 / 5     // 80 %
@@ -393,7 +393,7 @@ template override — see [Tools](tools.md#customizing-tools).
 Every review is written to disk as JSONL:
 
 ```
-~/.opencodereview/sessions/<encoded-repo-path>/<session-id>.jsonl
+~/.kaid/sessions/<encoded-repo-path>/<session-id>.jsonl
 ```
 
 The repo path is **not** base64-encoded; `encodeRepoPath` (in
@@ -401,7 +401,7 @@ The repo path is **not** base64-encoded; `encodeRepoPath` (in
 `_` so the path is filesystem-safe.
 
 Each line is one event: prompt sent, LLM response, tool call, tool
-result, comment emitted, etc. The Web UI (`ocr viewer`) reads these
+result, comment emitted, etc. The Web UI (`kaid viewer`) reads these
 files directly — there's no database, just append-only logs. See
 [Session Viewer](viewer.md) for the UI tour and event schema.
 
@@ -415,7 +415,7 @@ short-lived `event.<name>` span at each decision point (`plan.skipped`,
 `token.threshold.exceeded`, `subtask.error`, …). In the main review loop,
 LLM requests and tool calls emit spans and are also recorded in metrics. Prompt and
 response content is **never** attached to telemetry; the
-`OCR_CONTENT_LOGGING` flag is plumbed but currently dead. See
+`KAID_CONTENT_LOGGING` flag is plumbed but currently dead. See
 [Telemetry](telemetry.md) for the full schema.
 
 ## What's *not* automated
@@ -423,7 +423,7 @@ response content is **never** attached to telemetry; the
 A few decisions are deliberately manual:
 
 - **Endpoint discovery has no fallback.** If your config + env + rc
-  files don't yield a complete `(URL, token, model)` triple, OCR exits
+  files don't yield a complete `(URL, token, model)` triple, kaid exits
   with a non-zero code rather than guessing.
 - **Sub-agent failures are isolated, not retried.** One failing group
   produces a warning; the rest continue. Retries belong in the wrapping
@@ -446,8 +446,8 @@ If you want to read along:
 
 | Concern | File |
 |---|---|
-| Top-level command dispatch | `cmd/opencodereview/main.go` |
-| `review` flag parsing | `cmd/opencodereview/shared_flags.go` |
+| Top-level command dispatch | `cmd/kaid/main.go` |
+| `review` flag parsing | `cmd/kaid/shared_flags.go` |
 | Agent orchestration | `internal/agent/` (agent.go, util.go) |
 | Semantic file grouping | `internal/agent/grouping.go` |
 | Tool-use loop & memory compression | `internal/llmloop/` (loop.go, compression.go) |

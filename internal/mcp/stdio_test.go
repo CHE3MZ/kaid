@@ -19,11 +19,11 @@ import (
 )
 
 const (
-	runAsServerEnv         = "_OCR_MCP_TEST_SERVER"
-	runAsHangingServerEnv  = "_OCR_MCP_TEST_HANG_SERVER"
-	runAsExit3ServerEnv    = "_OCR_MCP_TEST_EXIT3_SERVER"
-	runAsSlowExitServerEnv = "_OCR_MCP_TEST_SLOW_EXIT_SERVER"
-	runAsPagedServerEnv    = "_OCR_MCP_TEST_PAGED_SERVER"
+	runAsServerEnv         = "_KAID_MCP_TEST_SERVER"
+	runAsHangingServerEnv  = "_KAID_MCP_TEST_HANG_SERVER"
+	runAsExit3ServerEnv    = "_KAID_MCP_TEST_EXIT3_SERVER"
+	runAsSlowExitServerEnv = "_KAID_MCP_TEST_SLOW_EXIT_SERVER"
+	runAsPagedServerEnv    = "_KAID_MCP_TEST_PAGED_SERVER"
 )
 
 func TestMain(m *testing.M) {

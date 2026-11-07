@@ -36,7 +36,7 @@ func TestProvider_Enumerate_PreservesWhitespaceInTrackedPaths(t *testing.T) {
 	gitCommit(t, repo, "init")
 
 	// nil runner and injected runner are separate code paths in gitLs, and
-	// every real `ocr scan` takes the injected one.
+	// every real `kaid scan` takes the injected one.
 	for _, runner := range []*gitcmd.Runner{nil, gitcmd.New(2)} {
 		got, err := NewProvider(repo, nil, runner, 0).Enumerate(context.Background())
 		if err != nil {
@@ -179,7 +179,7 @@ func pathSelectorRepo(t *testing.T) string {
 //
 // `git ls-files` prints repository-relative names such as `main.go`, never
 // `./main.go`, and filterByPaths matches an exact path or a `<selector>/`
-// prefix. A selector left as "." therefore matches nothing, so `ocr scan
+// prefix. A selector left as "." therefore matches nothing, so `kaid scan
 // --path .` reported an empty selection and exited 0 while the same repository
 // scanned fine with --path omitted. The failure is silent, which is what makes
 // it costly: a review that covered no files still looks like a clean run.

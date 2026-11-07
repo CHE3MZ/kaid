@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { ConfigEntry, ConfigPanelFocus, ProviderTab, buildCustomCreateSaveEntries, buildCustomUpdateSaveEntries, buildOfficialSaveEntries, describeActiveProvider, detectInitialTab, isConfigReady, isValidProviderName, listCustomProviderNames } from '../../shared/configUtils';
 import { mergeModelLists, PROVIDER_PRESETS, usesAmbientAuth } from '../../shared/providers';
-import { EnvCheckResult, LogLine, OcrConfig } from '../../shared/types';
+import { EnvCheckResult, LogLine, KaidConfig } from '../../shared/types';
 import { CliStatus, ConnTest } from '../configStore';
 import { CustomProviderManager } from '../components/CustomProviderManager';
 import { EnvSetupGuide } from '../components/EnvSetupGuide';
@@ -17,7 +17,7 @@ interface Props {
   layout?: 'modal' | 'panel';
   panelFocus?: ConfigPanelFocus | null;
   skipEnvCheck?: boolean;
-  config: OcrConfig | null;
+  config: KaidConfig | null;
   cliStatus: CliStatus;
   installing: boolean;
   installLogs: LogLine[];
@@ -41,7 +41,7 @@ const SORTED_PROVIDER_OPTIONS = PROVIDER_PRESETS
   .map((p) => ({ value: p.name, label: p.displayName }))
   .sort((a, b) => a.label.localeCompare(b.label));
 
-function resolvePanelState(config: OcrConfig | null, panelFocus?: ConfigPanelFocus | null) {
+function resolvePanelState(config: KaidConfig | null, panelFocus?: ConfigPanelFocus | null) {
   const tab = panelFocus?.tab ?? detectInitialTab(config);
   const step = panelFocus?.step ?? (isConfigReady(config) ? 2 : 1);
   const customNames = listCustomProviderNames(config);
@@ -139,7 +139,7 @@ export function ConfigView({
               <h1 class="config-page-title">{t('view.config.title')}</h1>
               <p class="config-page-desc">{t('view.config.desc')}</p>
             </div>
-            <OcrVersionMeta envCheck={envCheck} cliStatus={cliStatus} />
+            <KaidVersionMeta envCheck={envCheck} cliStatus={cliStatus} />
           </div>
         </header>
         <div class="config-page-body">
@@ -173,25 +173,25 @@ export function ConfigView({
   );
 }
 
-function OcrVersionMeta({ envCheck, cliStatus }: { envCheck: EnvCheckResult | null; cliStatus: CliStatus }) {
+function KaidVersionMeta({ envCheck, cliStatus }: { envCheck: EnvCheckResult | null; cliStatus: CliStatus }) {
   const t = useT();
   let label = t('view.config.checking');
-  if (envCheck?.ocr.ok && envCheck.ocr.version) {
-    label = envCheck.ocr.version.startsWith('v') ? envCheck.ocr.version : `v${envCheck.ocr.version}`;
-  } else if (envCheck && !envCheck.ocr.ok) {
+  if (envCheck?.kaid.ok && envCheck.kaid.version) {
+    label = envCheck.kaid.version.startsWith('v') ? envCheck.kaid.version : `v${envCheck.kaid.version}`;
+  } else if (envCheck && !envCheck.kaid.ok) {
     label = t('view.config.notInstalled');
   } else if (cliStatus !== 'checking' && cliStatus === 'missing') {
     label = t('view.config.notInstalled');
   }
   return (
-    <div class="config-page-meta" title={t('view.config.ocrVersionTooltip')}>
-      <span class="config-page-meta-label">OCR</span>
+    <div class="config-page-meta" title={t('view.config.kaidVersionTooltip')}>
+      <span class="config-page-meta-label">kaid</span>
       <span class="config-page-meta-value">{label}</span>
     </div>
   );
 }
 
-function ActiveProviderBanner({ config }: { config: OcrConfig | null }) {
+function ActiveProviderBanner({ config }: { config: KaidConfig | null }) {
   const t = useT();
   const active = describeActiveProvider(config);
   if (!active) {
@@ -231,7 +231,7 @@ function ProviderStep({
   connTest, onBack, onTest, onSave, onDeleteCustomProvider, onActivateCustomProvider, onClearConnTest,
 }: {
   wide?: boolean;
-  config: OcrConfig | null;
+  config: KaidConfig | null;
   tab: ProviderTab;
   setTab: (t: ProviderTab) => void;
   customView: 'list' | 'form';
@@ -545,7 +545,7 @@ function CustomForm({
 }
 
 interface FormProps {
-  config: OcrConfig | null;
+  config: KaidConfig | null;
   connTest: ConnTest;
   wide?: boolean;
   onBack: () => void;

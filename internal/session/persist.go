@@ -21,7 +21,7 @@ import (
 var sessionSubDir = "sessions"
 
 // jsonlWriter streams session records to a JSONL file under
-// $HOME/.opencodereview/sessions/<encoded-repo-path>/<session-id>.jsonl.
+// $HOME/.kaid/sessions/<encoded-repo-path>/<session-id>.jsonl.
 // It is safe for concurrent use by multiple goroutines.
 type jsonlWriter struct {
 	mu          sync.Mutex
@@ -108,7 +108,7 @@ func (jw *jsonlWriter) open() error {
 		return fmt.Errorf("resolve home dir: %w", err)
 	}
 
-	sessionDir := filepath.Join(home, ".opencodereview", sessionSubDir, encodeRepoPath(jw.repoDir))
+	sessionDir := filepath.Join(home, ".kaid", sessionSubDir, encodeRepoPath(jw.repoDir))
 	if err := os.MkdirAll(sessionDir, 0700); err != nil {
 		return fmt.Errorf("create session dir: %w", err)
 	}
@@ -127,7 +127,7 @@ func (jw *jsonlWriter) open() error {
 func (jw *jsonlWriter) writeRecordLocked(rec map[string]any) {
 	data, err := json.Marshal(rec)
 	if err != nil {
-		fmt.Printf("[ocr session] failed to marshal record: %v\n", err)
+		fmt.Printf("[kaid session] failed to marshal record: %v\n", err)
 		return
 	}
 	jw.writer.Write(data)

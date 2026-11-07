@@ -102,7 +102,7 @@ body {
 }
 
 /* === 3. Root container (sidebar host) === */
-.ocr-root {
+.kaid-root {
   position: relative;
   z-index: 1;
   display: flex;
@@ -112,7 +112,7 @@ body {
   overflow: hidden;
 }
 
-.ocr-root>* {
+.kaid-root>* {
   position: relative;
   z-index: 1;
 }

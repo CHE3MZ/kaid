@@ -41,7 +41,7 @@ export function App() {
   };
 
   return (
-    <div class="ocr-root">
+    <div class="kaid-root">
         <div class="action-region">
           <IdleView gitState={state.gitState} modeFiles={state.modeFiles} filesLoading={state.filesLoading}
             configured={configured} onModeChange={onModeChange} onRequestModeFiles={requestModeFiles}

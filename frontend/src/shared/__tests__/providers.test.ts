@@ -4,7 +4,7 @@
 import { PROVIDER_PRESETS as generatedPresets } from '../providers.generated';
 import { isPresetProvider, lookupPreset, mergeModelLists, PROVIDER_PRESETS, usesAmbientAuth } from '../providers';
 import { buildOfficialSaveEntries, detectInitialTab, isConfigReady, isValidProviderName } from '../configUtils';
-import { OcrConfig } from '../types';
+import { KaidConfig } from '../types';
 
 describe('generated provider presets', () => {
   it.each(['my-gateway', 'mimo-v2.6-flash', 'foo.api_key'])('accepts provider name %s', (name) => {
@@ -39,7 +39,7 @@ describe('generated provider presets', () => {
     const preset = lookupPreset(name);
     expect(preset).toBeDefined();
     const model = preset?.models[0] ?? '';
-    const config: OcrConfig = {
+    const config: KaidConfig = {
       provider: name,
       model: '',
       providers: { [name]: { model } },

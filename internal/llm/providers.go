@@ -171,7 +171,7 @@ var registry = []Provider{
 	},
 	{
 		Name:        "dashscope",
-		DisplayName: "Alibaba DashScope API",
+		DisplayName: "DashScope API",
 		Protocol:    ProtocolOpenAIChatCompletions,
 		BaseURL:     "https://dashscope.aliyuncs.com/compatible-mode/v1",
 		EnvVar:      "DASHSCOPE_API_KEY",
@@ -190,7 +190,7 @@ var registry = []Provider{
 	},
 	{
 		Name:        "dashscope-tokenplan",
-		DisplayName: "Alibaba DashScope Token Plan API",
+		DisplayName: "DashScope Token Plan API",
 		Protocol:    ProtocolOpenAIChatCompletions,
 		BaseURL:     "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
 		EnvVar:      "DASHSCOPE_TOKENPLAN_KEY",
@@ -505,7 +505,7 @@ var registry = []Provider{
 		EnvVar:      "MISTRAL_API_KEY",
 		// Deliberately minimal list to keep this preset low-maintenance.
 		// Users can point to any other Mistral model via
-		// `ocr config set model <name>`; the preset only seeds the picker UI.
+		// `kaid config set model <name>`; the preset only seeds the picker UI.
 		// See https://docs.mistral.ai/getting-started/models/models_overview/
 		Models: []string{
 			"codestral-latest",

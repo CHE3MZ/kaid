@@ -366,7 +366,7 @@ test("rejects cursor loops", async () => {
 
 for (const initialState of ["fresh", "cleaned sparse"]) {
   test(`policy checkout preserves source for later jobs in a ${initialState} workspace`, () => {
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "ocr-pr-policy-checkout-"));
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "kaid-pr-policy-checkout-"));
     const emptyGitConfig = path.join(directory, ".gitconfig");
     fs.writeFileSync(emptyGitConfig, "");
     const git = (args, allowedStatuses = [0]) => {
@@ -389,7 +389,7 @@ for (const initialState of ["fresh", "cleaned sparse"]) {
     const policyPath = "scripts/github-actions/check-pr-commit-policy.js";
     const files = {
       "go.mod": "module example.test/checkout\n",
-      "cmd/opencodereview/main.go": "package main\n\nfunc main() {}\n",
+      "cmd/kaid/main.go": "package main\n\nfunc main() {}\n",
       [policyPath]: "module.exports = {};\n",
     };
     try {

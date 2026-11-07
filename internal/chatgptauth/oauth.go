@@ -142,7 +142,7 @@ func (c *Client) authorize(a attempt, old *Auth) string {
 		q.Set("prompt", "consent")
 	}
 	if old == nil {
-		q.Set("agent_name_hint", "OpenCodeReview")
+		q.Set("agent_name_hint", "kaid")
 	} else {
 		if old.IDToken != "" {
 			q.Set("id_token_hint", old.IDToken)
@@ -416,7 +416,7 @@ func (c *Client) loginAttempt(ctx context.Context, host string, registration, ol
 		} else if callbackErr != nil {
 			http.Error(w, "Sign-in could not be verified.", 400)
 		} else {
-			fmt.Fprintln(w, "Authorization received. Return to OpenCodeReview to confirm sign-in.")
+			fmt.Fprintln(w, "Authorization received. Return to kaid to confirm sign-in.")
 		}
 	})
 	server := &http.Server{Handler: mux, ReadHeaderTimeout: 5 * time.Second}
@@ -507,16 +507,16 @@ func (c *Client) credentials(ctx context.Context, s Store, account string) (*Aut
 			return err
 		}
 		signInRequired := func(reason string) error {
-			return fmt.Errorf("%s; run ocr auth login --provider chatgpt --account %s", reason, auth.ClientID)
+			return fmt.Errorf("%s; run kaid auth login --provider chatgpt --account %s", reason, auth.ClientID)
 		}
 		if auth.PendingRefresh != nil && auth.PendingRefresh.IdentityError != "" {
 			return signInRequired(auth.PendingRefresh.IdentityError)
 		}
 		if auth.AccessToken == "" {
-			return errors.New("ChatGPT account is signed out; run ocr auth login --provider chatgpt")
+			return errors.New("ChatGPT account is signed out; run kaid auth login --provider chatgpt")
 		}
 		if !auth.PlanEnabled() {
-			return fmt.Errorf("ChatGPT plan usage is disabled; run ocr auth login --provider chatgpt --enable-plan --account %s or select an API-key provider", auth.ClientID)
+			return fmt.Errorf("ChatGPT plan usage is disabled; run kaid auth login --provider chatgpt --enable-plan --account %s or select an API-key provider", auth.ClientID)
 		}
 		now := time.Now()
 		recoveringPending := auth.PendingRefresh != nil
@@ -592,7 +592,7 @@ func (c *Client) credentials(ctx context.Context, s Store, account string) (*Aut
 			return err
 		}
 		if !rotated.PlanEnabled() {
-			return fmt.Errorf("refreshed ChatGPT grant does not permit plan usage; run ocr auth login --provider chatgpt --enable-plan --account %s", auth.ClientID)
+			return fmt.Errorf("refreshed ChatGPT grant does not permit plan usage; run kaid auth login --provider chatgpt --enable-plan --account %s", auth.ClientID)
 		}
 		now = time.Now()
 		if !rotated.ExpiresAt.After(now) || (recoveringPending && rotated.refreshDue(now)) {

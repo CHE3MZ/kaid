@@ -16,7 +16,7 @@ import (
 	"github.com/CHE3MZ/kaid/internal/llm"
 )
 
-// rawSubDir is the subdirectory of ~/.opencodereview that holds the raw LLM
+// rawSubDir is the subdirectory of ~/.kaid that holds the raw LLM
 // captures. It is deliberately separate from sessionSubDir: the main session
 // JSONL is a resume checkpoint, while raw captures are unparsed bytes
 // consumed by downstream post-processing, and the two must never write into
@@ -24,7 +24,7 @@ import (
 var rawSubDir = "raw"
 
 // RawFileWriter implements llm.RawWriter by appending one JSONL line per
-// HTTP attempt to $HOME/.opencodereview/raw/<encoded-repo-path>/<session-id>.jsonl.
+// HTTP attempt to $HOME/.kaid/raw/<encoded-repo-path>/<session-id>.jsonl.
 // The layout mirrors the session JSONL's so both can be discovered by repo.
 // It is safe for concurrent use: with concurrency > 1 many per-file subtasks
 // issue LLM calls at once, and the middleware runs once per HTTP attempt.
@@ -51,7 +51,7 @@ func NewRawFileWriter(repoDir, sessionID string) (*RawFileWriter, error) {
 	if err != nil {
 		return nil, fmt.Errorf("resolve home dir: %w", err)
 	}
-	dir := filepath.Join(home, ".opencodereview", rawSubDir, encodeRepoPath(repoDir))
+	dir := filepath.Join(home, ".kaid", rawSubDir, encodeRepoPath(repoDir))
 	path := filepath.Join(dir, sessionID+".jsonl")
 	if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 		return nil, fmt.Errorf("create raw dir: %w", err)
@@ -100,7 +100,7 @@ func (w *RawFileWriter) Write(rec llm.RawRecord) {
 // silent so a degraded sink cannot spam every subsequent record.
 func (w *RawFileWriter) warn(err error) {
 	w.warnOnce.Do(func() {
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: raw logging failed, captures may be dropped: %v\n", err)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: raw logging failed, captures may be dropped: %v\n", err)
 	})
 }
 

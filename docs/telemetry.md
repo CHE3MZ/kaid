@@ -4,7 +4,7 @@ sidebar:
   order: 11
 ---
 
-OCR ships with first-class **OpenTelemetry** support. Every review run
+kaid ships with first-class **OpenTelemetry** support. Every review run
 produces structured spans, metrics, and events. Wired up to a collector,
 the data is enough to answer "what did the agent spend time on?",
 "which models cost what?", and "why did this run fail?".
@@ -12,11 +12,11 @@ the data is enough to answer "what did the agent spend time on?",
 !!! abstract "Opt-in by default"
 
     Telemetry is disabled until you enable it. Nothing is exported to a
-    collector unless `telemetry.enabled` or `OCR_ENABLE_TELEMETRY` is set.
+    collector unless `telemetry.enabled` or `KAID_ENABLE_TELEMETRY` is set.
 
 ## Overview
 
-Telemetry is **off by default**. Once enabled, OCR exports:
+Telemetry is **off by default**. Once enabled, kaid exports:
 
 - **Spans** — three pipeline-level spans (`review.run`, `diff.parse`,
   `subtask.execute.group.<group-key>`), LLM request spans (`llm.request`),
@@ -43,13 +43,13 @@ config or environment variables — env wins on conflict.
 ### Config-file approach
 
 ```bash
-ocr config set telemetry.enabled        true
-ocr config set telemetry.exporter       otlp
-ocr config set telemetry.otlp_endpoint  localhost:4317
-ocr config set telemetry.content_logging false
+kaid config set telemetry.enabled        true
+kaid config set telemetry.exporter       otlp
+kaid config set telemetry.otlp_endpoint  localhost:4317
+kaid config set telemetry.content_logging false
 ```
 
-The result in `~/.opencodereview/config.json`:
+The result in `~/.kaid/config.json`:
 
 ```json
 {
@@ -65,16 +65,16 @@ The result in `~/.opencodereview/config.json`:
 ### Environment-variable approach
 
 ```bash
-export OCR_ENABLE_TELEMETRY=1
+export KAID_ENABLE_TELEMETRY=1
 export OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317   # implies exporter=otlp
 export OTEL_EXPORTER_OTLP_PROTOCOL=grpc             # default; http/protobuf and http/json
                                                     # are also supported
-export OTEL_SERVICE_NAME=open-code-review-prod      # optional; default: open-code-review
-export OCR_CONTENT_LOGGING=0                        # reserved / currently a no-op (see Content logging)
+export OTEL_SERVICE_NAME=kaid-prod      # optional; default: kaid
+export KAID_CONTENT_LOGGING=0                        # reserved / currently a no-op (see Content logging)
 ```
 
 Setting `OTEL_EXPORTER_OTLP_ENDPOINT` also forces `exporter=otlp` —
-useful for one-off `OTEL_EXPORTER_OTLP_ENDPOINT=… ocr review` runs.
+useful for one-off `OTEL_EXPORTER_OTLP_ENDPOINT=… kaid review` runs.
 
 ### Endpoint format
 
@@ -161,19 +161,19 @@ Each span carries useful attributes:
 
 ### Metrics
 
-OCR records numeric metrics via the OTel meter — counts and histograms
+kaid records numeric metrics via the OTel meter — counts and histograms
 the collector aggregates downstream:
 
 | Metric | Type | Unit | Labels |
 |---|---|---|---|
-| `ocr.review.duration_seconds` | histogram | `s` | — |
-| `ocr.files_reviewed_total` | counter | — | — |
-| `ocr.comments_generated_total` | counter | — | — |
-| `ocr.llm.requests_total` | counter | — | `model`, `status` (`ok` / `error`) |
-| `ocr.llm.request_duration_seconds` | histogram | `s` | `model` |
-| `ocr.llm.tokens_used` | counter | — | `model`, `type` (currently always `total`) |
-| `ocr.tool.calls_total` | counter | — | `tool.name`, `status` (`ok` / `error`) |
-| `ocr.tool.execution_duration_seconds` | histogram | `s` | `tool.name` |
+| `kaid.review.duration_seconds` | histogram | `s` | — |
+| `kaid.files_reviewed_total` | counter | — | — |
+| `kaid.comments_generated_total` | counter | — | — |
+| `kaid.llm.requests_total` | counter | — | `model`, `status` (`ok` / `error`) |
+| `kaid.llm.request_duration_seconds` | histogram | `s` | `model` |
+| `kaid.llm.tokens_used` | counter | — | `model`, `type` (currently always `total`) |
+| `kaid.tool.calls_total` | counter | — | `tool.name`, `status` (`ok` / `error`) |
+| `kaid.tool.execution_duration_seconds` | histogram | `s` | `tool.name` |
 
 ### Events
 
@@ -197,26 +197,26 @@ notices.
 ## Content logging
 
 Telemetry exports the **shape** of LLM traffic (counts, durations,
-statuses) but **never** the actual prompts or responses. OCR makes no
+statuses) but **never** the actual prompts or responses. kaid makes no
 attempt to attach LLM message content to spans or events — the data
 that leaves the process is the metric / event schema documented above
 and nothing else.
 
-The `content_logging` config key (and `OCR_CONTENT_LOGGING=1` env
+The `content_logging` config key (and `KAID_CONTENT_LOGGING=1` env
 override) is plumbed through the config layer but currently does **not**
 gate any code path that emits prompt content. Treat the flag as
 reserved.
 
 If you need to inspect what was sent to or returned from the LLM, use
 the local JSONL transcripts that the [Session Viewer](viewer.md)
-reads. Those live entirely on disk under `~/.opencodereview/` and are
+reads. Those live entirely on disk under `~/.kaid/` and are
 never shipped to the collector.
 
 !!! warning "Raw logs can contain source code"
 
-    For deeper debugging, set `OCR_RAW_LOGGING=1` to capture the raw
+    For deeper debugging, set `KAID_RAW_LOGGING=1` to capture the raw
     request and response bodies of every LLM call in
-    `~/.opencodereview/raw/` - more detailed debugging information than
+    `~/.kaid/raw/` - more detailed debugging information than
     the session transcripts. Off by default. With streaming enabled, the
     capture reads the entire response body before handing it on to the
     rest of the processing. Capture redacts headers but records request and
@@ -227,9 +227,9 @@ never shipped to the collector.
 ### Console exporter for local debugging
 
 ```bash
-ocr config set telemetry.enabled true
-ocr config set telemetry.exporter console
-ocr review --commit HEAD
+kaid config set telemetry.enabled true
+kaid config set telemetry.exporter console
+kaid review --commit HEAD
 ```
 
 Spans print to stdout in human-readable form. Pipe through `less` to
@@ -259,12 +259,12 @@ service:
 Then in your shell:
 
 ```bash
-export OCR_ENABLE_TELEMETRY=1
+export KAID_ENABLE_TELEMETRY=1
 export OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317
-ocr review --from main --to feature/branch
+kaid review --from main --to feature/branch
 ```
 
-Open Tempo → search by `service.name=open-code-review` → click any
+Open Tempo → search by `service.name=kaid` → click any
 trace to see the full span tree.
 
 ### Datadog
@@ -272,9 +272,9 @@ trace to see the full span tree.
 The Datadog Agent's OTLP receiver speaks OTLP/gRPC by default:
 
 ```bash
-export OCR_ENABLE_TELEMETRY=1
+export KAID_ENABLE_TELEMETRY=1
 export OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317
-export OTEL_SERVICE_NAME=open-code-review
+export OTEL_SERVICE_NAME=kaid
 ```
 
 Spans show up under APM with the service name; LLM metrics show up
@@ -287,31 +287,31 @@ Inject the env in your pipeline step:
 ```yaml
 - name: Code review
   env:
-    OCR_LLM_URL: ${{ secrets.OCR_LLM_URL }}
-    OCR_LLM_TOKEN: ${{ secrets.OCR_LLM_TOKEN }}
-    OCR_LLM_MODEL: claude-opus-4-6
-    OCR_ENABLE_TELEMETRY: "1"
+    KAID_LLM_URL: ${{ secrets.KAID_LLM_URL }}
+    KAID_LLM_TOKEN: ${{ secrets.KAID_LLM_TOKEN }}
+    KAID_LLM_MODEL: claude-opus-4-6
+    KAID_ENABLE_TELEMETRY: "1"
     OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_COLLECTOR_URL }}
-    OTEL_SERVICE_NAME: open-code-review-ci
-  run: ocr review --from origin/main --to HEAD --audience agent
+    OTEL_SERVICE_NAME: kaid-ci
+  run: kaid review --from origin/main --to HEAD --audience agent
 ```
 
 The `OTEL_SERVICE_NAME` separates CI traces from human dev runs.
 
 ## Resolution priority
 
-When OCR builds the final telemetry config:
+When kaid builds the final telemetry config:
 
 1. Defaults (`enabled=false`, `exporter=console`, no endpoint).
-2. `telemetry.*` keys from `~/.opencodereview/config.json`.
+2. `telemetry.*` keys from `~/.kaid/config.json`.
 3. Environment variables (highest priority, **overrides** the file).
 
 So you can leave `telemetry.enabled=false` in the config and flip it
-per-run with `OCR_ENABLE_TELEMETRY=1`.
+per-run with `KAID_ENABLE_TELEMETRY=1`.
 
 ## Sampling and overhead
 
-OCR exports **everything**. There is no sampling configuration; OTel's
+kaid exports **everything**. There is no sampling configuration; OTel's
 sampling is the responsibility of your collector. For a typical review
 run that's:
 
@@ -330,18 +330,18 @@ N_{\text{spans}} \propto G \times R
 \]
 
 The export is **batched and asynchronous** - telemetry doesn't block
-the review loop. If the collector is unreachable, OCR logs a warning
+the review loop. If the collector is unreachable, kaid logs a warning
 and continues; the review still produces its normal output.
 
 ## Troubleshooting
 
 | Symptom | Likely cause |
 |---|---|
-| Nothing exported | `OCR_ENABLE_TELEMETRY` / `telemetry.enabled` is unset. The default is **off**. |
+| Nothing exported | `KAID_ENABLE_TELEMETRY` / `telemetry.enabled` is unset. The default is **off**. |
 | OTLP works locally, fails in prod | Check that the protocol matches the collector. The default is gRPC, and many managed backends accept OTLP over HTTP only — set `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf` and use the HTTP port (`4318`, not `4317`). |
 | Nothing arrives, no error | The exporter is created lazily, so a wrong endpoint fails silently at export time rather than at startup. Check the collector's access log for the path being requested: for the HTTP protocols the endpoint is a base URL and the signal path is appended, so `http://host:4318` posts to `http://host:4318/v1/traces`. |
 | Spans show but no metrics | Some collectors only enable the traces pipeline by default; add a `metrics` pipeline in the config. |
-| Prompts missing from spans | OCR never attaches prompt content to telemetry — see [Content logging](#content-logging). Inspect transcripts via [Session Viewer](viewer.md) instead. |
+| Prompts missing from spans | kaid never attaches prompt content to telemetry — see [Content logging](#content-logging). Inspect transcripts via [Session Viewer](viewer.md) instead. |
 
 ## See Also
 

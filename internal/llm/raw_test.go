@@ -228,7 +228,7 @@ func TestRawMiddleware_RedactsAuthHeaders(t *testing.T) {
 		"X-Amz-Security-Token": "aws-session-secret",
 		"X-Session-Token":      "session-secret",
 		"Proxy-Authorization":  "Basic secret",
-		"User-Agent":           "open-code-review/test",
+		"User-Agent":           "kaid/test",
 	})
 
 	tw := &recordingRawWriter{}
@@ -246,7 +246,7 @@ func TestRawMiddleware_RedactsAuthHeaders(t *testing.T) {
 			t.Errorf("header %s = %q, want [REDACTED]", k, v)
 		}
 	}
-	if got := rec.RequestHeaders["User-Agent"]; got != "open-code-review/test" {
+	if got := rec.RequestHeaders["User-Agent"]; got != "kaid/test" {
 		t.Errorf("User-Agent = %q, want passthrough value", got)
 	}
 	for _, v := range rec.RequestHeaders {

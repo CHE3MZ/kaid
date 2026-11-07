@@ -141,7 +141,7 @@ func explicitFlagHint(flag, value string) string {
 // ResumeLineageSchemaVersion versions the resume_lineage event independently of
 // the run manifest: lineage records a transition between runs, not a run's
 // coverage, so the two evolve separately.
-const ResumeLineageSchemaVersion = "ocr.resume-lineage/v1"
+const ResumeLineageSchemaVersion = "kaid.resume-lineage/v1"
 
 // ResumeLineage records which run this one continued and which provider and
 // model it moved between. Source and target being equal means a same-target

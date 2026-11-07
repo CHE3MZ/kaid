@@ -99,7 +99,7 @@ func groupDiffs(ctx context.Context, diffs []model.Diff, client llm.LLMClient, m
 
 	groups, usage, err := callGroupingLLM(ctx, diffs, client, modelName, tpl.GroupingTask, tpl.CompletionTokenLimit(), sessOpts)
 	if err != nil {
-		fmt.Fprintf(stdout.Writer(), "[ocr] LLM grouping failed (%v), falling back to per-file dispatch\n", err)
+		fmt.Fprintf(stdout.Writer(), "[kaid] LLM grouping failed (%v), falling back to per-file dispatch\n", err)
 		return groupDiffsResult{groups: toSingleFileGroups(diffs), usage: usage}
 	}
 
@@ -145,7 +145,7 @@ func groupWithoutLLM(ctx context.Context, diffs []model.Diff, strategy template.
 	default:
 		shape = fmt.Sprintf("reviewing as %d groups", len(groups))
 	}
-	fmt.Fprintf(stdout.Writer(), "[ocr] Skipping LLM grouping for %d file(s), %d changed line(s) — %s\n",
+	fmt.Fprintf(stdout.Writer(), "[kaid] Skipping LLM grouping for %d file(s), %d changed line(s) — %s\n",
 		len(diffs), totalChanged, shape)
 	emitGroupingSkipped(ctx, strategy, len(diffs), totalChanged, tpl)
 

@@ -1,15 +1,15 @@
 ---
-title: Kaid
+title: kaid
 hide:
   - navigation
   - toc
 ---
 
-# :material-robot-happy-outline: Kaid
+# :material-robot-happy-outline: kaid
 
-![Kaid logo](assets/icon.png){ align=right width="96" }
+![kaid logo](assets/icon.png){ align=right width="96" }
 
-**AI-powered code review that fits the way you already work.** Kaid picks the
+**AI-powered code review that fits the way you already work.** kaid picks the
 right files, applies your rules, reviews related changes together, and returns
 findings you can act on - from your terminal, your editor, or CI.
 
@@ -59,7 +59,7 @@ findings you can act on - from your terminal, your editor, or CI.
 
 </div>
 
-## Why Kaid?
+## Why kaid?
 
 - :material-filter-variant: **Filters before it spends tokens.** Binaries,
   ignored paths, unsupported extensions, deleted files, and oversized diffs
@@ -86,9 +86,9 @@ without a reason.==
 
 | You want to... | Start with |
 |---|---|
-| Review local changes before committing | `ocr review` |
-| Review a feature branch in CI | `ocr review --from main --to feature` |
-| Replay what the model saw | `ocr viewer` |
+| Review local changes before committing | `kaid review` |
+| Review a feature branch in CI | `kaid review --from main --to feature` |
+| Replay what the model saw | `kaid viewer` |
 | Reuse an existing coding agent | [Delegation mode](integrations/delegate.md) |
 | Add repository knowledge | [MCP servers](mcp.md) |
 
@@ -109,15 +109,15 @@ without a reason.==
 Then verify the binary and configure a model:
 
 ```bash
-ocr version
-ocr config provider
-ocr llm test
+kaid version
+kaid config provider
+kaid llm test
 ```
 
 !!! tip "Already have an endpoint?"
 
     Skip the interactive setup and write the configuration directly with
-    `ocr config set`, or point Kaid at your existing `ANTHROPIC_*` / `OCR_LLM_*`
+    `kaid config set`, or point kaid at your existing `ANTHROPIC_*` / `KAID_LLM_*`
     environment variables. See [Configuration](configuration.md).
 
 AI review is a second pair of eyes, not a replacement for tests or human
@@ -126,4 +126,4 @@ judgement.[^review-note]
 [^review-note]: Model output can be wrong in both directions - it may miss a
     real defect or flag code that is correct. Treat findings as leads and keep
     your normal review process in place. See the
-    [FAQ](faq.md#does-ocr-send-my-code-anywhere) for what leaves your machine.
+    [FAQ](faq.md#does-kaid-send-my-code-anywhere) for what leaves your machine.

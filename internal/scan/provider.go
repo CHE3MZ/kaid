@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 alibaba/open-code-review Contributors
 
-// Package scan implements `ocr scan` — full-file code review. It owns the
+// Package scan implements `kaid scan` — full-file code review. It owns the
 // file-enumeration provider, the per-file orchestrator, and the FULL_SCAN
 // prompt-template plumbing. Shared LLM tool-use loop / memory compression
 // lives in internal/llmloop; this package only handles scan-specific
@@ -129,20 +129,20 @@ func (p *Provider) Enumerate(ctx context.Context) ([]model.ScanItem, error) {
 		full := filepath.Join(p.repoDir, rel)
 		info, err := os.Lstat(full)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: cannot stat %s: %v\n", rel, err)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: cannot stat %s: %v\n", rel, err)
 			continue
 		}
 		if !info.Mode().IsRegular() {
 			continue
 		}
 		if info.Size() > p.maxFileSizeBytes {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: skipping %s (%d bytes exceeds %d-byte scan limit; raise MaxTokens if the real concern is token budget, not memory)\n",
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: skipping %s (%d bytes exceeds %d-byte scan limit; raise MaxTokens if the real concern is token budget, not memory)\n",
 				rel, info.Size(), p.maxFileSizeBytes)
 			continue
 		}
 		binary, err := isBinaryFile(full)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: cannot sniff %s: %v\n", rel, err)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: cannot sniff %s: %v\n", rel, err)
 			continue
 		}
 		if binary {
@@ -156,7 +156,7 @@ func (p *Provider) Enumerate(ctx context.Context) ([]model.ScanItem, error) {
 		}
 		content, err := os.ReadFile(full)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: cannot read %s: %v\n", rel, err)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: cannot read %s: %v\n", rel, err)
 			continue
 		}
 		out = append(out, model.ScanItem{
@@ -230,7 +230,7 @@ func (p *Provider) listFilesViaWalk(ctx context.Context) ([]string, error) {
 			return cerr
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: walk error at %s: %v\n", path, err)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: walk error at %s: %v\n", path, err)
 			return nil // continue walking; skip this entry
 		}
 		if path == p.repoDir {

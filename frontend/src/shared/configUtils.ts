@@ -2,7 +2,7 @@
 // Copyright 2026 alibaba/open-code-review Contributors
 
 import { isPresetProvider, lookupPreset } from './providers';
-import { OcrConfig } from './types';
+import { KaidConfig } from './types';
 
 export type ProviderTab = 'official' | 'custom';
 
@@ -22,7 +22,7 @@ export function isValidProviderName(name: string): boolean {
   return name.split('.').every((segment) => segment.trim() !== '');
 }
 
-export function detectInitialTab(config: OcrConfig | null): ProviderTab {
+export function detectInitialTab(config: KaidConfig | null): ProviderTab {
   if (!config) return 'official';
   if (config.provider) {
     return isPresetProvider(config.provider) ? 'official' : 'custom';
@@ -41,7 +41,7 @@ export interface ActiveProviderSummary {
 }
 
 /** Describes the provider currently active in config.json (not the form draft). */
-export function describeActiveProvider(config: OcrConfig | null): ActiveProviderSummary | null {
+export function describeActiveProvider(config: KaidConfig | null): ActiveProviderSummary | null {
   if (!config) return null;
 
   if (config.provider) {
@@ -82,7 +82,7 @@ export function describeActiveProvider(config: OcrConfig | null): ActiveProvider
 }
 
 /** Checks whether the config is sufficient to start a review (aligned with resolver requirements; an official provider may rely solely on the API key from the environment). */
-export function isConfigReady(config: OcrConfig | null): boolean {
+export function isConfigReady(config: KaidConfig | null): boolean {
   if (!config) return false;
 
   if (config.provider) {
@@ -169,6 +169,6 @@ export function buildCustomUpdateSaveEntries(params: {
   return entries;
 }
 
-export function listCustomProviderNames(config: OcrConfig | null): string[] {
+export function listCustomProviderNames(config: KaidConfig | null): string[] {
   return Object.keys(config?.customProviders ?? {}).sort();
 }

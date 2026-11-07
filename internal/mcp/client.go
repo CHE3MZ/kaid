@@ -48,7 +48,7 @@ func NewClient(ctx context.Context, name, command string, args, env []string, di
 	}
 
 	client := mcp.NewClient(
-		&mcp.Implementation{Name: "open-code-review", Version: version},
+		&mcp.Implementation{Name: "kaid", Version: version},
 		nil,
 	)
 
@@ -101,7 +101,7 @@ func NewRemoteClient(ctx context.Context, name, url string, headers map[string]s
 	}
 
 	client := mcp.NewClient(
-		&mcp.Implementation{Name: "open-code-review", Version: version},
+		&mcp.Implementation{Name: "kaid", Version: version},
 		nil,
 	)
 

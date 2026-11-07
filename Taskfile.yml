@@ -27,12 +27,12 @@ tasks:
   run:
     desc: Review staged changes
     cmds:
-      - go run ./cmd/opencodereview --staged
+      - go run ./cmd/kaid --staged
 
   help:
     desc: Show top-level CLI help
     cmds:
-      - go run ./cmd/opencodereview -h
+      - go run ./cmd/kaid -h
 
   fmt:
     desc: Format Go source

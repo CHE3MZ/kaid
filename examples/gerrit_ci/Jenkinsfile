@@ -1,6 +1,6 @@
-// OpenCodeReview - Gerrit patchset auto-review (Jenkins + Gerrit Trigger)
+// kaid - Gerrit patchset auto-review (Jenkins + Gerrit Trigger)
 //
-// Reviews every new patchset with OpenCodeReview and posts the findings back
+// Reviews every new patchset with kaid and posts the findings back
 // onto the change via post_review.py (see README.md in this directory).
 //
 // Trigger: configure the Gerrit Trigger plugin ON THE JOB (Configure ->
@@ -10,7 +10,7 @@
 // injects GERRIT_BRANCH, GERRIT_REFSPEC, GERRIT_CHANGE_NUMBER,
 // GERRIT_CHANGE_URL and GERRIT_PATCHSET_REVISION, used below.
 //
-// Jenkins credentials: ocr-llm-auth-token (Secret text, LLM API token) and
+// Jenkins credentials: kaid-llm-auth-token (Secret text, LLM API token) and
 // gerrit-http (Username/password: bot account + its Gerrit HTTP password --
 // Settings > HTTP Credentials, NOT the account password).
 // The agent needs git, curl and python3 on PATH.
@@ -19,15 +19,15 @@ pipeline {
     agent any
 
     environment {
-        // ocr resolves OCR_LLM_URL / OCR_LLM_TOKEN / OCR_LLM_MODEL directly
-        // from the environment (no `ocr config set`), so the token stays
+        // kaid resolves KAID_LLM_URL / KAID_LLM_TOKEN / KAID_LLM_MODEL directly
+        // from the environment (no `kaid config set`), so the token stays
         // env-only and is never written to disk on a shared agent.
-        OCR_LLM_URL = 'https://api.openai.com/v1/chat/completions'
-        OCR_LLM_MODEL = 'gpt-4o'
-        OCR_LLM_TOKEN = credentials('ocr-llm-auth-token')
+        KAID_LLM_URL = 'https://api.openai.com/v1/chat/completions'
+        KAID_LLM_MODEL = 'gpt-4o'
+        KAID_LLM_TOKEN = credentials('kaid-llm-auth-token')
         // The env resolver defaults to the Anthropic protocol; this is an
         // OpenAI chat-completions endpoint.
-        OCR_USE_ANTHROPIC = 'false'
+        KAID_USE_ANTHROPIC = 'false'
         // GERRIT_URL: set here or in Jenkins global env; if unset,
         // post_review.py derives it from the injected GERRIT_CHANGE_URL.
     }
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 // Fresh workspaces lack the target ref, so fetch the branch
                 // with an explicit refspec that materializes the tracking ref
-                // (ocr diffs against origin/$GERRIT_BRANCH; a bare fetch only
+                // (kaid diffs against origin/$GERRIT_BRANCH; a bare fetch only
                 // updates FETCH_HEAD when the clone refspec is narrow), then
                 // fetch the patchset ref and check out its revision.
                 sh '''
@@ -48,31 +48,31 @@ pipeline {
             }
         }
 
-        stage('Install OCR') {
+        stage('Install kaid') {
             steps {
                 // Pin the version you have validated; bump deliberately.
-                sh 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_VERSION=1.7.12 OCR_INSTALL_DIR="$HOME/.local/bin" sh'
+                sh 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_VERSION=1.7.12 KAID_INSTALL_DIR="$HOME/.local/bin" sh'
                 // extra_body has no env-var equivalent. Providers that accept
                 // a top-level "thinking" field (e.g. DashScope/GLM; OpenAI
                 // rejects unknown fields) must fall back to the config file,
                 // which then needs the full triple (the config-file strategy
                 // resolves url/token/model together, ignoring the env vars):
-                //   ocr config set llm.url/auth_token/model/use_anthropic ...
-                //   ocr config set llm.extra_body '{"thinking": {"type": "disabled"}}'
-                // That writes the token to ~/.opencodereview/config.json, so on
+                //   kaid config set llm.url/auth_token/model/use_anthropic ...
+                //   kaid config set llm.extra_body '{"thinking": {"type": "disabled"}}'
+                // That writes the token to ~/.kaid/config.json, so on
                 // a shared agent clean it up with:
-                //   post { always { sh 'rm -f ~/.opencodereview/config.json' } }
+                //   post { always { sh 'rm -f ~/.kaid/config.json' } }
             }
         }
 
         stage('Review') {
             steps {
-                // `|| true` is REQUIRED: `ocr review` exits non-zero only
+                // `|| true` is REQUIRED: `kaid review` exits non-zero only
                 // when EVERY sub-agent fails; partial failures still exit 0.
                 // The guard in the next stage handles the empty-output case.
                 sh '''
                     export PATH="$HOME/.local/bin:$PATH"
-                    ocr review \
+                    kaid review \
                       --from "origin/$GERRIT_BRANCH" \
                       --to "$GERRIT_PATCHSET_REVISION" \
                       --format json \
@@ -94,7 +94,7 @@ pipeline {
                     // GERRIT_URL/GERRIT_CHANGE_URL come from the environment.
                     sh '''
                         if [ ! -s result.json ]; then
-                          echo "OCR review produced no output, skipping post."
+                          echo "kaid review produced no output, skipping post."
                           exit 0
                         fi
                         python3 examples/gerrit_ci/post_review.py \

@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 alibaba/open-code-review Contributors
 
-"""Post an OpenCodeReview result onto a GitLab merge request.
+"""Post a kaid result onto a GitLab merge request.
 
 This is the CI-layer "glue" for GitLab, mirroring examples/gerrit_ci and
-examples/gitflic_ci: it keeps platform-specific publishing out of the ``ocr``
+examples/gitflic_ci: it keeps platform-specific publishing out of the ``kaid``
 binary and lives entirely in the pipeline.  It reads the JSON emitted by
-``ocr review --format json`` and posts it onto the merge request as GitLab
+``kaid review --format json`` and posts it onto the merge request as GitLab
 discussions:
 
   - one inline discussion per comment that maps onto the diff,
@@ -66,15 +66,15 @@ def log(msg):
 
 # HTML marker that tags the cross-run summary note so the sticky upsert can
 # find it across runs. Embedded verbatim in the summary body.
-SUMMARY_MARKER = "<!-- ocr-summary -->"
+SUMMARY_MARKER = "<!-- kaid-summary -->"
 
 # Per-run HTML marker embedded alongside SUMMARY_MARKER so the non-sticky
 # summary path can locate THIS run's note (find-by-tag) instead of always
 # creating a new one. Lets the pre-review anchor and the finalize phase reuse
 # the same note within a run, so non-sticky mode can show a live "posting…"
-# body without producing duplicate notes. Format: <!-- ocr-summary-run:TAG -->.
+# body without producing duplicate notes. Format: <!-- kaid-summary-run:TAG -->.
 def summary_tag_for(run_tag):
-    return "<!-- ocr-summary-run:%s -->" % run_tag
+    return "<!-- kaid-summary-run:%s -->" % run_tag
 
 
 def wrap_summary_body(content, run_tag):
@@ -118,7 +118,7 @@ NO_ROUTING = {"route_by_severity": False, "severity_rank": -1,
 # Substring that flags a discussion as authored by this bot (used for
 # incremental history detection). The full per-comment id is matched by a
 # plain substring in _is_comment_posted, so no regex is needed here.
-_BOT_MARKER = "<!-- ocr-"
+_BOT_MARKER = "<!-- kaid-"
 
 # GitLab returns 400 (not 422) when a discussion position cannot be resolved.
 # These patterns classify such a body as a line-resolution failure so the
@@ -356,7 +356,7 @@ def format_warnings(warnings):
 
 def build_summary_body(total, inline, summary, skipped, routed, failed, warnings):
     """Merged summary header. Counts are mutually exclusive and sum to total."""
-    body = "🔍 **OpenCodeReview** found **%d** issue(s) in this MR." % total
+    body = "🔍 **kaid** found **%d** issue(s) in this MR." % total
     if total > 0:
         body += "\n- ✅ Successfully posted inline: %d comment(s)" % inline
         if summary > 0:
@@ -374,7 +374,7 @@ def build_summary_body(total, inline, summary, skipped, routed, failed, warnings
 
 def build_pre_review_summary_body(total, no_line, routed, warnings):
     """Summary body shown in the sticky anchor while inline comments post."""
-    body = "🔍 **OpenCodeReview** found **%d** issue(s) in this MR." % total
+    body = "🔍 **kaid** found **%d** issue(s) in this MR." % total
     if total > 0:
         body += "\n- ⏳ _Posting review comments…_"
         if routed:
@@ -816,19 +816,19 @@ def fetch_diff_refs(api_base, token, auth_header, config, expected_shas=None):
     """Fetch MR diff refs from the ``/versions`` endpoint (or None on failure).
 
     When ``expected_shas`` is provided (e.g. ``{"head": ..., "base": ...}``,
-    sourced from the OCR result manifest), select the version whose
+    sourced from the kaid result manifest), select the version whose
     ``head_commit_sha`` (and, when both are supplied, ``base_commit_sha``)
-    matches what OCR actually reviewed. Without a match — or when
+    matches what kaid actually reviewed. Without a match — or when
     ``expected_shas`` is empty — fall back to the newest version by
     ``created_at``.
 
     Picking the wrong version is the root cause of GitLab's
     ``:line_code=>["can't be blank", "must be a valid line code"]`` 400: the
-    MR can be force-pushed or gain a follow-up commit after OCR ran, so
-    ``versions[0]`` no longer describes the diff OCR commented on, and every
+    MR can be force-pushed or gain a follow-up commit after kaid ran, so
+    ``versions[0]`` no longer describes the diff kaid commented on, and every
     inline position then fails to resolve. Matching on the manifest's resolved
     SHAs keeps the position's ``base_sha``/``head_sha`` aligned with the diff
-    OCR actually reviewed.
+    kaid actually reviewed.
     """
     resp = _api_request_with_retry(api_base, token, auth_header, config,
                                    "/versions", method="GET")
@@ -844,7 +844,7 @@ def fetch_diff_refs(api_base, token, auth_header, config, expected_shas=None):
 
 
 def _pick_version(versions, expected_shas):
-    """Select the MR diff version that matches what OCR reviewed.
+    """Select the MR diff version that matches what kaid reviewed.
 
     Prefers an exact ``head_commit_sha`` (and ``base_commit_sha`` when both
     are supplied) match; logs a warning and falls back to the newest version
@@ -863,7 +863,7 @@ def _pick_version(versions, expected_shas):
             if expected_base and v.get("base_commit_sha") != expected_base:
                 continue
             return v
-        log("[diff-refs] no MR version matches OCR reviewed SHAs "
+        log("[diff-refs] no MR version matches kaid reviewed SHAs "
             "(expected head=%s base=%s); falling back to newest version."
             % (expected_head, expected_base or "(any)"))
     return sorted(versions, key=lambda v: v.get("created_at") or "",
@@ -871,10 +871,10 @@ def _pick_version(versions, expected_shas):
 
 
 def _extract_expected_shas(result):
-    """Pull the SHAs OCR actually reviewed out of the result manifest.
+    """Pull the SHAs kaid actually reviewed out of the result manifest.
 
     Returns ``{"head": ..., "base": ...}`` (either key may be absent) or
-    ``{}`` when the manifest is absent (older OCR or non-range mode), in
+    ``{}`` when the manifest is absent (older kaid or non-range mode), in
     which case ``fetch_diff_refs`` falls back to the newest MR version.
     """
     manifest_input = (result.get("manifest") or {}).get("input") or {}
@@ -1271,7 +1271,7 @@ def publish(result, diff_refs, poster, config, sleep=_sleep):
     # No comments: LGTM summary (sticky-aware).
     if not comments:
         message = result.get("message", "No comments generated. Looks good to me.")
-        body = wrap_summary_body("✅ **OpenCodeReview**: %s" % message,
+        body = wrap_summary_body("✅ **kaid**: %s" % message,
                                  config.get("run_tag", "0-0"))
         stats["summary_url"] = upsert_summary(poster, body, sticky,
                                              tag=summary_tag_for(config.get("run_tag", "0-0")))
@@ -1453,7 +1453,7 @@ def get_diff_inventory(poster, cache):
 
 def new_comment_id(run_tag):
     """Random per-comment id embedded as an HTML comment for idempotency."""
-    return "ocr-%s-%s" % (run_tag, secrets.token_hex(8))
+    return "kaid-%s-%s" % (run_tag, secrets.token_hex(8))
 
 
 def run_tag_from_env(env):
@@ -1482,27 +1482,27 @@ def build_config(env):
     """Build the config dict from environment variables (with defaults)."""
     return {
         # Pacing (used by publish).
-        "success_delay": int(env.get("OCR_SUCCESS_DELAY", "2000")) / 1000,
-        "failure_delay": int(env.get("OCR_FAILURE_DELAY", "1000")) / 1000,
-        "rate_limit_threshold": int(env.get("OCR_RATE_LIMIT_THRESHOLD", "10")),
+        "success_delay": int(env.get("KAID_SUCCESS_DELAY", "2000")) / 1000,
+        "failure_delay": int(env.get("KAID_FAILURE_DELAY", "1000")) / 1000,
+        "rate_limit_threshold": int(env.get("KAID_RATE_LIMIT_THRESHOLD", "10")),
         # Read-API pacing (cheaper than writes but still consumes the primary
         # rate limit; mirrors the GitHub Action's readWithPacing so a large MR
         # does not hammer list_notes/list_discussions/get_mr_diffs).
-        "read_success_delay": int(env.get("OCR_READ_SUCCESS_DELAY", "500")) / 1000,
-        "read_low_remaining_spacing": int(env.get("OCR_READ_LOW_REMAINING_SPACING", "5000")) / 1000,
+        "read_success_delay": int(env.get("KAID_READ_SUCCESS_DELAY", "500")) / 1000,
+        "read_low_remaining_spacing": int(env.get("KAID_READ_LOW_REMAINING_SPACING", "5000")) / 1000,
         # Retry (used by make_poster / fetch_diff_refs).
-        "retry_base_delay": int(env.get("OCR_RETRY_BASE_DELAY", "2000")) / 1000,
-        "max_retries": int(env.get("OCR_MAX_RETRIES", "3")),
-        "max_retry_delay": int(env.get("OCR_MAX_RETRY_DELAY", "60000")) / 1000,
+        "retry_base_delay": int(env.get("KAID_RETRY_BASE_DELAY", "2000")) / 1000,
+        "max_retries": int(env.get("KAID_MAX_RETRIES", "3")),
+        "max_retry_delay": int(env.get("KAID_MAX_RETRY_DELAY", "60000")) / 1000,
         "transient_base_delay": 2.0,
         # Publication policy + summary + incremental.
-        "sticky_summary": _parse_bool(env.get("OCR_STICKY_SUMMARY", "true"), default=True),
-        "incremental": _parse_bool(env.get("OCR_INCREMENTAL", "false"), default=False),
-        "incremental_overlap_threshold": resolve_threshold(env.get("OCR_INCREMENTAL_OVERLAP_THRESHOLD", "0.6")),
-        "route_severity_below": env.get("OCR_ROUTE_SEVERITY_BELOW", ""),
-        "route_categories": env.get("OCR_ROUTE_CATEGORIES", ""),
+        "sticky_summary": _parse_bool(env.get("KAID_STICKY_SUMMARY", "true"), default=True),
+        "incremental": _parse_bool(env.get("KAID_INCREMENTAL", "false"), default=False),
+        "incremental_overlap_threshold": resolve_threshold(env.get("KAID_INCREMENTAL_OVERLAP_THRESHOLD", "0.6")),
+        "route_severity_below": env.get("KAID_ROUTE_SEVERITY_BELOW", ""),
+        "route_categories": env.get("KAID_ROUTE_CATEGORIES", ""),
         # Job gating.
-        "fail_on_severity": env.get("OCR_FAIL_ON_SEVERITY", ""),
+        "fail_on_severity": env.get("KAID_FAIL_ON_SEVERITY", ""),
         # Per-run identity for idempotency tags.
         "run_tag": run_tag_from_env(env),
     }
@@ -1512,8 +1512,8 @@ def write_stats_file(path, stats):
     """Write a dotenv file of posting stats for downstream CI jobs."""
     lines = []
     for key in ("total", "inline", "summary", "routed", "skipped", "failed"):
-        lines.append("OCR_COMMENTS_%s=%d" % (key.upper(), stats.get(key, 0)))
-    lines.append("OCR_SUMMARY_URL=%s" % (stats.get("summary_url") or ""))
+        lines.append("KAID_COMMENTS_%s=%d" % (key.upper(), stats.get(key, 0)))
+    lines.append("KAID_SUMMARY_URL=%s" % (stats.get("summary_url") or ""))
     parent = os.path.dirname(path)
     if parent:
         try:
@@ -1548,21 +1548,21 @@ def check_fail_on_severity(comments, threshold):
 
 
 def load_review_result(path):
-    """Read the JSON produced by ``ocr review --format json``."""
+    """Read the JSON produced by ``kaid review --format json``."""
     with open(path, encoding="utf-8") as f:
         return json.loads(f.read())
 
 
 def parse_args(argv):
     p = argparse.ArgumentParser(
-        description="Post `ocr review --format json` output onto a GitLab merge request."
+        description="Post `kaid review --format json` output onto a GitLab merge request."
     )
-    p.add_argument("input", nargs="?", default=".ocr/ocr-result.json",
-                   help="review result JSON path (default: .ocr/ocr-result.json)")
-    p.add_argument("--stderr-log", default=".ocr/ocr-stderr.log",
-                   help="OCR stderr log path, read on parse failure (default: .ocr/ocr-stderr.log)")
-    p.add_argument("--stats-file", default=".ocr/ocr-stats.env",
-                   help="dotenv output path for posting stats (default: .ocr/ocr-stats.env)")
+    p.add_argument("input", nargs="?", default=".kaid/kaid-result.json",
+                   help="review result JSON path (default: .kaid/kaid-result.json)")
+    p.add_argument("--stderr-log", default=".kaid/kaid-stderr.log",
+                   help="kaid stderr log path, read on parse failure (default: .kaid/kaid-stderr.log)")
+    p.add_argument("--stats-file", default=".kaid/kaid-stats.env",
+                   help="dotenv output path for posting stats (default: .kaid/kaid-stats.env)")
     p.add_argument("--dry-run", action="store_true",
                    help="print discussions/notes instead of posting them")
     return p.parse_args(argv)
@@ -1600,11 +1600,11 @@ def main(argv=None):
 
     config = build_config(env)
 
-    # Read OCR result.
+    # Read kaid result.
     try:
         result = load_review_result(args.input)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        log("Failed to parse OCR output: %s" % e)
+        log("Failed to parse kaid output: %s" % e)
         write_stats_file(args.stats_file, ZERO_STATS)
         if args.dry_run:
             log("(dry-run: skipping error note post)")
@@ -1619,7 +1619,7 @@ def main(argv=None):
             poster = make_poster(api_base, api_token, auth_header, config)
             run_tag = config.get("run_tag", "0-0")
             body = wrap_summary_body(
-                "⚠️ **OpenCodeReview** encountered an error:\n%s" % fenced_block(stderr_content),
+                "⚠️ **kaid** encountered an error:\n%s" % fenced_block(stderr_content),
                 run_tag,
             )
             upsert_summary(poster, body, config.get("sticky_summary", True),

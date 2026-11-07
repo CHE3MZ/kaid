@@ -56,7 +56,7 @@ All release binaries and checksums are signed using [GitHub Artifact Attestation
 To verify a downloaded binary:
 
 ```bash
-gh attestation verify opencodereview-linux-amd64 --repo CHE3MZ/kaid
+gh attestation verify kaid-linux-amd64 --repo CHE3MZ/kaid
 ```
 
 To verify a version tag:

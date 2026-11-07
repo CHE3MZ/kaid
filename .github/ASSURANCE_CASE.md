@@ -1,12 +1,12 @@
 # Security Assurance Case
 
-This document provides a security assurance case for Open Code Review (OCR), justifying that security requirements are met through secure design principles and countermeasures against common implementation weaknesses.
+This document provides a security assurance case for kaid, justifying that security requirements are met through secure design principles and countermeasures against common implementation weaknesses.
 
 ## Threat Model
 
 ### System Description
 
-OCR is a CLI tool that:
+kaid is a CLI tool that:
 
 1. Reads git diff output from a local repository.
 2. Sends code diffs to a configured LLM provider (OpenAI, Anthropic, etc.) via HTTPS.
@@ -30,7 +30,7 @@ OCR is a CLI tool that:
 │  User Machine (Trusted Zone)                     │
 │                                                  │
 │  ┌──────────┐    ┌──────────┐    ┌────────────┐  │
-│  │ Git Repo │───▶│ OCR CLI  │───▶│ Local File │  │
+│  │ Git Repo │───▶│ kaid CLI  │───▶│ Local File │  │
 │  │ (diffs)  │    │ (core)   │    │  (output)  │  │
 │  └──────────┘    └────┬─────┘    └────────────┘  │
 │        Trust ────────▶│◀──────── Trust            │
@@ -61,7 +61,7 @@ OCR is a CLI tool that:
 | T1 | Command injection via crafted diff content | 1 | All external commands are `git` only, with hardcoded subcommands; no shell expansion; `--end-of-options` used to prevent flag injection |
 | T2 | API key leakage | 2 | Keys may come from env vars, `api_key_cmd`/`auth_token_cmd`, or the user config file (see Credential sources). Never logged, written to review output files, or transmitted beyond the configured LLM endpoint |
 | T3 | Path traversal via LLM-suggested file paths | 3 | `pathutil.WithinBase()` validates all file paths against the repository root, both before and after symlink resolution |
-| T4 | DNS rebinding against local viewer | 4 | Host-header allowlist rejects requests from non-loopback origins; configurable via `OCR_VIEWER_ALLOWED_HOSTS` |
+| T4 | DNS rebinding against local viewer | 4 | Host-header allowlist rejects requests from non-loopback origins; configurable via `KAID_VIEWER_ALLOWED_HOSTS` |
 | T5 | Man-in-the-middle on API communication | 2 | Go's `net/http` enforces TLS 1.2+ with full certificate verification by default; `InsecureSkipVerify` is never set |
 | T6 | Malicious LLM response | 2 | JSON schema validation on response structure; line number bounds checking against actual diff ranges |
 | T7 | Dependency vulnerabilities | All | `govulncheck` runs in CI; Dependabot monitors for updates; `go.sum` provides integrity verification |
@@ -70,11 +70,11 @@ OCR is a CLI tool that:
 
 API keys are never hardcoded in the binary. They may be supplied at runtime from:
 
-1. Environment variables (`OCR_LLM_TOKEN`, provider-specific variables such as `ANTHROPIC_API_KEY`). Env-only use is supported: a complete `OCR_LLM_*` or `ANTHROPIC_*` environment needs no config file.
+1. Environment variables (`KAID_LLM_TOKEN`, provider-specific variables such as `ANTHROPIC_API_KEY`). Env-only use is supported: a complete `KAID_LLM_*` or `ANTHROPIC_*` environment needs no config file.
 2. A credential command (`api_key_cmd` / `auth_token_cmd`) whose stdout is the secret. The command string may be stored in config; the secret itself is not.
-3. Optional persistence in the user config file (`~/.opencodereview/config.json`) as `api_key` or `auth_token`. `ocr config set` and interactive provider setup write this file in plaintext; `saveConfig` (`cmd/opencodereview/provider_cmd.go`) creates new config files with mode `0600` and tightens existing config files to `0600` before persisting credentials.
+3. Optional persistence in the user config file (`~/.kaid/config.json`) as `api_key` or `auth_token`. `kaid config set` and interactive provider setup write this file in plaintext; `saveConfig` (`cmd/kaid/provider_cmd.go`) creates new config files with mode `0600` and tightens existing config files to `0600` before persisting credentials.
 
-`ocr config set` masks `api_key`/`auth_token` when echoing the value. Sensitive request headers are redacted in raw logs. Keys are not written to review output files.
+`kaid config set` masks `api_key`/`auth_token` when echoing the value. Sensitive request headers are redacted in raw logs. Keys are not written to review output files.
 
 ## Secure Design Principles
 
@@ -89,7 +89,7 @@ The following analysis maps [Saltzer & Schroeder's design principles](https://ie
 | **Open design** | Fully open-source (Apache-2.0). Security relies on TLS, not obscurity. |
 | **Separation of privilege** | Credential material is never compiled into the binary; optional persistence is limited to the user config file, which `saveConfig` keeps at mode `0600` (pre-write chmod on existing files; new files created as `0600`). The viewer's host guard is a distinct middleware layer. |
 | **Least common mechanism** | Each review session writes to its own JSONL file. No shared state between sessions. |
-| **Psychological acceptability** | Security defaults (HTTPS, localhost binding, host allowlist) require no user configuration. Overrides (`OCR_VIEWER_ALLOWED_HOSTS`) are explicit and documented. |
+| **Psychological acceptability** | Security defaults (HTTPS, localhost binding, host allowlist) require no user configuration. Overrides (`KAID_VIEWER_ALLOWED_HOSTS`) are explicit and documented. |
 
 ## Countermeasures Against Common Weaknesses
 
@@ -97,11 +97,11 @@ The following maps [OWASP Top 10](https://owasp.org/www-project-top-ten/) and [C
 
 | Weakness | Applicability | Countermeasure |
 |----------|---------------|----------------|
-| **A03:2021 Injection** (CWE-78 OS Command Injection) | Every `exec.Command` call passes an explicit argument list; none interpolates untrusted input into a shell string. Repository access always invokes `git` directly, with `--end-of-options` to prevent flag injection. Four kinds of call site run something other than `git`, and all of them execute only what the local user configured, never remote or LLM-supplied input: the API-key command (`internal/llm/keycmd_unix.go`, `keycmd_windows.go`) and the agent shell tool (`cmd/opencodereview/shell_unix.go`, `shell_windows.go`) run a user-authored script through `sh -c` / `cmd /c` by design; the MCP client (`internal/mcp/client.go`) spawns the server command from the user's MCP config; the viewer's browser opener (`internal/viewer/browser.go`) runs a fixed platform command (or `$BROWSER`) with a URL built from the user's own `--addr`. | Mitigated |
+| **A03:2021 Injection** (CWE-78 OS Command Injection) | Every `exec.Command` call passes an explicit argument list; none interpolates untrusted input into a shell string. Repository access always invokes `git` directly, with `--end-of-options` to prevent flag injection. Four kinds of call site run something other than `git`, and all of them execute only what the local user configured, never remote or LLM-supplied input: the API-key command (`internal/llm/keycmd_unix.go`, `keycmd_windows.go`) and the agent shell tool (`cmd/kaid/shell_unix.go`, `shell_windows.go`) run a user-authored script through `sh -c` / `cmd /c` by design; the MCP client (`internal/mcp/client.go`) spawns the server command from the user's MCP config; the viewer's browser opener (`internal/viewer/browser.go`) runs a fixed platform command (or `$BROWSER`) with a URL built from the user's own `--addr`. | Mitigated |
 | **A03:2021 Injection** (CWE-79 Cross-site Scripting) | Viewer template output is HTML-escaped by `html/template`. Defense-in-depth: every viewer response carries a strict Content-Security-Policy (`default-src 'self'`, no `unsafe-inline`) plus `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, and `Permissions-Policy` (`internal/viewer/securityheaders.go`). | Mitigated |
 | **A01:2021 Broken Access Control** (CWE-22 Path Traversal) | Agent file-read tool validates paths with `pathutil.WithinBase()` before and after symlink resolution (`internal/tool/filereader.go:91-112`). | Mitigated |
 | **A02:2021 Cryptographic Failures** | All API communication uses HTTPS/TLS 1.2+. Go's default TLS configuration is used without weakening. `InsecureSkipVerify` is never set. | Mitigated |
-| **A07:2021 Auth Failures** (CWE-798 Hard-coded Credentials) | API keys are never hardcoded in source. They may be read from environment variables, `api_key_cmd`/`auth_token_cmd`, or the user config file (`~/.opencodereview/config.json`); `saveConfig` enforces mode `0600` on create and tightens existing config files to `0600` before persisting credentials. Never logged; `ocr config set` masks them on display. | Mitigated |
+| **A07:2021 Auth Failures** (CWE-798 Hard-coded Credentials) | API keys are never hardcoded in source. They may be read from environment variables, `api_key_cmd`/`auth_token_cmd`, or the user config file (`~/.kaid/config.json`); `saveConfig` enforces mode `0600` on create and tightens existing config files to `0600` before persisting credentials. Never logged; `kaid config set` masks them on display. | Mitigated |
 | **A05:2021 Security Misconfiguration** | Secure defaults: localhost-only viewer, HTTPS-only API calls, `CGO_ENABLED=0`. The `go vet` and `govulncheck` tools run in CI. | Mitigated |
 | **A06:2021 Vulnerable Components** (CWE-1104) | Dependabot monitors Go modules and GitHub Actions. `govulncheck` runs on every push/PR. Dependencies are locked via `go.sum`. | Mitigated |
 | **A08:2021 Software Integrity** | Release binaries include SHA-256 checksums. Release tags are cryptographically signed (SSH). `CGO_ENABLED=0` produces static binaries with no external shared library dependencies. | Mitigated |

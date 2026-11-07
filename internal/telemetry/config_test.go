@@ -14,8 +14,8 @@ func TestDefaultConfig(t *testing.T) {
 	if cfg.Enabled {
 		t.Error("expected Enabled=false by default")
 	}
-	if cfg.ServiceName != "open-code-review" {
-		t.Errorf("expected ServiceName=open-code-review, got %s", cfg.ServiceName)
+	if cfg.ServiceName != "kaid" {
+		t.Errorf("expected ServiceName=kaid, got %s", cfg.ServiceName)
 	}
 	if cfg.Exporter != "console" {
 		t.Errorf("expected Exporter=console, got %s", cfg.Exporter)
@@ -39,7 +39,7 @@ func TestResolveEnv(t *testing.T) {
 	}{
 		{
 			name: "enable telemetry",
-			envs: map[string]string{"OCR_ENABLE_TELEMETRY": "1"},
+			envs: map[string]string{"KAID_ENABLE_TELEMETRY": "1"},
 			check: func(t *testing.T, cfg Config) {
 				if !cfg.Enabled {
 					t.Error("expected Enabled=true")
@@ -78,7 +78,7 @@ func TestResolveEnv(t *testing.T) {
 		},
 		{
 			name: "content logging enabled",
-			envs: map[string]string{"OCR_CONTENT_LOGGING": "1"},
+			envs: map[string]string{"KAID_CONTENT_LOGGING": "1"},
 			check: func(t *testing.T, cfg Config) {
 				if !cfg.ContentLog {
 					t.Error("expected ContentLog=true")
@@ -100,9 +100,9 @@ func TestResolveEnv(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// Clear relevant env vars
 			envKeys := []string{
-				"OCR_ENABLE_TELEMETRY", "OTEL_SERVICE_NAME",
+				"KAID_ENABLE_TELEMETRY", "OTEL_SERVICE_NAME",
 				"OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_PROTOCOL",
-				"OCR_CONTENT_LOGGING",
+				"KAID_CONTENT_LOGGING",
 			}
 			for _, k := range envKeys {
 				t.Setenv(k, "")
@@ -234,9 +234,9 @@ func TestLoadFromJSON(t *testing.T) {
 func TestResolveConfig(t *testing.T) {
 	t.Run("empty path uses only env and defaults", func(t *testing.T) {
 		envKeys := []string{
-			"OCR_ENABLE_TELEMETRY", "OTEL_SERVICE_NAME",
+			"KAID_ENABLE_TELEMETRY", "OTEL_SERVICE_NAME",
 			"OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_PROTOCOL",
-			"OCR_CONTENT_LOGGING",
+			"KAID_CONTENT_LOGGING",
 		}
 		for _, k := range envKeys {
 			t.Setenv(k, "")
@@ -257,7 +257,7 @@ func TestResolveConfig(t *testing.T) {
 			t.Fatalf("write file: %v", err)
 		}
 
-		t.Setenv("OCR_ENABLE_TELEMETRY", "1")
+		t.Setenv("KAID_ENABLE_TELEMETRY", "1")
 
 		cfg := ResolveConfig(path)
 		if !cfg.Enabled {

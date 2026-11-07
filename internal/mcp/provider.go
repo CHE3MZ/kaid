@@ -46,11 +46,11 @@ func RegisterAll(reg *tool.Registry, c *Client, allowedTools []string) {
 			matched[t.Name] = struct{}{}
 		}
 		if tool.IsReserved(t.Name) {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: MCP server %q tool %q conflicts with built-in tool, skipping\n", c.Name(), t.Name)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: MCP server %q tool %q conflicts with built-in tool, skipping\n", c.Name(), t.Name)
 			continue
 		}
 		if _, exists := reg.Get(t.Name); exists {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: MCP server %q tool %q conflicts with already-registered tool, skipping\n", c.Name(), t.Name)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: MCP server %q tool %q conflicts with already-registered tool, skipping\n", c.Name(), t.Name)
 			continue
 		}
 		reg.Register(&Provider{
@@ -61,7 +61,7 @@ func RegisterAll(reg *tool.Registry, c *Client, allowedTools []string) {
 
 	for name := range allowed {
 		if _, ok := matched[name]; !ok {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: MCP server %q allowed tool %q not found in server's tool list\n", c.Name(), name)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: MCP server %q allowed tool %q not found in server's tool list\n", c.Name(), name)
 		}
 	}
 }
@@ -81,7 +81,7 @@ func ToToolDef(t *mcp.Tool) llm.ToolDef {
 	case nil:
 		// No schema — keep the default {"type": "object"}.
 	default:
-		fmt.Fprintf(os.Stderr, "[ocr] WARNING: MCP tool %q has unexpected InputSchema type %T, using empty object schema\n", t.Name, t.InputSchema)
+		fmt.Fprintf(os.Stderr, "[kaid] WARNING: MCP tool %q has unexpected InputSchema type %T, using empty object schema\n", t.Name, t.InputSchema)
 	}
 
 	return llm.ToolDef{

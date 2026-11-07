@@ -2,7 +2,7 @@
 // Copyright 2026 alibaba/open-code-review Contributors
 
 // Package llmloop carries the per-subtask MAIN_TASK tool-use loop shared by
-// `ocr review` (diff-based) and `ocr scan` (full-file). It owns the chat
+// `kaid review` (diff-based) and `kaid scan` (full-file). It owns the chat
 // completion conversation state, three-zone memory compression, tool-call
 // dispatch (including async comment post-processing), and aggregate token /
 // warning bookkeeping. Callers above this package render the initial
@@ -103,13 +103,13 @@ func (p *CommentWorkerPool) submit(f func() ([]model.LlmComment, error), kwg *sy
 		// the semaphore is still released via the defer above.
 		defer func() {
 			if r := recover(); r != nil {
-				fmt.Fprintf(stdout.Writer(), "[ocr] CommentWorkerPool panic: %v\n%s\n", r, debug.Stack())
+				fmt.Fprintf(stdout.Writer(), "[kaid] CommentWorkerPool panic: %v\n%s\n", r, debug.Stack())
 			}
 		}()
 
 		comments, err := f()
 		if err != nil {
-			fmt.Fprintf(stdout.Writer(), "[ocr] CommentWorkerPool error: %v\n", err)
+			fmt.Fprintf(stdout.Writer(), "[kaid] CommentWorkerPool error: %v\n", err)
 		}
 		p.resultsMu.Lock()
 		p.results = append(p.results, comments...)

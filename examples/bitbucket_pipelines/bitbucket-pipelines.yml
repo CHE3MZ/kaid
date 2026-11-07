@@ -1,12 +1,12 @@
-# OpenCodeReview - Bitbucket Pipelines PR auto-review
+# kaid - Bitbucket Pipelines PR auto-review
 #
 # Runs when a pull request is created or its source branch is updated, reviews
-# the PR diff with OpenCodeReview, and posts the findings back to the PR.
+# the PR diff with kaid, and posts the findings back to the PR.
 #
 # Required repository variables:
-#   OCR_LLM_URL              LLM API endpoint
-#   OCR_LLM_AUTH_TOKEN       LLM authentication token (secured)
-#   OCR_LLM_MODEL            Model name
+#   KAID_LLM_URL              LLM API endpoint
+#   KAID_LLM_AUTH_TOKEN       LLM authentication token (secured)
+#   KAID_LLM_MODEL            Model name
 #
 # Choose one Bitbucket authentication method:
 #   BITBUCKET_ACCESS_TOKEN   Repository access token (secured, recommended)
@@ -15,25 +15,25 @@
 #   BITBUCKET_API_TOKEN_EMAIL
 #
 # Optional repository variables:
-#   OCR_LLM_USE_ANTHROPIC    "true" for Anthropic, "false" otherwise
+#   KAID_LLM_USE_ANTHROPIC    "true" for Anthropic, "false" otherwise
 
 image: node:20
 
-# OCR compares the destination branch with the source commit through their
+# kaid compares the destination branch with the source commit through their
 # merge base. A full clone avoids failures on long-lived branches.
 clone:
   depth: full
 
 definitions:
   steps:
-    - step: &ocr-pr-review
-        name: OpenCodeReview
+    - step: &kaid-pr-review
+        name: kaid
         max-time: 30
         script:
           - |
-            : "${OCR_LLM_URL:?Set OCR_LLM_URL in Repository settings -> Pipelines -> Repository variables}"
-            : "${OCR_LLM_AUTH_TOKEN:?Set OCR_LLM_AUTH_TOKEN as a secured repository variable}"
-            : "${OCR_LLM_MODEL:?Set OCR_LLM_MODEL in Repository settings -> Pipelines -> Repository variables}"
+            : "${KAID_LLM_URL:?Set KAID_LLM_URL in Repository settings -> Pipelines -> Repository variables}"
+            : "${KAID_LLM_AUTH_TOKEN:?Set KAID_LLM_AUTH_TOKEN as a secured repository variable}"
+            : "${KAID_LLM_MODEL:?Set KAID_LLM_MODEL in Repository settings -> Pipelines -> Repository variables}"
             : "${BITBUCKET_PR_ID:?This pipeline must run for a pull request}"
             : "${BITBUCKET_PR_DESTINATION_BRANCH:?Missing pull request destination branch}"
             : "${BITBUCKET_COMMIT:?Missing pull request source commit}"
@@ -43,13 +43,13 @@ definitions:
               : "${BITBUCKET_API_TOKEN_EMAIL:?BITBUCKET_API_TOKEN_EMAIL is required with BITBUCKET_API_TOKEN}"
             fi
 
-          - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | OCR_INSTALL_DIR=/usr/local/bin sh
+          - curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | KAID_INSTALL_DIR=/usr/local/bin sh
 
           - |
-            ocr config set llm.url "$OCR_LLM_URL"
-            ocr config set llm.auth_token "$OCR_LLM_AUTH_TOKEN"
-            ocr config set llm.model "$OCR_LLM_MODEL"
-            ocr config set llm.use_anthropic "${OCR_LLM_USE_ANTHROPIC:-false}"
+            kaid config set llm.url "$KAID_LLM_URL"
+            kaid config set llm.auth_token "$KAID_LLM_AUTH_TOKEN"
+            kaid config set llm.model "$KAID_LLM_MODEL"
+            kaid config set llm.use_anthropic "${KAID_LLM_USE_ANTHROPIC:-false}"
 
           # Materialize the destination tracking ref explicitly. This works
           # even when the clone's configured fetch refspec is narrow.
@@ -58,26 +58,26 @@ definitions:
               "+refs/heads/${BITBUCKET_PR_DESTINATION_BRANCH}:refs/remotes/origin/${BITBUCKET_PR_DESTINATION_BRANCH}"
 
           - |
-            OCR_EXIT_CODE=0
-            ocr review \
+            KAID_EXIT_CODE=0
+            kaid review \
               --from "origin/${BITBUCKET_PR_DESTINATION_BRANCH}" \
               --to "${BITBUCKET_COMMIT}" \
               --format json \
               --audience agent \
-              > /tmp/ocr-result.json 2> /tmp/ocr-stderr.log || OCR_EXIT_CODE=$?
+              > /tmp/kaid-result.json 2> /tmp/kaid-stderr.log || KAID_EXIT_CODE=$?
 
-            if [ -s /tmp/ocr-stderr.log ]; then
-              echo "=== OCR stderr ==="
-              cat /tmp/ocr-stderr.log
+            if [ -s /tmp/kaid-stderr.log ]; then
+              echo "=== kaid stderr ==="
+              cat /tmp/kaid-stderr.log
             fi
 
-            if [ "$OCR_EXIT_CODE" -ne 0 ]; then
-              echo "OCR review failed with exit code ${OCR_EXIT_CODE}."
-              exit "$OCR_EXIT_CODE"
+            if [ "$KAID_EXIT_CODE" -ne 0 ]; then
+              echo "kaid review failed with exit code ${KAID_EXIT_CODE}."
+              exit "$KAID_EXIT_CODE"
             fi
 
-            if [ ! -s /tmp/ocr-result.json ]; then
-              echo "OCR review produced no output."
+            if [ ! -s /tmp/kaid-result.json ]; then
+              echo "kaid review produced no output."
               exit 1
             fi
 
@@ -88,7 +88,7 @@ definitions:
             node <<'NODE'
             const fs = require("node:fs");
 
-            const resultPath = "/tmp/ocr-result.json";
+            const resultPath = "/tmp/kaid-result.json";
             let result;
             try {
               result = JSON.parse(fs.readFileSync(resultPath, "utf8"));
@@ -96,7 +96,7 @@ definitions:
               throw new Error(`Could not parse ${resultPath}: ${error.message}`);
             }
             if (!Array.isArray(result.comments)) {
-              throw new Error(`Invalid OCR JSON in ${resultPath}: "comments" must be an array`);
+              throw new Error(`Invalid kaid JSON in ${resultPath}: "comments" must be an array`);
             }
 
             const required = (name) => {
@@ -165,7 +165,7 @@ definitions:
             function findingBody(comment, includeLocation) {
               const labels = [comment.severity, comment.category].filter(Boolean);
               const prefix = labels.length ? `**${labels.join(" · ")}**\n\n` : "";
-              let body = `${prefix}${comment.content || "OpenCodeReview finding."}`;
+              let body = `${prefix}${comment.content || "kaid finding."}`;
 
               if (comment.suggestion_code && comment.existing_code) {
                 body += `\n\n**Suggestion:**\n${codeFence(comment.suggestion_code)}`;
@@ -227,8 +227,8 @@ definitions:
               const message = result.message ? `\n\n${result.message}` : "";
               const warningCount = Array.isArray(result.warnings) ? result.warnings.length : 0;
               const summaryBody = [
-                "<!-- open-code-review-summary -->",
-                "## OpenCodeReview summary",
+                "<!-- kaid-summary -->",
+                "## kaid summary",
                 "",
                 `- Status: **${status}**`,
                 `- Files reviewed: **${summary.files_reviewed ?? "n/a"}**`,
@@ -252,8 +252,8 @@ definitions:
 
 pipelines:
   custom:
-    ocr-pr-review:
-      - step: *ocr-pr-review
+    kaid-pr-review:
+      - step: *kaid-pr-review
 
 # pullrequest-push is evaluated when a PR is created or its source branch is
 # updated. The condition matches every source branch.
@@ -261,4 +261,4 @@ triggers:
   pullrequest-push:
     - condition: glob(BITBUCKET_BRANCH, "**")
       pipelines:
-        - ocr-pr-review
+        - kaid-pr-review

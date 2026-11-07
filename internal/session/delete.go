@@ -140,7 +140,7 @@ func FindSessionsByID(sessionID string) ([]Location, error) {
 	if err != nil {
 		return nil, fmt.Errorf("resolve home dir: %w", err)
 	}
-	root := filepath.Join(home, ".opencodereview", sessionSubDir)
+	root := filepath.Join(home, ".kaid", sessionSubDir)
 	entries, err := os.ReadDir(root)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -188,7 +188,7 @@ func sessionsRoot() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("resolve home dir: %w", err)
 	}
-	return filepath.Join(home, ".opencodereview", sessionSubDir), nil
+	return filepath.Join(home, ".kaid", sessionSubDir), nil
 }
 
 // DeleteSessionAt removes one session file found by FindSessionsByID.

@@ -22,7 +22,7 @@ func TestDefaultStoreAndInvalidStores(t *testing.T) {
 	t.Setenv("HOME", home)
 	t.Setenv("USERPROFILE", home)
 	s, err := DefaultStore()
-	if err != nil || s.Dir != filepath.Join(home, ".opencodereview", "auth", "chatgpt") {
+	if err != nil || s.Dir != filepath.Join(home, ".kaid", "auth", "chatgpt") {
 		t.Fatal(s, err)
 	}
 	t.Setenv("HOME", "")

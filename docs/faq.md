@@ -20,30 +20,30 @@ the steps you ran and the full output.
 ### `no valid LLM endpoint configured`
 
 ```
-no valid LLM endpoint configured; one of OCR_LLM_URL/OCR_LLM_TOKEN/OCR_LLM_MODEL,
-~/.opencodereview/config.json, or ANTHROPIC_BASE_URL/ANTHROPIC_AUTH_TOKEN/
+no valid LLM endpoint configured; one of KAID_LLM_URL/KAID_LLM_TOKEN/KAID_LLM_MODEL,
+~/.kaid/config.json, or ANTHROPIC_BASE_URL/ANTHROPIC_AUTH_TOKEN/
 ANTHROPIC_MODEL must be set
 ```
 
-OCR ran the full endpoint-resolution chain ([Configuration](configuration.md#reuse-existing-environment-variables))
+kaid ran the full endpoint-resolution chain ([Configuration](configuration.md#reuse-existing-environment-variables))
 and didn't find a complete `(URL, token, model)` triple. Either:
 
-- Run `ocr config set llm.url …` / `llm.auth_token …` / `llm.model …`
-  to populate `~/.opencodereview/config.json`, **or**
-- Export `OCR_LLM_URL` / `OCR_LLM_TOKEN` / `OCR_LLM_MODEL`, **or**
+- Run `kaid config set llm.url …` / `llm.auth_token …` / `llm.model …`
+  to populate `~/.kaid/config.json`, **or**
+- Export `KAID_LLM_URL` / `KAID_LLM_TOKEN` / `KAID_LLM_MODEL`, **or**
 - Export `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` /
   `ANTHROPIC_MODEL` if you already use an Anthropic-compatible client.
 
-Then `ocr llm test` to verify connectivity before retrying the review.
+Then `kaid llm test` to verify connectivity before retrying the review.
 
-### `ocr llm test` shows the wrong source
+### `kaid llm test` shows the wrong source
 
-OCR uses the **first** complete triple, not the last. So if your
+kaid uses the **first** complete triple, not the last. So if your
 config file has all three llm.* keys, env vars are ignored. To make
 env wins, either delete the config keys (`rm` the file or unset by
-hand) or use `ocr config set` to switch to the new values.
+hand) or use `kaid config set` to switch to the new values.
 
-### 401 / 403 from `ocr llm test`
+### 401 / 403 from `kaid llm test`
 
 The token is missing scope, expired, or wrong vendor. Anthropic and
 OpenAI use different auth headers and different URL shapes — make sure
@@ -55,29 +55,29 @@ OpenAI use different auth headers and different URL shapes — make sure
 
 ### `not a git repository`
 
-`ocr review` runs `git diff` (and `git ls-files` for untracked files)
+`kaid review` runs `git diff` (and `git ls-files` for untracked files)
 against the current directory. If you're not inside a Git working tree,
 it exits early. Either `cd` into a repo, or pass `--repo /path/to/repo`.
 
 ### "No tool calls parsed" (local models / Ollama)
 
 ```
-[ocr] No tool calls parsed for src/foo.go, retrying...
-[ocr] Max tool requests reached for src/foo.go.
+[kaid] No tool calls parsed for src/foo.go, retrying...
+[kaid] Max tool requests reached for src/foo.go.
 ```
 
 If every review loops through `No tool calls parsed` retries and ends
 with "Max tool requests reached" and zero comments, the model — not the
-config — is the problem. OCR drives the review entirely through tool
+config — is the problem. kaid drives the review entirely through tool
 calls, so **the model must support native tool calling (function
 calling)**. A model that merely *narrates* tool calls in its text
-output (or inside `<think>` blocks) can never work with OCR, no matter
+output (or inside `<think>` blocks) can never work with kaid, no matter
 how the prompt is tuned — `deepseek-r1` is a common example. Models
 with native tool support, such as `qwen3`, work fine. For Ollama, pick
 from the models tagged with tools support:
 <https://ollama.com/search?c=tools>.
 
-Verify a local model directly, without OCR in the loop:
+Verify a local model directly, without kaid in the loop:
 
 ```bash
 curl http://127.0.0.1:11434/v1/chat/completions -H "Content-Type: application/json" -d '{
@@ -99,10 +99,10 @@ hardware, raise the LLM timeout instead — see
 
 ### My file isn't being reviewed
 
-Run `ocr review --preview` (no LLM cost). The output shows the **reason**
+Run `kaid review --preview` (no LLM cost). The output shows the **reason**
 each candidate file was kept or dropped. Files under provider directories
 such as `vendor/` and `node_modules/` collapse into one summary line in the
-terminal; `ocr review --preview --format json` still lists every entry:
+terminal; `kaid review --preview --format json` still lists every entry:
 
 ```
 src/foo.go              modified
@@ -126,12 +126,12 @@ The exclusion reasons map to gates in the
 
 ### My custom rule isn't firing
 
-Run `ocr rules check <file-path>`. It prints the **layer** and
+Run `kaid rules check <file-path>`. It prints the **layer** and
 **glob pattern** that matched, end-to-end:
 
 ```
 File: src/api/UserHandler.go
-Source: Project (.opencodereview/rule.json)
+Source: Project (.kaid/rule.json)
 Pattern: src/api/**/*.go
 Rule: …
 ```
@@ -151,7 +151,7 @@ fails to match `tsx`.
 
 ### A file shows zero comments — was it actually reviewed?
 
-Open the [Session Viewer](viewer.md) (`ocr viewer`), find the session,
+Open the [Session Viewer](viewer.md) (`kaid viewer`), find the session,
 and look at the `main_task` lane of the group that contains the file
 (groups are keyed by their file paths, so a file reviewed on its own
 appears under its own path):
@@ -163,7 +163,7 @@ appears under its own path):
 
 ### Comments have `start_line: 0` and `end_line: 0`
 
-OCR couldn't anchor the comment to a precise line in the diff. Two
+kaid couldn't anchor the comment to a precise line in the diff. Two
 common causes:
 
 - The model paraphrased `existing_code` instead of copying it verbatim
@@ -178,12 +178,12 @@ agent integrations read the
 ### Token threshold exceeded
 
 ```
-[ocr] WARNING: prompt tokens (240000) exceed 80% of max_tokens(200000) [round 1] for group "src/big.sql"
+[kaid] WARNING: prompt tokens (240000) exceed 80% of max_tokens(200000) [round 1] for group "src/big.sql"
 ```
 
 The initial prompt for that group (rule + diffs + change-files list) was
 already past 80 % of `MAX_TOKENS = 200000` before the model could even
-respond. OCR skips the group and continues — you'll see this in
+respond. kaid skips the group and continues — you'll see this in
 `warnings` in JSON mode too.
 
 `MAX_TOKENS` is the **prompt** ceiling only. The model's output is capped
@@ -199,7 +199,7 @@ Mitigations:
 
 ### Plan phase took forever and the file is small
 
-Run `ocr review --preview` first. The plan phase runs when **either**
+Run `kaid review --preview` first. The plan phase runs when **either**
 threshold is crossed:
 
 - The largest file in the group changed at least
@@ -216,7 +216,7 @@ you'll need to override `--tools`).
 ### "Max tool requests reached"
 
 ```
-[ocr] Max tool requests reached for src/foo.go.
+[kaid] Max tool requests reached for src/foo.go.
 ```
 
 The model spent all 100 (`MAX_TOOL_REQUEST_TIMES`) tool-use rounds
@@ -239,7 +239,7 @@ is usually one of:
 
 ### Some sub-agents fail; the run still exits 0
 
-By design. OCR isolates per-group failures so one bad group doesn't kill
+By design. kaid isolates per-group failures so one bad group doesn't kill
 a 20-file review. The aggregate exit code is `0` if *anything*
 succeeded; only a fully-failed run (zero successful sub-agents) exits
 non-zero. Check the `warnings` array in JSON mode or stderr in text
@@ -263,7 +263,7 @@ Two usual suspects:
 Make sure you're not seeing **stderr**. Progress messages occasionally
 go to stderr (warnings, errors). The clean stdout that `--audience
 agent` guarantees is *parser-friendly* — to suppress everything,
-redirect: `ocr review --audience agent 2>/dev/null`.
+redirect: `kaid review --audience agent 2>/dev/null`.
 
 ### JSON output is `{ "files_reviewed": 0, "comments": [] }`
 
@@ -289,20 +289,20 @@ stdout, never a bare array.
 The manifest-less no-files path is leaner: it omits both `summary` and
 `manifest`, while still reporting `"status": "skipped"`, `"message": "No
 supported files changed."`, and `"comments": []`. `tool_calls` is always
-present. `ocr scan` is always manifest-less; when its no-files guard
-matches it uses this path. `ocr review` can also reach the same path when
+present. `kaid scan` is always manifest-less; when its no-files guard
+matches it uses this path. `kaid review` can also reach the same path when
 manifest construction fails and the no-files guard matches. Optional
 metadata such as `llm` or `trace_id` may be present.
 
 ### Where do session JSONLs live?
 
 ```
-~/.opencodereview/sessions/<path-encoded-repo-path>/<session-id>.jsonl
+~/.kaid/sessions/<path-encoded-repo-path>/<session-id>.jsonl
 ```
 
 The repo path is encoded by replacing `/` and `\` with `-` and `:` with
 `_` (e.g. `/Users/foo/my-repo` → `Users-foo-my-repo`). Browse sessions
-with `ocr viewer`. Delete the directory to wipe history; OCR regenerates
+with `kaid viewer`. Delete the directory to wipe history; kaid regenerates
 the encoded path on the next run.
 
 ## Performance & cost
@@ -312,15 +312,15 @@ the encoded path on the next run.
 Enable telemetry:
 
 ```bash
-ocr config set telemetry.enabled true
-ocr config set telemetry.exporter console
-ocr review
+kaid config set telemetry.enabled true
+kaid config set telemetry.exporter console
+kaid review
 ```
 
 In the main review loop, LLM calls produce `llm.request` spans and are
-also recorded as metrics. Watch `ocr.llm.tokens_used` (counter, labelled `model` +
-`type`), `ocr.llm.requests_total` (counter, labelled `model` +
-`status`), and `ocr.llm.request_duration_seconds` (histogram, labelled
+also recorded as metrics. Watch `kaid.llm.tokens_used` (counter, labelled `model` +
+`type`), `kaid.llm.requests_total` (counter, labelled `model` +
+`status`), and `kaid.llm.request_duration_seconds` (histogram, labelled
 `model`). The console exporter prints these aggregates inline. For
 dashboards, switch to the OTLP exporter and ship to your metrics
 stack — see [Telemetry](telemetry.md).
@@ -357,7 +357,7 @@ Common levers:
 
 ### How do I reduce LLM calls?
 
-- Add an `include` list so OCR doesn't review files you don't care
+- Add an `include` list so kaid doesn't review files you don't care
   about.
 - Set `--concurrency` lower if your account has burst-mode pricing.
 - Pass `--background` — better context up-front sometimes lets the
@@ -365,9 +365,9 @@ Common levers:
 
 ## Privacy & security
 
-### Does OCR send my code anywhere?
+### Does kaid send my code anywhere?
 
-OCR sends your **diffs** (and optional read-tool snippets) to whatever
+kaid sends your **diffs** (and optional read-tool snippets) to whatever
 LLM endpoint you configured. Nothing else leaves your machine —
 session JSONLs and rule files are local-only.
 
@@ -396,28 +396,28 @@ A "redaction rule" feature is on the roadmap; track
 [GitHub Releases](https://github.com/CHE3MZ/kaid/releases)
 — each release has notes generated from Conventional Commits.
 
-### Does OCR support non-Git VCS?
+### Does kaid support non-Git VCS?
 
 No. The diff providers shell out to `git`. SVN / Mercurial / etc. would
 need new providers; an issue for Hg support is open
 [here](https://github.com/CHE3MZ/kaid/issues).
 
-### Why is the binary called `opencodereview` but the CLI is `ocr`?
+### Why is the binary called `kaid` but the CLI is `kaid`?
 
 The static binary published in releases is named after the project
-(`opencodereview`); the install script places it as `ocr` for
-ergonomics. If you build from source you get `dist/opencodereview`
-(`dist/opencodereview.exe` on Windows) —
-copy it to `ocr` on your `$PATH`.
+(`kaid`); the install script places it as `kaid` for
+ergonomics. If you build from source you get `dist/kaid`
+(`dist/kaid.exe` on Windows) —
+copy it to `kaid` on your `$PATH`.
 
 ### How do I uninstall?
 
 ```bash
-rm -f /usr/local/bin/ocr
-rm -rf ~/.opencodereview
+rm -f /usr/local/bin/kaid
+rm -rf ~/.kaid
 ```
 
-OCR doesn't write outside `~/.opencodereview` (apart from the binary
+kaid doesn't write outside `~/.kaid` (apart from the binary
 download via the install script), so removing that directory wipes history, config,
 and per-user rules.
 
@@ -431,6 +431,6 @@ and per-user rules.
 *[CI]: Continuous Integration
 *[JSONL]: JSON Lines
 *[LLM]: Large Language Model
-*[OCR]: Open Code Review
+*[kaid]: kaid
 *[TUI]: Terminal User Interface
 *[VCS]: Version Control System

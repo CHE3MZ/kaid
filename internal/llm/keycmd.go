@@ -104,7 +104,7 @@ func resolveKeyCmd(cmd, label string) (string, error) {
 	// to prompt for a passphrase gets EOF or refuses to prompt at all because it
 	// sees no tty. Safe to hand over os.Stdin because no code path resolves an
 	// endpoint while the bubbletea TUI (which also reads os.Stdin) is running:
-	// ResolveEndpoint's only callers are the non-TUI review/scan and `ocr llm
+	// ResolveEndpoint's only callers are the non-TUI review/scan and `kaid llm
 	// test` paths. Adding an in-TUI connection test would break that.
 	c.Stdin = os.Stdin
 	// Buffer stdout through cappedBuffer rather than an *os.File so os/exec does

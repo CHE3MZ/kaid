@@ -1015,7 +1015,7 @@ func newResponsesSessionTestServer(gotHeaders *http.Header, gotBody *map[string]
 	}))
 }
 
-// Regression for the gap where OpenAIResponsesClient sent {ocr_session_key}
+// Regression for the gap where OpenAIResponsesClient sent {kaid_session_key}
 // literally: the placeholder in extra_headers/extra_body must expand to the
 // context-carried key, exactly like the other two protocol clients.
 // Routed through NewLLMClient so the ProtocolOpenAIResponses dispatch path is covered.
@@ -1031,9 +1031,9 @@ func TestOpenAIResponsesClient_SessionKeyExpandedInHeadersAndBody(t *testing.T) 
 		Model:    "gpt-5.4",
 		Protocol: ProtocolOpenAIResponses,
 		ExtraHeaders: map[string]string{
-			"x-session-affinity": "{ocr_session_key}",
+			"x-session-affinity": "{kaid_session_key}",
 		},
-		ExtraBody: map[string]any{"prompt_cache_key": "{ocr_session_key}"},
+		ExtraBody: map[string]any{"prompt_cache_key": "{kaid_session_key}"},
 	}, nil, nil)
 
 	ctx := ContextWithSessionKey(context.Background(), "real-task-key")
@@ -1056,7 +1056,7 @@ func TestOpenAIResponsesClient_SessionKeyExpandedInHeadersAndBody(t *testing.T) 
 		t.Fatalf("CompletionsWithCtx: %v", err)
 	}
 	got := gotHeaders.Get("X-Session-Affinity")
-	if got == "" || got == "{ocr_session_key}" {
+	if got == "" || got == "{kaid_session_key}" {
 		t.Errorf("x-session-affinity = %q, want an auto-generated fallback key", got)
 	}
 }
@@ -1075,7 +1075,7 @@ func TestOpenAIResponsesClient_ExtraBodyPromptCacheKeyOverridesSessionID(t *test
 		Token:     "test-key",
 		Model:     "gpt-5.4",
 		Protocol:  ProtocolOpenAIResponses,
-		ExtraBody: map[string]any{"prompt_cache_key": "{ocr_session_key}"},
+		ExtraBody: map[string]any{"prompt_cache_key": "{kaid_session_key}"},
 	}, nil, nil)
 
 	ctx := ContextWithSessionKey(context.Background(), "task-scoped-key")

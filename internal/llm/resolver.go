@@ -29,9 +29,9 @@ type ResolvedEndpoint struct {
 	ExtraBody    map[string]any    // vendor-specific request body fields
 	ExtraHeaders map[string]string // extra HTTP headers for the LLM request
 	// Timeout is the per-request HTTP timeout; 0 means use the client default (5 min).
-	// Only config file (llm/provider sections) and OCR_LLM_TIMEOUT env var can set this.
+	// Only config file (llm/provider sections) and KAID_LLM_TIMEOUT env var can set this.
 	// tryAnthropicEnv and tryShellRC always leave it at 0 since those sources have no timeout
-	// knob; users can still override via OCR_LLM_TIMEOUT.
+	// knob; users can still override via KAID_LLM_TIMEOUT.
 	Timeout               time.Duration
 	RetryCodes            []int // additional HTTP status codes that trigger exponential-backoff retry
 	RequiresStreaming     bool
@@ -52,24 +52,24 @@ type ResolvedEndpoint struct {
 	AWSRegion  string
 }
 
-// Environment variable names for OCR-specific configuration.
+// Environment variable names for kaid-specific configuration.
 const (
-	envOCRLLMURL          = "OCR_LLM_URL"
-	envOCRLLMToken        = "OCR_LLM_TOKEN"
-	envOCRLLMModel        = "OCR_LLM_MODEL"
-	envOCRLLMAuthHeader   = "OCR_LLM_AUTH_HEADER"
-	envOCRLLMExtraHeaders = "OCR_LLM_EXTRA_HEADERS"
-	// envOCRLLMProtocol overrides the resolved protocol (anthropic |
+	envKAIDLLMURL          = "KAID_LLM_URL"
+	envKAIDLLMToken        = "KAID_LLM_TOKEN"
+	envKAIDLLMModel        = "KAID_LLM_MODEL"
+	envKAIDLLMAuthHeader   = "KAID_LLM_AUTH_HEADER"
+	envKAIDLLMExtraHeaders = "KAID_LLM_EXTRA_HEADERS"
+	// envKAIDLLMProtocol overrides the resolved protocol (anthropic |
 	// openai | openai-responses). Takes priority
-	// over OCR_USE_ANTHROPIC when set.
-	envOCRLLMProtocol = "OCR_LLM_PROTOCOL"
-	// envOCRLLMTimeout is a global override parsed at the top of
+	// over KAID_USE_ANTHROPIC when set.
+	envKAIDLLMProtocol = "KAID_LLM_PROTOCOL"
+	// envKAIDLLMTimeout is a global override parsed at the top of
 	// ResolveEndpointWithOptions and applied by finalizeResolvedEndpoint to
-	// whichever strategy resolves, rather than inside tryOCREnv like other
-	// OCR_LLM_* vars. This lets it override timeout for all resolution paths
-	// (OCR env, config file, provider config, Anthropic env, shell RC).
-	envOCRLLMTimeout   = "OCR_LLM_TIMEOUT"
-	envOCRUseAnthropic = "OCR_USE_ANTHROPIC"
+	// whichever strategy resolves, rather than inside tryKAIDEnv like other
+	// KAID_LLM_* vars. This lets it override timeout for all resolution paths
+	// (kaid env, config file, provider config, Anthropic env, shell RC).
+	envKAIDLLMTimeout   = "KAID_LLM_TIMEOUT"
+	envKAIDUseAnthropic = "KAID_USE_ANTHROPIC"
 )
 
 // Environment variable names from Anthropic configuration.
@@ -106,8 +106,8 @@ func ResolveEndpointWithOptions(configPath string, opts ResolveOptions) (Resolve
 
 	// The global env overrides are parsed before any strategy runs, even though
 	// they are applied to the endpoint afterwards. Parsing them inside
-	// finalizeResolvedEndpoint would let a typo'd OCR_LLM_TIMEOUT ("30s") or an
-	// unparseable OCR_LLM_EXTRA_HEADERS abort resolution *after* api_key_cmd
+	// finalizeResolvedEndpoint would let a typo'd KAID_LLM_TIMEOUT ("30s") or an
+	// unparseable KAID_LLM_EXTRA_HEADERS abort resolution *after* api_key_cmd
 	// already prompted 1Password/pinentry/Touch ID for a credential that then
 	// gets discarded.
 	env, err := parseEnvOverrides()
@@ -116,26 +116,26 @@ func ResolveEndpointWithOptions(configPath string, opts ResolveOptions) (Resolve
 	}
 
 	if opts.Provider != "" {
-		ep, ok, err := tryOCRConfig(configPath, opts)
+		ep, ok, err := tryKAIDConfig(configPath, opts)
 		if err != nil {
-			return ResolvedEndpoint{}, fmt.Errorf("resolve OCR config file: %w", err)
+			return ResolvedEndpoint{}, fmt.Errorf("resolve kaid config file: %w", err)
 		}
 		if !ok {
 			section := "custom_providers"
 			if _, isPreset := LookupProvider(opts.Provider); isPreset {
 				section = "providers"
 			}
-			return ResolvedEndpoint{}, fmt.Errorf("resolve OCR config file: provider %q is not configured in %s section because the config file does not exist", opts.Provider, section)
+			return ResolvedEndpoint{}, fmt.Errorf("resolve kaid config file: provider %q is not configured in %s section because the config file does not exist", opts.Provider, section)
 		}
-		return finalizeResolvedEndpoint("OCR config file", ep, env), nil
+		return finalizeResolvedEndpoint("kaid config file", ep, env), nil
 	}
 
 	strategies := []struct {
 		name string
 		fn   func() (ResolvedEndpoint, bool, error)
 	}{
-		{"OCR config file", func() (ResolvedEndpoint, bool, error) { return tryOCRConfig(configPath, opts) }},
-		{"OCR environment", func() (ResolvedEndpoint, bool, error) { return tryOCREnv(opts.Model) }},
+		{"kaid config file", func() (ResolvedEndpoint, bool, error) { return tryKAIDConfig(configPath, opts) }},
+		{"kaid environment", func() (ResolvedEndpoint, bool, error) { return tryKAIDEnv(opts.Model) }},
 		{"Anthropic environment", func() (ResolvedEndpoint, bool, error) { return tryAnthropicEnv(opts.Model) }},
 		{"Shell rc file", func() (ResolvedEndpoint, bool, error) { return tryShellRC(opts.Model) }},
 	}
@@ -153,10 +153,10 @@ func ResolveEndpointWithOptions(configPath string, opts ResolveOptions) (Resolve
 		}
 	}
 
-	return ResolvedEndpoint{}, fmt.Errorf("no valid LLM endpoint configured; one of OCR_LLM_URL/OCR_LLM_TOKEN/OCR_LLM_MODEL, ~/.opencodereview/config.json, or ANTHROPIC_BASE_URL/ANTHROPIC_AUTH_TOKEN/ANTHROPIC_MODEL must be set")
+	return ResolvedEndpoint{}, fmt.Errorf("no valid LLM endpoint configured; one of KAID_LLM_URL/KAID_LLM_TOKEN/KAID_LLM_MODEL, ~/.kaid/config.json, or ANTHROPIC_BASE_URL/ANTHROPIC_AUTH_TOKEN/ANTHROPIC_MODEL must be set")
 }
 
-// envOverrides holds the global OCR_LLM_* overrides that apply to whichever
+// envOverrides holds the global KAID_LLM_* overrides that apply to whichever
 // strategy resolves the endpoint. Parsed once, up front — see the call site in
 // ResolveEndpointWithOptions for why the timing matters.
 type envOverrides struct {
@@ -172,10 +172,10 @@ func parseEnvOverrides() (envOverrides, error) {
 	if err != nil {
 		return envOverrides{}, err
 	}
-	if raw := os.Getenv(envOCRLLMExtraHeaders); raw != "" {
+	if raw := os.Getenv(envKAIDLLMExtraHeaders); raw != "" {
 		env.headers, err = ParseExtraHeaders(raw)
 		if err != nil {
-			return envOverrides{}, fmt.Errorf("%s: %w", envOCRLLMExtraHeaders, err)
+			return envOverrides{}, fmt.Errorf("%s: %w", envKAIDLLMExtraHeaders, err)
 		}
 	}
 	return env, nil
@@ -205,22 +205,22 @@ func finalizeResolvedEndpoint(source string, ep ResolvedEndpoint, env envOverrid
 	return ep
 }
 
-// parseTimeoutEnv reads and validates the OCR_LLM_TIMEOUT environment variable.
+// parseTimeoutEnv reads and validates the KAID_LLM_TIMEOUT environment variable.
 // Returns the parsed duration and true if set, or 0 and false if unset/empty.
 // Returns an error for invalid values (non-integer, negative, overflow) to give
 // the user clear feedback instead of silently falling back to the default.
 func parseTimeoutEnv() (time.Duration, bool, error) {
-	raw := strings.TrimSpace(os.Getenv(envOCRLLMTimeout))
+	raw := strings.TrimSpace(os.Getenv(envKAIDLLMTimeout))
 	if raw == "" {
 		return 0, false, nil
 	}
 	sec, err := strconv.Atoi(raw)
 	if err != nil {
-		return 0, false, fmt.Errorf("OCR_LLM_TIMEOUT must be an integer (seconds): %w", err)
+		return 0, false, fmt.Errorf("KAID_LLM_TIMEOUT must be an integer (seconds): %w", err)
 	}
 	d, err := ValidateTimeoutSec(sec)
 	if err != nil {
-		return 0, false, fmt.Errorf("OCR_LLM_TIMEOUT: %w", err)
+		return 0, false, fmt.Errorf("KAID_LLM_TIMEOUT: %w", err)
 	}
 	return d, true, nil
 }
@@ -265,37 +265,37 @@ func validateEndpointURL(variable, value string) error {
 	return nil
 }
 
-// tryOCREnv reads OCR-specific environment variables.
+// tryKAIDEnv reads kaid-specific environment variables.
 //
 // The values are trimmed because an environment can carry a trailing "\r" —
 // a .env file or a shell wrapper generated with CRLF line endings is the usual
 // source on Windows. A URL with a control character fails url.Parse inside the
 // SDK before any request is sent, and the resulting message names neither the
-// environment nor the variable. Every other OCR_LLM_* reader trims
-// (OCR_LLM_TIMEOUT, OCR_LLM_PROTOCOL); these must behave the same way.
-func tryOCREnv(modelOverride string) (ResolvedEndpoint, bool, error) {
-	url := strings.TrimSpace(os.Getenv(envOCRLLMURL))
-	token := strings.TrimSpace(os.Getenv(envOCRLLMToken))
-	model := strings.TrimSpace(os.Getenv(envOCRLLMModel))
+// environment nor the variable. Every other KAID_LLM_* reader trims
+// (KAID_LLM_TIMEOUT, KAID_LLM_PROTOCOL); these must behave the same way.
+func tryKAIDEnv(modelOverride string) (ResolvedEndpoint, bool, error) {
+	url := strings.TrimSpace(os.Getenv(envKAIDLLMURL))
+	token := strings.TrimSpace(os.Getenv(envKAIDLLMToken))
+	model := strings.TrimSpace(os.Getenv(envKAIDLLMModel))
 	if modelOverride != "" {
 		model = modelOverride
 	}
 	if url == "" || token == "" || model == "" {
 		return ResolvedEndpoint{}, false, nil
 	}
-	if err := validateEndpointURL(envOCRLLMURL, url); err != nil {
+	if err := validateEndpointURL(envKAIDLLMURL, url); err != nil {
 		return ResolvedEndpoint{}, false, err
 	}
 
-	// OCR_LLM_PROTOCOL (normalized) wins over OCR_USE_ANTHROPIC when set.
+	// KAID_LLM_PROTOCOL (normalized) wins over KAID_USE_ANTHROPIC when set.
 	protocol := ""
-	if raw := strings.TrimSpace(os.Getenv(envOCRLLMProtocol)); raw != "" {
+	if raw := strings.TrimSpace(os.Getenv(envKAIDLLMProtocol)); raw != "" {
 		protocol = NormalizeProtocol(raw)
 		if err := ValidateProtocol(protocol); err != nil {
-			return ResolvedEndpoint{}, false, fmt.Errorf("OCR environment: %w", err)
+			return ResolvedEndpoint{}, false, fmt.Errorf("kaid environment: %w", err)
 		}
 		if protocol == ProtocolAnthropicBedrock {
-			return ResolvedEndpoint{}, false, fmt.Errorf("OCR environment: %w", errBedrockNotConfigurable(envOCRLLMProtocol))
+			return ResolvedEndpoint{}, false, fmt.Errorf("kaid environment: %w", errBedrockNotConfigurable(envKAIDLLMProtocol))
 		}
 	}
 	if protocol == "" {
@@ -303,7 +303,7 @@ func tryOCREnv(modelOverride string) (ResolvedEndpoint, bool, error) {
 		// Trimmed so a "\r" from a CRLF-generated environment cannot silently
 		// turn "true" into an unrecognized value and flip the protocol to
 		// OpenAI below.
-		if v := strings.TrimSpace(os.Getenv(envOCRUseAnthropic)); v != "" {
+		if v := strings.TrimSpace(os.Getenv(envKAIDUseAnthropic)); v != "" {
 			lower := strings.ToLower(v)
 			useAnthropic = lower == "true" || lower == "1" || lower == "yes"
 		}
@@ -317,16 +317,16 @@ func tryOCREnv(modelOverride string) (ResolvedEndpoint, bool, error) {
 	var authHeader string
 	if protocol == ProtocolAnthropic {
 		var err error
-		authHeader, err = NormalizeAuthHeader(os.Getenv(envOCRLLMAuthHeader))
+		authHeader, err = NormalizeAuthHeader(os.Getenv(envKAIDLLMAuthHeader))
 		if err != nil {
-			return ResolvedEndpoint{}, false, fmt.Errorf("OCR environment: %w", err)
+			return ResolvedEndpoint{}, false, fmt.Errorf("kaid environment: %w", err)
 		}
 		if authHeader == "" {
 			authHeader = defaultAuthHeader(protocol)
 		}
 	}
 
-	return ResolvedEndpoint{URL: url, Token: token, Model: model, Protocol: protocol, AuthHeader: authHeader, Source: "OCR environment"}, true, nil
+	return ResolvedEndpoint{URL: url, Token: token, Model: model, Protocol: protocol, AuthHeader: authHeader, Source: "kaid environment"}, true, nil
 }
 
 // llmFileConfig represents the llm section in config.json.
@@ -374,8 +374,8 @@ type configFile struct {
 	Llm             llmFileConfig                  `json:"llm,omitempty"`
 }
 
-// tryOCRConfig reads the OCR config file.
-func tryOCRConfig(path string, opts ResolveOptions) (ResolvedEndpoint, bool, error) {
+// tryKAIDConfig reads the kaid config file.
+func tryKAIDConfig(path string, opts ResolveOptions) (ResolvedEndpoint, bool, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -449,7 +449,7 @@ func tryProviderConfig(cfg configFile, modelOverride string, callerContext conte
 		// Static api_key always wins. Warn (don't error) if a command is also set,
 		// so a config that keeps api_key_cmd as a deliberate fallback still works.
 		if apiKeyCmd != "" {
-			fmt.Fprintf(os.Stderr, "[ocr] WARNING: provider %q has both api_key and api_key_cmd set; using the static api_key\n", cfg.Provider)
+			fmt.Fprintf(os.Stderr, "[kaid] WARNING: provider %q has both api_key and api_key_cmd set; using the static api_key\n", cfg.Provider)
 		}
 	case apiKeyCmd == "" && isPreset && preset.EnvVar != "":
 		// Env var is the last resort: only when neither api_key nor api_key_cmd
@@ -550,14 +550,14 @@ func tryProviderConfig(cfg configFile, modelOverride string, callerContext conte
 				)
 			}
 			if isPreset {
-				fmt.Fprintf(os.Stderr, "[ocr] WARNING: model %q is not in the suggested models for provider %q; the provider will validate it\n", modelOverride, cfg.Provider)
+				fmt.Fprintf(os.Stderr, "[kaid] WARNING: model %q is not in the suggested models for provider %q; the provider will validate it\n", modelOverride, cfg.Provider)
 			}
 		}
 		model = modelOverride
 	}
 
 	if model == "" {
-		return ResolvedEndpoint{}, false, fmt.Errorf("provider %q has no model configured; run 'ocr config model' to select one or pass --model", cfg.Provider)
+		return ResolvedEndpoint{}, false, fmt.Errorf("provider %q has no model configured; run 'kaid config model' to select one or pass --model", cfg.Provider)
 	}
 
 	if protocol == ProtocolAnthropic {
@@ -657,7 +657,7 @@ func tryLegacyLlmConfig(cfg configFile, modelOverride string) (ResolvedEndpoint,
 	// Static auth_token always wins; warn if a command is also set. The command
 	// itself runs only just before returning, after the validation below.
 	if token != "" && tokenCmd != "" {
-		fmt.Fprintln(os.Stderr, "[ocr] WARNING: llm config has both auth_token and auth_token_cmd set; using the static auth_token")
+		fmt.Fprintln(os.Stderr, "[kaid] WARNING: llm config has both auth_token and auth_token_cmd set; using the static auth_token")
 	}
 
 	// llm.protocol (normalized) wins over use_anthropic when set.
@@ -665,10 +665,10 @@ func tryLegacyLlmConfig(cfg configFile, modelOverride string) (ResolvedEndpoint,
 	if raw := strings.TrimSpace(cfg.Llm.Protocol); raw != "" {
 		protocol = NormalizeProtocol(raw)
 		if err := ValidateProtocol(protocol); err != nil {
-			return ResolvedEndpoint{}, false, fmt.Errorf("OCR config file: %w", err)
+			return ResolvedEndpoint{}, false, fmt.Errorf("kaid config file: %w", err)
 		}
 		if protocol == ProtocolAnthropicBedrock {
-			return ResolvedEndpoint{}, false, fmt.Errorf("OCR config file: %w", errBedrockNotConfigurable("llm.protocol"))
+			return ResolvedEndpoint{}, false, fmt.Errorf("kaid config file: %w", errBedrockNotConfigurable("llm.protocol"))
 		}
 	}
 	if protocol == "" {
@@ -688,7 +688,7 @@ func tryLegacyLlmConfig(cfg configFile, modelOverride string) (ResolvedEndpoint,
 		var err error
 		authHeader, err = NormalizeAuthHeader(cfg.Llm.AuthHeader)
 		if err != nil {
-			return ResolvedEndpoint{}, false, fmt.Errorf("OCR config file: %w", err)
+			return ResolvedEndpoint{}, false, fmt.Errorf("kaid config file: %w", err)
 		}
 		if authHeader == "" {
 			authHeader = defaultAuthHeader(protocol)
@@ -697,12 +697,12 @@ func tryLegacyLlmConfig(cfg configFile, modelOverride string) (ResolvedEndpoint,
 
 	timeout, err := ValidateTimeoutSec(cfg.Llm.TimeoutSec)
 	if err != nil {
-		return ResolvedEndpoint{}, false, fmt.Errorf("OCR config file: %w", err)
+		return ResolvedEndpoint{}, false, fmt.Errorf("kaid config file: %w", err)
 	}
 
 	retryCodes, _, err := sanitizeRetryCodes(cfg.Llm.RetryCodes)
 	if err != nil {
-		return ResolvedEndpoint{}, false, fmt.Errorf("OCR config file: %w", err)
+		return ResolvedEndpoint{}, false, fmt.Errorf("kaid config file: %w", err)
 	}
 
 	// Runs last, after every cheap validation above: token is empty here only for
@@ -723,7 +723,7 @@ func tryLegacyLlmConfig(cfg configFile, modelOverride string) (ResolvedEndpoint,
 		Model:        model,
 		Protocol:     protocol,
 		AuthHeader:   authHeader,
-		Source:       "OCR config file",
+		Source:       "kaid config file",
 		ExtraBody:    cfg.Llm.ExtraBody,
 		ExtraHeaders: cfg.Llm.ExtraHeaders,
 		Timeout:      timeout,

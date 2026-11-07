@@ -79,7 +79,7 @@ func Compare(before, after []model.LlmComment, afterManifest *RunManifest) Compa
 // sits: path, category and the offending snippet. Line numbers are deliberately
 // absent so a finding that merely drifted down the file still matches.
 //
-// ponytail: deliberately separate from sarifFingerprints in cmd/opencodereview,
+// ponytail: deliberately separate from sarifFingerprints in cmd/kaid,
 // which keys on the raw snippet and falls back to StartLine. That fingerprint is
 // the identity of a published GitHub Code Scanning alert - changing how it
 // normalizes would re-open every alert downstream - so the two stay apart even

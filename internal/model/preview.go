@@ -35,7 +35,7 @@ type PreviewEntry struct {
 	ExcludeReason ExcludeReason `json:"exclude_reason,omitempty"`
 }
 
-// Preview is the full preview result, mode-agnostic so cmd/opencodereview
+// Preview is the full preview result, mode-agnostic so cmd/kaid
 // can render it the same way for review and scan.
 type Preview struct {
 	Entries         []PreviewEntry `json:"files"`

@@ -6,10 +6,10 @@ import { CliStatus } from '../configStore';
 import { LogViewer } from './LogViewer';
 import { useT } from '../I18nProvider';
 
-export const OCR_INSTALL_CMD = 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh';
+export const KAID_INSTALL_CMD = 'curl -fsSL https://raw.githubusercontent.com/CHE3MZ/kaid/master/scripts/install.sh | sh';
 
 const CHECK_ITEMS = [
-  { key: 'ocr', label: 'ocr CLI' },
+  { key: 'kaid', label: 'kaid CLI' },
 ] as const;
 
 interface Props {
@@ -95,11 +95,11 @@ export function EnvSetupGuide({
 
       <div class="env-timeline">
         <EnvTimelineItem
-          title="ocr CLI"
-          state={resolveStepState(true, false, envCheck?.ocr.ok)}
-          version={envCheck?.ocr.version}
-          command={OCR_INSTALL_CMD}
-          hint={t('view.env.ocrHint')}
+          title="kaid CLI"
+          state={resolveStepState(true, false, envCheck?.kaid.ok)}
+          version={envCheck?.kaid.version}
+          command={KAID_INSTALL_CMD}
+          hint={t('view.env.kaidHint')}
           onCopy={onCopy}
           last
         />
@@ -110,7 +110,7 @@ export function EnvSetupGuide({
       <div class={`form-footer${layout === 'panel' ? ' page-footer' : ''}`}>
         <div class={`form-actions${layout === 'panel' ? ' panel-actions' : ''}`}>
           <button type="button" class="btn-default" onClick={onCheckEnv}>{t('view.env.redetect')}</button>
-          {!envCheck?.ocr.ok && (
+          {!envCheck?.kaid.ok && (
             <button type="button" class="btn-primary" onClick={onInstall}>{t('view.env.oneClickInstall')}</button>
           )}
         </div>

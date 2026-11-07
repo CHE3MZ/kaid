@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug encountered while using OpenCodeReview
+description: Report a bug encountered while using kaid
 labels: ["bug"]
 type: Bug
 body:
@@ -13,8 +13,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: OpenCodeReview Version
-      description: Run `ocr version` and paste the output here.
+      label: kaid Version
+      description: Run `kaid version` and paste the output here.
       placeholder: "v0.1.0 (commit: abc1234, built: 2026-05-01T00:00:00Z)"
     validations:
       required: true
@@ -64,7 +64,7 @@ body:
     attributes:
       label: Bug Description
       description: A clear and concise description of what the bug is.
-      placeholder: "When I run `ocr review`, the CLI crashes with..."
+      placeholder: "When I run `kaid review`, the CLI crashes with..."
     validations:
       required: true
 
@@ -74,8 +74,8 @@ body:
       label: Steps to Reproduce
       description: Step-by-step instructions to reproduce the issue.
       placeholder: |
-        1. Configure LLM with `ocr config set ...`
-        2. Run `ocr review --from main --to feature`
+        1. Configure LLM with `kaid config set ...`
+        2. Run `kaid review --from main --to feature`
         3. Observe error message...
     validations:
       required: true

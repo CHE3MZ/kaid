@@ -19,7 +19,7 @@ import (
 )
 
 func rawPath(home, repoDir, sessionID string) string {
-	return filepath.Join(home, ".opencodereview", rawSubDir, encodeRepoPath(repoDir), sessionID+".jsonl")
+	return filepath.Join(home, ".kaid", rawSubDir, encodeRepoPath(repoDir), sessionID+".jsonl")
 }
 
 func TestNewRawFileWriter_CreatesFileUnderRawDir(t *testing.T) {
@@ -210,7 +210,7 @@ func TestRawFileWriter_OpenFailure(t *testing.T) {
 	repoDir := "/repo"
 	// Squat the repo's raw directory path with a regular file: MkdirAll
 	// cannot create a directory over it, on any platform.
-	blocker := filepath.Join(home, ".opencodereview", rawSubDir, encodeRepoPath(repoDir))
+	blocker := filepath.Join(home, ".kaid", rawSubDir, encodeRepoPath(repoDir))
 	if err := os.MkdirAll(filepath.Dir(blocker), 0700); err != nil {
 		t.Fatalf("setup: %v", err)
 	}

@@ -13,7 +13,7 @@ import (
 
 // TestBudgetExceededFlag pins BudgetExceeded() to the actual state of the
 // token budget gate. Before this it was hard-coded false, so a budget stop
-// never reached summary.budget_exceeded in `ocr scan --format json` (#771).
+// never reached summary.budget_exceeded in `kaid scan --format json` (#771).
 //
 // Both cases run the same 50K-tokens-per-file fake through dispatchSubtasks;
 // only MaxTokensBudget differs. MaxConcurrency=1 serializes dispatch so the

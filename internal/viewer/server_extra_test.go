@@ -116,7 +116,7 @@ func TestParseTemplate_SharedHeader(t *testing.T) {
 			// The brand-icon inlines the logo SVG, so assert the surrounding
 			// structure plus an inline <svg> rather than an exact glyph body.
 			const head = `<nav class="breadcrumb"><a href="/" class="nav-brand"><span class="brand-icon" aria-hidden="true"><svg`
-			tail := `</span>Open Code Review Viewer</a>` + tt.breadcrumb + `</nav>`
+			tail := `</span>kaid Viewer</a>` + tt.breadcrumb + `</nav>`
 			if !strings.Contains(body, head) || !strings.Contains(body, tail) {
 				t.Error("expected shared home link, inline logo, wordmark and page-specific breadcrumbs")
 			}
@@ -308,8 +308,8 @@ func TestSessionsJS_PagerContract(t *testing.T) {
 			t.Errorf("sessions.js does not look up #%s", id)
 		}
 	}
-	if !strings.Contains(string(script), "ocrPager") {
-		t.Error("sessions.js should delegate pagination to the shared ocrPager")
+	if !strings.Contains(string(script), "kaidPager") {
+		t.Error("sessions.js should delegate pagination to the shared kaidPager")
 	}
 }
 
@@ -511,7 +511,7 @@ func TestRenderTemplate_SessionHeaderMockup(t *testing.T) {
 		Summary: SessionSummary{
 			SessionID:     "b029c726-7b6b",
 			Model:         "claude-opus-5",
-			CWD:           "/Users/kite/Documents/code/github/open-code-review",
+			CWD:           "/Users/kite/Documents/code/github/kaid",
 			GitBranch:     "refactor/rename-runprofile",
 			ReviewMode:    "range",
 			DiffFrom:      "05af664",
@@ -531,7 +531,7 @@ func TestRenderTemplate_SessionHeaderMockup(t *testing.T) {
 	for _, required := range []string{
 		`<main class="session-page">`,
 		`aria-label="Back to sessions"><svg`,
-		`<span class="meta-truncate" title="/Users/kite/Documents/code/github/open-code-review">`,
+		`<span class="meta-truncate" title="/Users/kite/Documents/code/github/kaid">`,
 		`<span class="meta-truncate" title="refactor/rename-runprofile">`,
 		`<strong>From:</strong> <code>05af664</code>`,
 		`<strong>To:</strong> <code>HEAD</code>`,
@@ -927,8 +927,8 @@ func TestReposJS_PagerContract(t *testing.T) {
 			t.Errorf("repos.js does not look up id %q", id)
 		}
 	}
-	if !strings.Contains(string(js), "ocrPager") || !strings.Contains(string(js), "filter:") {
-		t.Error("repos.js should hand the table and its search filter to the shared ocrPager")
+	if !strings.Contains(string(js), "kaidPager") || !strings.Contains(string(js), "filter:") {
+		t.Error("repos.js should hand the table and its search filter to the shared kaidPager")
 	}
 	if !strings.Contains(string(js), "pagerApi.reset()") {
 		t.Error("repos.js should reset to page 1 when the search query changes")
@@ -942,7 +942,7 @@ func TestPagerJS_Contract(t *testing.T) {
 	}
 	for _, want := range []string{
 		// The page scripts drive the pager through this global.
-		"window.ocrPager",
+		"window.kaidPager",
 		// The pager owns every hook the markup and styles rely on.
 		"data-page-step",
 		`className = "page-number"`,
@@ -1021,7 +1021,7 @@ func TestSessionJS_UsesDefaultCommentPaging(t *testing.T) {
 	if strings.Contains(string(script), "Select a severity or category to view findings.") {
 		t.Error("session.js retains an unreachable empty-state branch")
 	}
-	if idx := strings.Index(string(script), "commentsPager = window.ocrPager"); idx >= 0 {
+	if idx := strings.Index(string(script), "commentsPager = window.kaidPager"); idx >= 0 {
 		if strings.Contains(string(script)[idx:], "updateFilterState()") ||
 			strings.Contains(string(script)[idx:], "commentsPager.refresh()") ||
 			strings.Contains(string(script)[idx:], "commentsPager.reset()") {
@@ -1088,7 +1088,7 @@ func TestA11yJS_Contract(t *testing.T) {
 	}
 	for _, want := range []string{
 		// The page scripts hand the scrollable table regions to this global.
-		"window.ocrArrowScroll",
+		"window.kaidArrowScroll",
 		// Only the region itself may intercept: focus inside the table (a
 		// link, for instance) keeps its own key behavior.
 		"event.target !== region",

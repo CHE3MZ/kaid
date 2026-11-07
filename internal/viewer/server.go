@@ -156,7 +156,7 @@ func newMux(root string) *http.ServeMux {
 // The host comes from the requested address, not from the listener: net.Listen
 // resolves a hostname to an IP literal, while the Host allowlist in hostGuard is
 // built from the requested address (resolveAllowedHostsFromEnv). Using the
-// resolved form makes the two disagree, so `ocr viewer --addr box.local:5483`
+// resolved form makes the two disagree, so `kaid viewer --addr box.local:5483`
 // would auto-open http://192.168.1.10:5483 and land on "403 forbidden host".
 //
 // The port comes from the listener so `--addr :0` reports the port the kernel
@@ -311,7 +311,7 @@ func numberedCodeLines(code string, startLine, endLine int) []codeLine {
 	if endLine == 0 {
 		// A record with only start_line set is a single-line finding. A
 		// non-zero inverted range is left alone so the guard below rejects
-		// it, matching the hasRegion test in cmd/opencodereview/sarif.go.
+		// it, matching the hasRegion test in cmd/kaid/sarif.go.
 		endLine = startLine
 	}
 	if startLine <= 0 || endLine-startLine+1 != len(lines) {
@@ -491,7 +491,7 @@ func renderTemplate(w http.ResponseWriter, name string, data any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := tmpl.Execute(w, data); err != nil {
 		// Partially written — just log
-		fmt.Printf("[ocr] template execution error: %v\n", err)
+		fmt.Printf("[kaid] template execution error: %v\n", err)
 	}
 }
 

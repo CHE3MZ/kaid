@@ -1623,7 +1623,7 @@ func TestOpenAIClient_SessionKeyExpandedInExtraHeaders(t *testing.T) {
 		Model:      "gpt-test",
 		SessionKey: "sess-abc",
 		ExtraHeaders: map[string]string{
-			"x-session-affinity": "{ocr_session_key}",
+			"x-session-affinity": "{kaid_session_key}",
 		},
 	})
 
@@ -1650,7 +1650,7 @@ func TestOpenAIClient_SessionKeyExpandedInExtraBody(t *testing.T) {
 		APIKey:     "test-key",
 		Model:      "gpt-test",
 		SessionKey: "sess-abc",
-		ExtraBody:  map[string]any{"prompt_cache_key": "{ocr_session_key}"},
+		ExtraBody:  map[string]any{"prompt_cache_key": "{kaid_session_key}"},
 	})
 
 	_, err := client.CompletionsWithCtx(context.Background(), ChatRequest{
@@ -1670,8 +1670,8 @@ func TestOpenAIClient_NoInjectionWithoutPlaceholder(t *testing.T) {
 	server := newOpenAITestServer(nil, &gotBody)
 	defer server.Close()
 
-	// Without an {ocr_session_key} placeholder anywhere,
-	// OCR must not add any session-related field to the request.
+	// Without an {kaid_session_key} placeholder anywhere,
+	// kaid must not add any session-related field to the request.
 	client := NewOpenAIClient(ClientConfig{
 		URL:    server.URL + "/v1",
 		APIKey: "test-key",
@@ -1700,7 +1700,7 @@ func TestOpenAIClient_SessionKeyGeneratedWhenEmpty(t *testing.T) {
 		APIKey: "test-key",
 		Model:  "gpt-test",
 		ExtraHeaders: map[string]string{
-			"x-session-affinity": "{ocr_session_key}",
+			"x-session-affinity": "{kaid_session_key}",
 		},
 	})
 
@@ -1712,7 +1712,7 @@ func TestOpenAIClient_SessionKeyGeneratedWhenEmpty(t *testing.T) {
 		t.Fatalf("CompletionsWithCtx: %v", err)
 	}
 	got := gotHeaders.Get("X-Session-Affinity")
-	if got == "" || got == "{ocr_session_key}" {
+	if got == "" || got == "{kaid_session_key}" {
 		t.Errorf("x-session-affinity = %q, want an auto-generated session key", got)
 	}
 }
@@ -1745,9 +1745,9 @@ func TestAnthropicClient_SessionKeyExpandedInExtraHeadersAndBody(t *testing.T) {
 		Model:      "claude-test",
 		SessionKey: "sess-xyz",
 		ExtraHeaders: map[string]string{
-			"x-session-affinity": "{ocr_session_key}",
+			"x-session-affinity": "{kaid_session_key}",
 		},
-		ExtraBody: map[string]any{"cache_key": "{ocr_session_key}"},
+		ExtraBody: map[string]any{"cache_key": "{kaid_session_key}"},
 	})
 
 	_, err := client.CompletionsWithCtx(context.Background(), ChatRequest{
@@ -1775,7 +1775,7 @@ func TestNewLLMClient_ExpandsSessionKeyInExtraBody(t *testing.T) {
 		Token:     "test-key",
 		Model:     "gpt-test",
 		Protocol:  "openai",
-		ExtraBody: map[string]any{"prompt_cache_key": "{ocr_session_key}"},
+		ExtraBody: map[string]any{"prompt_cache_key": "{kaid_session_key}"},
 	}, nil, nil)
 
 	ctx := ContextWithSessionKey(context.Background(), "sess-from-run")
@@ -1802,13 +1802,13 @@ func TestOpenAIClient_ContextSessionKeyOverridesFallback(t *testing.T) {
 		APIKey:     "test-key",
 		Model:      "gpt-test",
 		SessionKey: "fallback-key",
-		ExtraBody:  map[string]any{"prompt_cache_key": "{ocr_session_key}"},
+		ExtraBody:  map[string]any{"prompt_cache_key": "{kaid_session_key}"},
 		ExtraHeaders: map[string]string{
-			"x-session-affinity": "{ocr_session_key}",
+			"x-session-affinity": "{kaid_session_key}",
 		},
 	})
 
-	// A context-carried session key (the real OCR session's ID) must win
+	// A context-carried session key (the real kaid session's ID) must win
 	// over the client's construction-time fallback.
 	ctx := ContextWithSessionKey(context.Background(), "real-session-id")
 	_, err := client.CompletionsWithCtx(ctx, ChatRequest{
@@ -1862,7 +1862,7 @@ func TestAnthropicClient_ContextSessionKeyOverridesFallback(t *testing.T) {
 		Model:      "claude-test",
 		SessionKey: "fallback-key",
 		ExtraHeaders: map[string]string{
-			"x-session-affinity": "{ocr_session_key}",
+			"x-session-affinity": "{kaid_session_key}",
 		},
 	})
 

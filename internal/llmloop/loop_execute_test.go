@@ -170,10 +170,10 @@ func TestExecuteToolCall_DynamicParseError(t *testing.T) {
 	if !strings.Contains(cp.Data, "Error parsing tool arguments for dyn_ok") {
 		t.Errorf("cp.Data = %q, want parse-error message", cp.Data)
 	}
-	if !strings.Contains(progress, "[ocr]   ▶ dyn_ok") {
+	if !strings.Contains(progress, "[kaid]   ▶ dyn_ok") {
 		t.Errorf("progress = %q, want tool start", progress)
 	}
-	if !strings.Contains(errOut, "[ocr]   ✘ dyn_ok failed: Error parsing tool arguments for dyn_ok") {
+	if !strings.Contains(errOut, "[kaid]   ✘ dyn_ok failed: Error parsing tool arguments for dyn_ok") {
 		t.Errorf("stderr = %q, want terminal parse failure", errOut)
 	}
 	failures := r.ToolFailures()
@@ -200,10 +200,10 @@ func TestExecuteToolCall_CodeCommentValidationErrorPrintsTerminalFailure(t *test
 		}, nil, "")
 	})
 
-	if !strings.Contains(progress, "[ocr]   ▶ code_comment") {
+	if !strings.Contains(progress, "[kaid]   ▶ code_comment") {
 		t.Errorf("progress = %q, want tool start", progress)
 	}
-	if !strings.Contains(errOut, "[ocr]   ✘ code_comment failed: Error: 'comments' array is required") {
+	if !strings.Contains(errOut, "[kaid]   ✘ code_comment failed: Error: 'comments' array is required") {
 		t.Errorf("stderr = %q, want terminal validation failure", errOut)
 	}
 }

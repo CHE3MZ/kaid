@@ -42,9 +42,9 @@ func TestStripModelSuffix(t *testing.T) {
 }
 
 func TestResolveEndpoint_AnthropicEnvStripsModelSuffix(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "")
-	t.Setenv("OCR_LLM_TOKEN", "")
-	t.Setenv("OCR_LLM_MODEL", "")
+	t.Setenv("KAID_LLM_URL", "")
+	t.Setenv("KAID_LLM_TOKEN", "")
+	t.Setenv("KAID_LLM_MODEL", "")
 	t.Setenv("ANTHROPIC_BASE_URL", "https://api.example.com")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "test-token")
 	t.Setenv("ANTHROPIC_MODEL", "claude-opus-4-7[1m]")
@@ -62,9 +62,9 @@ func TestResolveEndpoint_AnthropicEnvStripsModelSuffix(t *testing.T) {
 }
 
 func TestResolveEndpoint_AnthropicEnvCleanModelUnchanged(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "")
-	t.Setenv("OCR_LLM_TOKEN", "")
-	t.Setenv("OCR_LLM_MODEL", "")
+	t.Setenv("KAID_LLM_URL", "")
+	t.Setenv("KAID_LLM_TOKEN", "")
+	t.Setenv("KAID_LLM_MODEL", "")
 	t.Setenv("ANTHROPIC_BASE_URL", "https://api.example.com")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "test-token")
 	t.Setenv("ANTHROPIC_MODEL", "claude-opus-4-7")
@@ -78,10 +78,10 @@ func TestResolveEndpoint_AnthropicEnvCleanModelUnchanged(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvStripsModelSuffix(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages")
-	t.Setenv("OCR_LLM_TOKEN", "test-token")
-	t.Setenv("OCR_LLM_MODEL", "claude-haiku[2m]")
+func TestResolveEndpoint_KAIDEnvStripsModelSuffix(t *testing.T) {
+	t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages")
+	t.Setenv("KAID_LLM_TOKEN", "test-token")
+	t.Setenv("KAID_LLM_MODEL", "claude-haiku[2m]")
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -90,15 +90,15 @@ func TestResolveEndpoint_OCREnvStripsModelSuffix(t *testing.T) {
 	if ep.Model != "claude-haiku" {
 		t.Errorf("expected model %q, got %q", "claude-haiku", ep.Model)
 	}
-	if ep.Source != "OCR environment" {
-		t.Errorf("expected source %q, got %q", "OCR environment", ep.Source)
+	if ep.Source != "kaid environment" {
+		t.Errorf("expected source %q, got %q", "kaid environment", ep.Source)
 	}
 }
 
 func TestResolveEndpoint_ConfigFileStripsModelSuffix(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "")
-	t.Setenv("OCR_LLM_TOKEN", "")
-	t.Setenv("OCR_LLM_MODEL", "")
+	t.Setenv("KAID_LLM_URL", "")
+	t.Setenv("KAID_LLM_TOKEN", "")
+	t.Setenv("KAID_LLM_MODEL", "")
 	t.Setenv("ANTHROPIC_BASE_URL", "")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "")
 	t.Setenv("ANTHROPIC_MODEL", "")
@@ -123,15 +123,15 @@ func TestResolveEndpoint_ConfigFileStripsModelSuffix(t *testing.T) {
 	if ep.Model != "gpt-4" {
 		t.Errorf("expected model %q, got %q", "gpt-4", ep.Model)
 	}
-	if ep.Source != "OCR config file" {
-		t.Errorf("expected source %q, got %q", "OCR config file", ep.Source)
+	if ep.Source != "kaid config file" {
+		t.Errorf("expected source %q, got %q", "kaid config file", ep.Source)
 	}
 }
 
 func TestResolveEndpoint_ConfigAnthropicDefaultsToAuthorization(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "")
-	t.Setenv("OCR_LLM_TOKEN", "")
-	t.Setenv("OCR_LLM_MODEL", "")
+	t.Setenv("KAID_LLM_URL", "")
+	t.Setenv("KAID_LLM_TOKEN", "")
+	t.Setenv("KAID_LLM_MODEL", "")
 	t.Setenv("ANTHROPIC_BASE_URL", "")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "")
 	t.Setenv("ANTHROPIC_MODEL", "")
@@ -161,9 +161,9 @@ func TestResolveEndpoint_ConfigAnthropicDefaultsToAuthorization(t *testing.T) {
 }
 
 func TestResolveEndpoint_ConfigAuthHeaderOverrideToXAPIKey(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "")
-	t.Setenv("OCR_LLM_TOKEN", "")
-	t.Setenv("OCR_LLM_MODEL", "")
+	t.Setenv("KAID_LLM_URL", "")
+	t.Setenv("KAID_LLM_TOKEN", "")
+	t.Setenv("KAID_LLM_MODEL", "")
 	t.Setenv("ANTHROPIC_BASE_URL", "")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "")
 	t.Setenv("ANTHROPIC_MODEL", "")
@@ -194,9 +194,9 @@ func TestResolveEndpoint_ConfigAuthHeaderOverrideToXAPIKey(t *testing.T) {
 }
 
 func TestResolveEndpoint_ConfigOpenAIIgnoresAuthHeader(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "")
-	t.Setenv("OCR_LLM_TOKEN", "")
-	t.Setenv("OCR_LLM_MODEL", "")
+	t.Setenv("KAID_LLM_URL", "")
+	t.Setenv("KAID_LLM_TOKEN", "")
+	t.Setenv("KAID_LLM_MODEL", "")
 	t.Setenv("ANTHROPIC_BASE_URL", "")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "")
 	t.Setenv("ANTHROPIC_MODEL", "")
@@ -229,11 +229,11 @@ func TestResolveEndpoint_ConfigOpenAIIgnoresAuthHeader(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvAuthHeader(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "https://api.anthropic.com")
-	t.Setenv("OCR_LLM_TOKEN", "oauth-token")
-	t.Setenv("OCR_LLM_MODEL", "claude-opus-4-6")
-	t.Setenv("OCR_LLM_AUTH_HEADER", "authorization")
+func TestResolveEndpoint_KAIDEnvAuthHeader(t *testing.T) {
+	t.Setenv("KAID_LLM_URL", "https://api.anthropic.com")
+	t.Setenv("KAID_LLM_TOKEN", "oauth-token")
+	t.Setenv("KAID_LLM_MODEL", "claude-opus-4-6")
+	t.Setenv("KAID_LLM_AUTH_HEADER", "authorization")
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -244,12 +244,12 @@ func TestResolveEndpoint_OCREnvAuthHeader(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvOpenAIIgnoresAuthHeader(t *testing.T) {
-	t.Setenv("OCR_LLM_URL", "https://api.openai.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "openai-token")
-	t.Setenv("OCR_LLM_MODEL", "gpt-4")
-	t.Setenv("OCR_LLM_AUTH_HEADER", "x-api-key")
-	t.Setenv("OCR_USE_ANTHROPIC", "false")
+func TestResolveEndpoint_KAIDEnvOpenAIIgnoresAuthHeader(t *testing.T) {
+	t.Setenv("KAID_LLM_URL", "https://api.openai.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "openai-token")
+	t.Setenv("KAID_LLM_MODEL", "gpt-4")
+	t.Setenv("KAID_LLM_AUTH_HEADER", "x-api-key")
+	t.Setenv("KAID_USE_ANTHROPIC", "false")
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -268,7 +268,7 @@ func TestResolveEndpoint_OCREnvOpenAIIgnoresAuthHeader(t *testing.T) {
 func clearAllEnv(t *testing.T) {
 	t.Helper()
 	for _, k := range []string{
-		"OCR_LLM_URL", "OCR_LLM_TOKEN", "OCR_LLM_MODEL", "OCR_LLM_AUTH_HEADER", "OCR_USE_ANTHROPIC", "OCR_LLM_PROTOCOL",
+		"KAID_LLM_URL", "KAID_LLM_TOKEN", "KAID_LLM_MODEL", "KAID_LLM_AUTH_HEADER", "KAID_USE_ANTHROPIC", "KAID_LLM_PROTOCOL",
 		"ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_MODEL",
 		"ANTHROPIC_API_KEY", "OPENAI_API_KEY",
 		"MINIMAX_GLOBAL_API_KEY", "MINIMAX_API_KEY",
@@ -298,11 +298,11 @@ func writeResolverConfig(t *testing.T, cfg configFile) (string, []byte) {
 	return path, data
 }
 
-func TestResolveEndpoint_ConfigPrecedesOCREnvironment(t *testing.T) {
+func TestResolveEndpoint_ConfigPrecedesKAIDEnvironment(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
-	t.Setenv("OCR_LLM_MODEL", "env-model")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_MODEL", "env-model")
 	path, _ := writeResolverConfig(t, configFile{Llm: llmFileConfig{
 		URL: "https://config.example.com/v1", AuthToken: "config-token", Model: "config-model",
 	}})
@@ -310,14 +310,14 @@ func TestResolveEndpoint_ConfigPrecedesOCREnvironment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolveEndpoint: %v", err)
 	}
-	if ep.Source != "OCR config file" || ep.Model != "config-model" || ep.Token != "config-token" {
+	if ep.Source != "kaid config file" || ep.Model != "config-model" || ep.Token != "config-token" {
 		t.Fatalf("endpoint = %+v", ep)
 	}
 }
 
 func TestResolveEndpoint_ConfigPrecedesClaudeCodeEnvironment(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://incomplete.example.com/v1")
+	t.Setenv("KAID_LLM_URL", "https://incomplete.example.com/v1")
 	t.Setenv("ANTHROPIC_BASE_URL", "https://claude.example.com")
 	t.Setenv("ANTHROPIC_AUTH_TOKEN", "claude-token")
 	t.Setenv("ANTHROPIC_MODEL", "claude-model")
@@ -328,16 +328,16 @@ func TestResolveEndpoint_ConfigPrecedesClaudeCodeEnvironment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolveEndpoint: %v", err)
 	}
-	if ep.Source != "OCR config file" || ep.Model != "config-model" || ep.Token != "config-token" {
+	if ep.Source != "kaid config file" || ep.Model != "config-model" || ep.Token != "config-token" {
 		t.Fatalf("endpoint = %+v", ep)
 	}
 }
 
-func TestResolveEndpoint_IncompleteConfigFallsBackToOCREnvironment(t *testing.T) {
+func TestResolveEndpoint_IncompleteConfigFallsBackToKAIDEnvironment(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
-	t.Setenv("OCR_LLM_MODEL", "env-model")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_MODEL", "env-model")
 	path, _ := writeResolverConfig(t, configFile{Llm: llmFileConfig{
 		URL: "https://incomplete-config.example.com/v1",
 	}})
@@ -345,17 +345,17 @@ func TestResolveEndpoint_IncompleteConfigFallsBackToOCREnvironment(t *testing.T)
 	if err != nil {
 		t.Fatalf("ResolveEndpoint: %v", err)
 	}
-	if ep.Source != "OCR environment" || ep.Token != "env-token" || ep.Model != "env-model" {
+	if ep.Source != "kaid environment" || ep.Token != "env-token" || ep.Model != "env-model" {
 		t.Fatalf("endpoint = %+v", ep)
 	}
 }
 
 func TestResolveEndpoint_ConfigPrecedesInvalidCompleteEnvironment(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
-	t.Setenv("OCR_LLM_MODEL", "env-model")
-	t.Setenv("OCR_LLM_PROTOCOL", "not-a-protocol")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_MODEL", "env-model")
+	t.Setenv("KAID_LLM_PROTOCOL", "not-a-protocol")
 	path, _ := writeResolverConfig(t, configFile{Llm: llmFileConfig{
 		URL: "https://config.example.com/v1", AuthToken: "config-token", Model: "config-model",
 	}})
@@ -363,35 +363,35 @@ func TestResolveEndpoint_ConfigPrecedesInvalidCompleteEnvironment(t *testing.T) 
 	if err != nil {
 		t.Fatalf("ResolveEndpoint: %v", err)
 	}
-	if ep.Source != "OCR config file" || ep.Model != "config-model" || ep.Token != "config-token" {
+	if ep.Source != "kaid config file" || ep.Model != "config-model" || ep.Token != "config-token" {
 		t.Fatalf("endpoint = %+v", ep)
 	}
 }
 
-func TestResolveEndpointWithOptions_ModelOverrideCompletesOCREnvironment(t *testing.T) {
+func TestResolveEndpointWithOptions_ModelOverrideCompletesKAIDEnvironment(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
 	path, _ := writeResolverConfig(t, configFile{})
 	ep, err := ResolveEndpointWithOptions(path, ResolveOptions{Model: "cli-model"})
 	if err != nil {
 		t.Fatalf("ResolveEndpointWithOptions: %v", err)
 	}
-	if ep.Source != "OCR environment" || ep.Model != "cli-model" {
+	if ep.Source != "kaid environment" || ep.Model != "cli-model" {
 		t.Fatalf("endpoint = %+v", ep)
 	}
 }
 
 func TestResolveEndpointWithOptions_ModelOverrideBeatsEnvironmentModel(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
-	t.Setenv("OCR_LLM_MODEL", "env-model")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_MODEL", "env-model")
 	ep, err := ResolveEndpointWithOptions(filepath.Join(t.TempDir(), "missing.json"), ResolveOptions{Model: "cli-model"})
 	if err != nil {
 		t.Fatalf("ResolveEndpointWithOptions: %v", err)
 	}
-	if ep.Source != "OCR environment" || ep.Model != "cli-model" {
+	if ep.Source != "kaid environment" || ep.Model != "cli-model" {
 		t.Fatalf("endpoint = %+v", ep)
 	}
 }
@@ -431,9 +431,9 @@ func TestResolveEndpointWithOptions_ExplicitProvider(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			clearAllEnv(t)
-			t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-			t.Setenv("OCR_LLM_TOKEN", "env-token")
-			t.Setenv("OCR_LLM_MODEL", "env-model")
+			t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+			t.Setenv("KAID_LLM_TOKEN", "env-token")
+			t.Setenv("KAID_LLM_MODEL", "env-model")
 			path, before := writeResolverConfig(t, tt.cfg)
 			ep, err := ResolveEndpointWithOptions(path, ResolveOptions{Provider: tt.provider})
 			if err != nil {
@@ -569,9 +569,9 @@ func TestResolveEndpointWithOptions_ExplicitProviderWithoutConfigNamesSection(t 
 
 func TestResolveEndpointWithOptions_UnknownProviderFailsWithoutFallbackOrMutation(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
-	t.Setenv("OCR_LLM_MODEL", "env-model")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_MODEL", "env-model")
 	path, before := writeResolverConfig(t, configFile{
 		Provider:  "openai",
 		Providers: map[string]providerEntryConfig{"openai": {APIKey: "openai-token", Model: "gpt-4o"}},
@@ -592,9 +592,9 @@ func TestResolveEndpointWithOptions_UnknownProviderFailsWithoutFallbackOrMutatio
 func TestResolveEndpointWithOptions_ExplicitProviderUsesProviderAPIKeyEnvironmentFallback(t *testing.T) {
 	clearAllEnv(t)
 	t.Setenv("ANTHROPIC_API_KEY", "environment-token")
-	t.Setenv("OCR_LLM_URL", "https://generic-environment.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "generic-environment-token")
-	t.Setenv("OCR_LLM_MODEL", "generic-environment-model")
+	t.Setenv("KAID_LLM_URL", "https://generic-environment.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "generic-environment-token")
+	t.Setenv("KAID_LLM_MODEL", "generic-environment-model")
 	path, _ := writeResolverConfig(t, configFile{
 		Providers: map[string]providerEntryConfig{
 			"anthropic": {Model: "claude-sonnet-4-6"},
@@ -1066,8 +1066,8 @@ func TestResolveEndpoint_LegacyLlmStillWorks(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if ep.Source != "OCR config file" {
-		t.Errorf("Source = %q, want %q", ep.Source, "OCR config file")
+	if ep.Source != "kaid config file" {
+		t.Errorf("Source = %q, want %q", ep.Source, "kaid config file")
 	}
 	if ep.Token != "legacy-token" {
 		t.Errorf("Token = %q, want %q", ep.Token, "legacy-token")
@@ -1187,7 +1187,7 @@ func TestResolveEndpointWithModelOverride_UnlistedModelStillRunsAPIKeyCmd(t *tes
 	cfg := configFile{
 		Provider: "anthropic",
 		Providers: map[string]providerEntryConfig{
-			"anthropic": {APIKeyCmd: "ocr-no-such-secret-command", Model: "claude-sonnet-4-6"},
+			"anthropic": {APIKeyCmd: "kaid-no-such-secret-command", Model: "claude-sonnet-4-6"},
 		},
 	}
 	data, _ := json.Marshal(cfg)
@@ -1209,7 +1209,7 @@ func TestResolveEndpointWithModelOverride_UnlistedModelStillRunsAPIKeyCmd(t *tes
 }
 
 // A bad global env override must be rejected before any strategy runs:
-// OCR_LLM_TIMEOUT="30s" (the field wants a bare integer) used to be parsed only
+// KAID_LLM_TIMEOUT="30s" (the field wants a bare integer) used to be parsed only
 // after an endpoint resolved, so the user authenticated to 1Password/Touch ID
 // and then got a config error. A failing command proves it ran when it should not.
 func TestResolveEndpointWithModelOverride_BadEnvOverrideDoesNotRunAPIKeyCmd(t *testing.T) {
@@ -1222,28 +1222,28 @@ func TestResolveEndpointWithModelOverride_BadEnvOverrideDoesNotRunAPIKeyCmd(t *t
 	}{
 		{
 			name:    "non-integer timeout",
-			env:     "OCR_LLM_TIMEOUT",
+			env:     "KAID_LLM_TIMEOUT",
 			value:   "30s",
-			wantErr: "OCR_LLM_TIMEOUT must be an integer (seconds)",
+			wantErr: "KAID_LLM_TIMEOUT must be an integer (seconds)",
 		},
 		{
 			name:    "negative timeout",
-			env:     "OCR_LLM_TIMEOUT",
+			env:     "KAID_LLM_TIMEOUT",
 			value:   "-30",
-			wantErr: "OCR_LLM_TIMEOUT",
+			wantErr: "KAID_LLM_TIMEOUT",
 		},
 		{
 			name:     "reserved extra header",
-			env:      "OCR_LLM_EXTRA_HEADERS",
+			env:      "KAID_LLM_EXTRA_HEADERS",
 			value:    "authorization=leak",
-			wantErr:  "OCR_LLM_EXTRA_HEADERS",
+			wantErr:  "KAID_LLM_EXTRA_HEADERS",
 			wantErr2: "reserved header",
 		},
 		{
 			name:     "malformed extra header",
-			env:      "OCR_LLM_EXTRA_HEADERS",
+			env:      "KAID_LLM_EXTRA_HEADERS",
 			value:    "no-equals-sign",
-			wantErr:  "OCR_LLM_EXTRA_HEADERS",
+			wantErr:  "KAID_LLM_EXTRA_HEADERS",
 			wantErr2: "expected key=value",
 		},
 	}
@@ -1255,7 +1255,7 @@ func TestResolveEndpointWithModelOverride_BadEnvOverrideDoesNotRunAPIKeyCmd(t *t
 			cfg := configFile{
 				Provider: "anthropic",
 				Providers: map[string]providerEntryConfig{
-					"anthropic": {APIKeyCmd: "ocr-no-such-secret-command", Model: "claude-sonnet-4-6"},
+					"anthropic": {APIKeyCmd: "kaid-no-such-secret-command", Model: "claude-sonnet-4-6"},
 				},
 			}
 			data, _ := json.Marshal(cfg)
@@ -1441,7 +1441,7 @@ func TestResolveEndpointWithModelOverride_AllBuiltInProvidersAcceptUnlistedModel
 				if credentialCalls != 1 || !ep.ChatGPTPlan || !ep.RequiresStreaming || !ep.RejectsSamplingParams || ep.URL != chatgptauth.Resource || ep.Token != "siwc-fixture" || ep.ChatGPTAccount != "account-fixture" || stderr != "" {
 					t.Fatalf("endpoint = %+v, credential calls = %d, stderr = %q", ep, credentialCalls, stderr)
 				}
-			} else if strings.Count(stderr, "[ocr] WARNING: model") != 1 || !strings.Contains(stderr, fmt.Sprintf("for provider %q", provider.Name)) {
+			} else if strings.Count(stderr, "[kaid] WARNING: model") != 1 || !strings.Contains(stderr, fmt.Sprintf("for provider %q", provider.Name)) {
 				t.Errorf("stderr = %q, want one warning for %s", stderr, provider.Name)
 			}
 		})
@@ -1718,12 +1718,12 @@ func mapsEqual(a, b map[string]string) bool {
 	return true
 }
 
-func TestResolveEndpoint_OCREnvExtraHeaders(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvExtraHeaders(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages")
-	t.Setenv("OCR_LLM_TOKEN", "test-token")
-	t.Setenv("OCR_LLM_MODEL", "claude-opus-4-6")
-	t.Setenv("OCR_LLM_EXTRA_HEADERS", "X-Custom-Header=my-value,X-Another=second")
+	t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages")
+	t.Setenv("KAID_LLM_TOKEN", "test-token")
+	t.Setenv("KAID_LLM_MODEL", "claude-opus-4-6")
+	t.Setenv("KAID_LLM_EXTRA_HEADERS", "X-Custom-Header=my-value,X-Another=second")
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -1740,11 +1740,11 @@ func TestResolveEndpoint_OCREnvExtraHeaders(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvExtraHeadersEmpty(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvExtraHeadersEmpty(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages")
-	t.Setenv("OCR_LLM_TOKEN", "test-token")
-	t.Setenv("OCR_LLM_MODEL", "claude-opus-4-6")
+	t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages")
+	t.Setenv("KAID_LLM_TOKEN", "test-token")
+	t.Setenv("KAID_LLM_MODEL", "claude-opus-4-6")
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -1755,12 +1755,12 @@ func TestResolveEndpoint_OCREnvExtraHeadersEmpty(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvExtraHeadersInvalid(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvExtraHeadersInvalid(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages")
-	t.Setenv("OCR_LLM_TOKEN", "test-token")
-	t.Setenv("OCR_LLM_MODEL", "claude-opus-4-6")
-	t.Setenv("OCR_LLM_EXTRA_HEADERS", "no-equals-sign")
+	t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages")
+	t.Setenv("KAID_LLM_TOKEN", "test-token")
+	t.Setenv("KAID_LLM_MODEL", "claude-opus-4-6")
+	t.Setenv("KAID_LLM_EXTRA_HEADERS", "no-equals-sign")
 
 	_, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err == nil {
@@ -1771,12 +1771,12 @@ func TestResolveEndpoint_OCREnvExtraHeadersInvalid(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvExtraHeadersReservedRejected(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvExtraHeadersReservedRejected(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages")
-	t.Setenv("OCR_LLM_TOKEN", "test-token")
-	t.Setenv("OCR_LLM_MODEL", "claude-opus-4-6")
-	t.Setenv("OCR_LLM_EXTRA_HEADERS", "Authorization=oops")
+	t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages")
+	t.Setenv("KAID_LLM_TOKEN", "test-token")
+	t.Setenv("KAID_LLM_MODEL", "claude-opus-4-6")
+	t.Setenv("KAID_LLM_EXTRA_HEADERS", "Authorization=oops")
 
 	_, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err == nil {
@@ -1820,7 +1820,7 @@ func TestResolveEndpoint_ProviderExtraHeaders(t *testing.T) {
 
 func TestResolveEndpoint_EnvExtraHeadersMergedWithConfigFile(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_EXTRA_HEADERS", "EagleEye-TraceId=trace-from-env,X-New=from-env")
+	t.Setenv("KAID_LLM_EXTRA_HEADERS", "EagleEye-TraceId=trace-from-env,X-New=from-env")
 
 	cfg := configFile{
 		Provider: "anthropic",
@@ -1864,7 +1864,7 @@ func TestResolveEndpoint_SessionKeyPlaceholderPreserved(t *testing.T) {
 				URL:          "https://gateway.example.com/v1",
 				Protocol:     "openai",
 				Model:        "some-model",
-				ExtraHeaders: map[string]string{"x-session-affinity": "{ocr_session_key}"},
+				ExtraHeaders: map[string]string{"x-session-affinity": "{kaid_session_key}"},
 			},
 		},
 	}
@@ -1880,7 +1880,7 @@ func TestResolveEndpoint_SessionKeyPlaceholderPreserved(t *testing.T) {
 	}
 	// The template placeholder must survive resolution untouched.
 	// Expansion happens in the client, per request.
-	if v := ep.ExtraHeaders["x-session-affinity"]; v != "{ocr_session_key}" {
+	if v := ep.ExtraHeaders["x-session-affinity"]; v != "{kaid_session_key}" {
 		t.Errorf("ExtraHeaders[\"x-session-affinity\"] = %q, want raw placeholder", v)
 	}
 }
@@ -1931,7 +1931,7 @@ func TestParseTimeoutEnv(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("OCR_LLM_TIMEOUT", tt.value)
+			t.Setenv("KAID_LLM_TIMEOUT", tt.value)
 			got, ok, err := parseTimeoutEnv()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parseTimeoutEnv() error = %v, wantErr %v", err, tt.wantErr)
@@ -1976,11 +1976,11 @@ func TestValidateTimeoutSec(t *testing.T) {
 
 func TestResolveEndpoint_EnvTimeoutGlobalOverride(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "test-token")
-	t.Setenv("OCR_LLM_MODEL", "mimo-v2.5-pro")
-	t.Setenv("OCR_USE_ANTHROPIC", "false")
-	t.Setenv("OCR_LLM_TIMEOUT", "90")
+	t.Setenv("KAID_LLM_URL", "https://api.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "test-token")
+	t.Setenv("KAID_LLM_MODEL", "mimo-v2.5-pro")
+	t.Setenv("KAID_USE_ANTHROPIC", "false")
+	t.Setenv("KAID_LLM_TIMEOUT", "90")
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -2141,7 +2141,7 @@ func TestResolveEndpoint_ProviderConfigNegativeTimeoutSec(t *testing.T) {
 
 func TestResolveEndpoint_EnvTimeoutOverridesConfigTimeout(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_TIMEOUT", "60")
+	t.Setenv("KAID_LLM_TIMEOUT", "60")
 
 	cfg := configFile{
 		Llm: llmFileConfig{
@@ -2161,7 +2161,7 @@ func TestResolveEndpoint_EnvTimeoutOverridesConfigTimeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	// OCR_LLM_TIMEOUT (60s) should override config timeout_sec (120s)
+	// KAID_LLM_TIMEOUT (60s) should override config timeout_sec (120s)
 	if ep.Timeout != 60*time.Second {
 		t.Errorf("Timeout = %v, want %v (env should override config)", ep.Timeout, 60*time.Second)
 	}
@@ -2169,7 +2169,7 @@ func TestResolveEndpoint_EnvTimeoutOverridesConfigTimeout(t *testing.T) {
 
 func TestResolveEndpoint_EnvTimeoutOverridesProviderTimeout(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_TIMEOUT", "45")
+	t.Setenv("KAID_LLM_TIMEOUT", "45")
 
 	cfg := configFile{
 		Provider: "anthropic",
@@ -2191,7 +2191,7 @@ func TestResolveEndpoint_EnvTimeoutOverridesProviderTimeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	// OCR_LLM_TIMEOUT (45s) should override provider timeout_sec (300s)
+	// KAID_LLM_TIMEOUT (45s) should override provider timeout_sec (300s)
 	if ep.Timeout != 45*time.Second {
 		t.Errorf("Timeout = %v, want %v (env should override provider config)", ep.Timeout, 45*time.Second)
 	}
@@ -2199,7 +2199,7 @@ func TestResolveEndpoint_EnvTimeoutOverridesProviderTimeout(t *testing.T) {
 
 func TestResolveEndpoint_InvalidEnvTimeoutWithConfig(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_TIMEOUT", "invalid")
+	t.Setenv("KAID_LLM_TIMEOUT", "invalid")
 
 	cfg := configFile{
 		Llm: llmFileConfig{
@@ -2216,16 +2216,16 @@ func TestResolveEndpoint_InvalidEnvTimeoutWithConfig(t *testing.T) {
 
 	_, err := ResolveEndpoint(cfgPath)
 	if err == nil {
-		t.Fatal("expected error for invalid OCR_LLM_TIMEOUT")
+		t.Fatal("expected error for invalid KAID_LLM_TIMEOUT")
 	}
-	if !strings.Contains(err.Error(), "OCR_LLM_TIMEOUT") {
-		t.Errorf("error %q should mention OCR_LLM_TIMEOUT", err.Error())
+	if !strings.Contains(err.Error(), "KAID_LLM_TIMEOUT") {
+		t.Errorf("error %q should mention KAID_LLM_TIMEOUT", err.Error())
 	}
 }
 
 func TestResolveEndpoint_NegativeEnvTimeoutWithConfig(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_TIMEOUT", "-30")
+	t.Setenv("KAID_LLM_TIMEOUT", "-30")
 
 	cfg := configFile{
 		Llm: llmFileConfig{
@@ -2242,10 +2242,10 @@ func TestResolveEndpoint_NegativeEnvTimeoutWithConfig(t *testing.T) {
 
 	_, err := ResolveEndpoint(cfgPath)
 	if err == nil {
-		t.Fatal("expected error for negative OCR_LLM_TIMEOUT")
+		t.Fatal("expected error for negative KAID_LLM_TIMEOUT")
 	}
-	if !strings.Contains(err.Error(), "OCR_LLM_TIMEOUT") {
-		t.Errorf("error %q should mention OCR_LLM_TIMEOUT", err.Error())
+	if !strings.Contains(err.Error(), "KAID_LLM_TIMEOUT") {
+		t.Errorf("error %q should mention KAID_LLM_TIMEOUT", err.Error())
 	}
 }
 
@@ -2393,29 +2393,29 @@ func TestResolveEndpoint_LegacyLlmProtocolTakesPriorityOverUseAnthropic(t *testi
 	}
 }
 
-func TestResolveEndpoint_OCREnvProtocolTakesPriorityOverUseAnthropic(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvProtocolTakesPriorityOverUseAnthropic(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.openai.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "tok")
-	t.Setenv("OCR_LLM_MODEL", "gpt-5.4")
-	t.Setenv("OCR_USE_ANTHROPIC", "true")
-	t.Setenv("OCR_LLM_PROTOCOL", ProtocolOpenAIResponses)
+	t.Setenv("KAID_LLM_URL", "https://api.openai.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "tok")
+	t.Setenv("KAID_LLM_MODEL", "gpt-5.4")
+	t.Setenv("KAID_USE_ANTHROPIC", "true")
+	t.Setenv("KAID_LLM_PROTOCOL", ProtocolOpenAIResponses)
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 	if ep.Protocol != ProtocolOpenAIResponses {
-		t.Errorf("Protocol = %q, want %q (OCR_LLM_PROTOCOL should win over OCR_USE_ANTHROPIC)", ep.Protocol, ProtocolOpenAIResponses)
+		t.Errorf("Protocol = %q, want %q (KAID_LLM_PROTOCOL should win over KAID_USE_ANTHROPIC)", ep.Protocol, ProtocolOpenAIResponses)
 	}
 }
 
-func TestResolveEndpoint_OCREnvProtocolAlias(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvProtocolAlias(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.openai.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "tok")
-	t.Setenv("OCR_LLM_MODEL", "gpt-4o")
-	t.Setenv("OCR_LLM_PROTOCOL", "openai") // alias
+	t.Setenv("KAID_LLM_URL", "https://api.openai.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "tok")
+	t.Setenv("KAID_LLM_MODEL", "gpt-4o")
+	t.Setenv("KAID_LLM_PROTOCOL", "openai") // alias
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -2426,16 +2426,16 @@ func TestResolveEndpoint_OCREnvProtocolAlias(t *testing.T) {
 	}
 }
 
-func TestResolveEndpoint_OCREnvProtocolInvalid(t *testing.T) {
+func TestResolveEndpoint_KAIDEnvProtocolInvalid(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.openai.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "tok")
-	t.Setenv("OCR_LLM_MODEL", "gpt-4o")
-	t.Setenv("OCR_LLM_PROTOCOL", "grpc")
+	t.Setenv("KAID_LLM_URL", "https://api.openai.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "tok")
+	t.Setenv("KAID_LLM_MODEL", "gpt-4o")
+	t.Setenv("KAID_LLM_PROTOCOL", "grpc")
 
 	_, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err == nil {
-		t.Fatal("expected error for invalid OCR_LLM_PROTOCOL")
+		t.Fatal("expected error for invalid KAID_LLM_PROTOCOL")
 	}
 	if !strings.Contains(err.Error(), "unsupported protocol") {
 		t.Errorf("error %q should mention unsupported protocol", err.Error())
@@ -2446,10 +2446,10 @@ func TestResolveEndpoint_OCREnvProtocolInvalid(t *testing.T) {
 // openai-responses URLs alone — only anthropic gets /v1/messages appended.
 func TestResolveEndpoint_ResponsesURLNotMutated(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://api.openai.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "tok")
-	t.Setenv("OCR_LLM_MODEL", "gpt-5.4")
-	t.Setenv("OCR_LLM_PROTOCOL", ProtocolOpenAIResponses)
+	t.Setenv("KAID_LLM_URL", "https://api.openai.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "tok")
+	t.Setenv("KAID_LLM_MODEL", "gpt-5.4")
+	t.Setenv("KAID_LLM_PROTOCOL", ProtocolOpenAIResponses)
 
 	ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 	if err != nil {
@@ -2750,24 +2750,24 @@ func TestResolveEndpoint_RedundantRetryCodesFiltered(t *testing.T) {
 func TestResolveEndpoint_EnvValuesAreTrimmed(t *testing.T) {
 	const cr = "\r"
 
-	t.Run("OCR environment", func(t *testing.T) {
+	t.Run("kaid environment", func(t *testing.T) {
 		clearAllEnv(t)
-		t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages"+cr)
-		t.Setenv("OCR_LLM_TOKEN", "ocr-token"+cr)
-		t.Setenv("OCR_LLM_MODEL", "claude-opus-4-7"+cr)
+		t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages"+cr)
+		t.Setenv("KAID_LLM_TOKEN", "kaid-token"+cr)
+		t.Setenv("KAID_LLM_MODEL", "claude-opus-4-7"+cr)
 
 		ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		if ep.Source != "OCR environment" {
-			t.Fatalf("Source = %q, want %q", ep.Source, "OCR environment")
+		if ep.Source != "kaid environment" {
+			t.Fatalf("Source = %q, want %q", ep.Source, "kaid environment")
 		}
 		if ep.URL != "https://api.example.com/v1/messages" {
 			t.Errorf("URL = %q, want the value with the CR trimmed", ep.URL)
 		}
-		if ep.Token != "ocr-token" {
-			t.Errorf("Token = %q, want %q", ep.Token, "ocr-token")
+		if ep.Token != "kaid-token" {
+			t.Errorf("Token = %q, want %q", ep.Token, "kaid-token")
 		}
 		if ep.Model != "claude-opus-4-7" {
 			t.Errorf("Model = %q, want %q", ep.Model, "claude-opus-4-7")
@@ -2806,12 +2806,12 @@ func TestResolveEndpoint_EnvValuesAreTrimmed(t *testing.T) {
 
 	// A trailing CR used to make "true" unrecognized, silently selecting the
 	// OpenAI protocol instead of the default Anthropic one.
-	t.Run("OCR_USE_ANTHROPIC", func(t *testing.T) {
+	t.Run("KAID_USE_ANTHROPIC", func(t *testing.T) {
 		clearAllEnv(t)
-		t.Setenv("OCR_LLM_URL", "https://api.example.com/v1/messages")
-		t.Setenv("OCR_LLM_TOKEN", "ocr-token")
-		t.Setenv("OCR_LLM_MODEL", "claude-opus-4-7")
-		t.Setenv("OCR_USE_ANTHROPIC", "true"+cr)
+		t.Setenv("KAID_LLM_URL", "https://api.example.com/v1/messages")
+		t.Setenv("KAID_LLM_TOKEN", "kaid-token")
+		t.Setenv("KAID_LLM_MODEL", "claude-opus-4-7")
+		t.Setenv("KAID_USE_ANTHROPIC", "true"+cr)
 
 		ep, err := ResolveEndpoint(filepath.Join(t.TempDir(), "nonexistent.json"))
 		if err != nil {
@@ -2853,14 +2853,14 @@ func TestResolveEndpoint_InvalidEnvURLNamesSourceAndVariable(t *testing.T) {
 		wantVar    string
 	}{
 		{
-			name: "OCR environment",
+			name: "kaid environment",
 			configure: func(t *testing.T) {
-				t.Setenv(envOCRLLMURL, "https://api.example.com/\rbad")
-				t.Setenv(envOCRLLMToken, "ocr-token")
-				t.Setenv(envOCRLLMModel, "test-model")
+				t.Setenv(envKAIDLLMURL, "https://api.example.com/\rbad")
+				t.Setenv(envKAIDLLMToken, "kaid-token")
+				t.Setenv(envKAIDLLMModel, "test-model")
 			},
-			wantSource: "OCR environment",
-			wantVar:    envOCRLLMURL,
+			wantSource: "kaid environment",
+			wantVar:    envKAIDLLMURL,
 		},
 		{
 			name: "Anthropic environment",
@@ -2894,8 +2894,8 @@ func TestResolveEndpoint_InvalidEnvURLNamesSourceAndVariable(t *testing.T) {
 
 func TestResolveEndpointWithOptions_DefaultRequestTimeout(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
 	path, _ := writeResolverConfig(t, configFile{Llm: llmFileConfig{Model: "config-model", URL: "https://config.example.com/v1", AuthToken: "config-token"}})
 
 	ep, err := ResolveEndpointWithOptions(path, ResolveOptions{Model: "config-model"})
@@ -2909,9 +2909,9 @@ func TestResolveEndpointWithOptions_DefaultRequestTimeout(t *testing.T) {
 
 func TestResolveEndpointWithOptions_EnvRequestTimeout(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
-	t.Setenv("OCR_LLM_TIMEOUT", "45")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_TIMEOUT", "45")
 	path, _ := writeResolverConfig(t, configFile{Llm: llmFileConfig{Model: "config-model", URL: "https://config.example.com/v1", AuthToken: "config-token"}})
 
 	ep, err := ResolveEndpointWithOptions(path, ResolveOptions{})
@@ -2925,8 +2925,8 @@ func TestResolveEndpointWithOptions_EnvRequestTimeout(t *testing.T) {
 
 func TestResolveEndpointWithOptions_ConfigRequestTimeout(t *testing.T) {
 	clearAllEnv(t)
-	t.Setenv("OCR_LLM_URL", "https://env.example.com/v1")
-	t.Setenv("OCR_LLM_TOKEN", "env-token")
+	t.Setenv("KAID_LLM_URL", "https://env.example.com/v1")
+	t.Setenv("KAID_LLM_TOKEN", "env-token")
 	path, _ := writeResolverConfig(t, configFile{Llm: llmFileConfig{Model: "config-model", URL: "https://config.example.com/v1", AuthToken: "config-token", TimeoutSec: 60}})
 
 	ep, err := ResolveEndpointWithOptions(path, ResolveOptions{})
