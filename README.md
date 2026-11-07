@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://che3mz.github.io/kaid/">
-    <img src="assets/logo-core.svg" alt="kaid logo" width="180" />
+    <img src="assets/logo-core.svg" alt="kaid logo" width="324" />
   </a>
   <h1>kaid</h1>
 </div>
