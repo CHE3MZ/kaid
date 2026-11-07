@@ -149,33 +149,42 @@ without a pre-built binary.
 
 - [Go ≥ 1.26.10](https://go.dev/dl/)
 - [Git](https://git-scm.com/)
-- [Make](https://www.gnu.org/software/make/)
+- A POSIX shell such as Bash (on Windows, use Git Bash or WSL)
+- [Make](https://www.gnu.org/software/make/), only for the `make test` and `make check` shortcuts
 
 #### Build
 
 ```bash
 git clone https://github.com/CHE3MZ/kaid.git
 cd kaid
-make build              # writes dist/opencodereview (dist/opencodereview.exe on Windows)
-sudo cp dist/opencodereview /usr/local/bin/ocr
+./scripts/build.sh
 ```
 
-#### Build for another platform
+On Windows, run it through Git Bash:
 
 ```bash
-make build-linux-amd64
-make build-linux-arm64
-make build-darwin-amd64
-make build-darwin-arm64
-make build-windows-amd64   # Windows (x86_64)
-make build-windows-arm64   # Windows (ARM64)
-make build-all          # all six at once
-make sha256sum          # also produce sha256sum.txt
+sh scripts/build.sh
 ```
 
-`make dist` runs `clean → build-all → sha256sum` and writes a `VERSION`
-file alongside the binaries — useful for reproducing release builds
-locally. Official releases are built with GoReleaser in CI.
+`scripts/build.sh` builds all six release targets into `dist/`:
+
+- `dist/opencodereview-linux-amd64`
+- `dist/opencodereview-linux-arm64`
+- `dist/opencodereview-darwin-amd64`
+- `dist/opencodereview-darwin-arm64`
+- `dist/opencodereview-windows-amd64.exe`
+- `dist/opencodereview-windows-arm64.exe`
+
+It also writes `dist/sha256sum.txt` and `dist/VERSION`. Override the version
+stamp with `VERSION`, for example `VERSION=1.2.3 ./scripts/build.sh`.
+
+Copy the binary for your platform into your `PATH`, for example:
+
+```bash
+sudo cp dist/opencodereview-linux-amd64 /usr/local/bin/ocr
+```
+
+Official releases are built with GoReleaser in CI.
 
 #### Run tests
 

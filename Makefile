@@ -1,40 +1,11 @@
-.PHONY: build test clean run help fmt vet check coverage \
-	build-all dist sha256sum version-info \
-	build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64 \
-	build-windows-amd64 build-windows-arm64 \
+.PHONY: test clean run help fmt vet check coverage \
 	license-check license-add english-check
 
-BINARY_NAME := opencodereview
-GO          := go
-DIST_DIR    := ./dist
-EXE         := $(if $(filter Windows_NT,$(OS)),.exe,)
-
-# Version info — use git tag if available, fallback to short commit hash
-GIT_TAG     := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "")
-GIT_COMMIT  := $(shell git rev-parse --short HEAD)
-BUILD_DATE  := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-VERSION     ?= $(if $(GIT_TAG),$(GIT_TAG),v0.0.0-$(GIT_COMMIT))
-
-LD_FLAGS    := \
-	-X main.Version=$(VERSION) \
-	-X main.GitCommit=$(GIT_COMMIT) \
-	-X main.BuildDate=$(BUILD_DATE)
-
-RELEASE_LD_FLAGS := -s -w $(LD_FLAGS)
-
-define BUILD_PLATFORM
-	GOOS=$(1) GOARCH=$(2) CGO_ENABLED=0 $(GO) build -ldflags "$(RELEASE_LD_FLAGS)" \
-		-o $(DIST_DIR)/$(BINARY_NAME)-$(1)-$(2)$(3) \
-		./cmd/opencodereview
-endef
-
-# ── Development targets ──────────────────────────────────────────────────────
-build:
-	$(GO) build -ldflags "$(LD_FLAGS)" -o $(DIST_DIR)/$(BINARY_NAME)$(EXE) ./cmd/opencodereview
+GO       := go
+DIST_DIR := ./dist
 
 # The standalone frontend has no Go packages.
-PACKAGES := $(shell $(GO) list ./...)
+PACKAGES := ./...
 
 test:
 	LC_ALL=C $(GO) test -v -race -count=1 $(PACKAGES)
@@ -54,11 +25,11 @@ coverage:
 clean:
 	rm -rf $(DIST_DIR) coverage.out
 
-run: build
-	$(DIST_DIR)/$(BINARY_NAME)$(EXE) --staged
+run:
+	$(GO) run ./cmd/opencodereview --staged
 
-help: build
-	$(DIST_DIR)/$(BINARY_NAME)$(EXE) -h
+help:
+	$(GO) run ./cmd/opencodereview -h
 
 fmt:
 	gofmt -s -w .
@@ -80,38 +51,3 @@ english-check:
 
 license-add:
 	@bash scripts/add-license.sh
-
-# ── Cross-platform targets ───────────────────────────────────────────────────
-build-linux-amd64:
-	$(call BUILD_PLATFORM,linux,amd64)
-
-build-linux-arm64:
-	$(call BUILD_PLATFORM,linux,arm64)
-
-build-darwin-amd64:
-	$(call BUILD_PLATFORM,darwin,amd64)
-
-build-darwin-arm64:
-	$(call BUILD_PLATFORM,darwin,arm64)
-
-build-windows-amd64:
-	$(call BUILD_PLATFORM,windows,amd64,.exe)
-
-build-windows-arm64:
-	$(call BUILD_PLATFORM,windows,arm64,.exe)
-
-build-all: build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-amd64 build-windows-arm64
-
-# Generate SHA256 checksums for all release binaries
-sha256sum: build-all
-	cd $(DIST_DIR) && shasum -a 256 $(BINARY_NAME)-* | sort > sha256sum.txt
-
-# Full release: clean → build all platforms → checksums
-dist: clean build-all sha256sum
-	@echo $(VERSION) > $(DIST_DIR)/VERSION
-
-version-info:
-	@echo "Version:   $(VERSION)"
-	@echo "GitCommit: $(GIT_COMMIT)"
-	@echo "BuildDate: $(BUILD_DATE)"
-	@echo "LD_FLAGS:  $(LD_FLAGS)"
