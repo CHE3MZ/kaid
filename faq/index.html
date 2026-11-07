@@ -1,0 +1,2403 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open source AI code review agent.">
+      
+      
+        <meta name="author" content="CHE3MZ">
+      
+      
+        <link rel="canonical" href="https://che3mz.github.io/kaid/faq/">
+      
+      
+        <link rel="prev" href="../integrations/delegate/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/icon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>FAQ - kaid</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration-startup" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="kaid" class="md-header__button md-logo" aria-label="kaid" data-md-component="logo">
+      
+  <img src="../assets/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            kaid
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              FAQ
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="kaid" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/CHE3MZ/kaid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli-reference/" class="md-tabs__link">
+          
+  
+  
+  Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../integrations/ci/" class="md-tabs__link">
+          
+  
+  
+  Integrations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FAQ
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="kaid" class="md-nav__button md-logo" aria-label="kaid" data-md-component="logo">
+      
+  <img src="../assets/icon.png" alt="logo">
+
+    </a>
+    kaid
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/CHE3MZ/kaid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../review-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viewer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session viewer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chatgpt-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ChatGPT preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/ci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/delegate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Delegation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration &amp; startup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration &amp; startup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#no-valid-llm-endpoint-configured" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        no valid LLM endpoint configured
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kaid-llm-test-shows-the-wrong-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        kaid llm test shows the wrong source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#401-403-from-kaid-llm-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        401 / 403 from kaid llm test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-a-git-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        not a git repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-tool-calls-parsed-local-models-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "No tool calls parsed" (local models / Ollama)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filtering-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering &amp; rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Filtering &amp; rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#my-file-isnt-being-reviewed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        My file isn't being reviewed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#my-custom-rule-isnt-firing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        My custom rule isn't firing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brace-expansion-isnt-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Brace expansion isn't working
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reviews
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reviews">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-file-shows-zero-comments-was-it-actually-reviewed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A file shows zero comments — was it actually reviewed?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comments-have-start_line-0-and-end_line-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comments have start_line: 0 and end_line: 0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-threshold-exceeded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token threshold exceeded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plan-phase-took-forever-and-the-file-is-small" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plan phase took forever and the file is small
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max-tool-requests-reached" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Max tool requests reached"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#some-sub-agents-fail-the-run-still-exits-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Some sub-agents fail; the run still exits 0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ci-run-is-much-slower-than-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI run is much slower than local
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output &amp; integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output &amp; integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-audience-agent-still-has-progress-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --audience agent still has progress lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-output-is-files_reviewed-0-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON output is { "files_reviewed": 0, "comments": [] }
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-do-session-jsonls-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where do session JSONLs live?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance &amp; cost
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance &amp; cost">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-can-i-tell-what-tokens-cost-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How can I tell what tokens cost what?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-are-my-reviews-so-expensive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why are my reviews so expensive?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-do-i-reduce-llm-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I reduce LLM calls?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privacy-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privacy &amp; security
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Privacy &amp; security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#does-kaid-send-my-code-anywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Does kaid send my code anywhere?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-i-redact-secrets-before-theyre-sent-to-the-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can I redact secrets before they're sent to the LLM?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#misc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Misc
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Misc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wheres-the-changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where's the changelog?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#does-kaid-support-non-git-vcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Does kaid support non-Git VCS?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-is-the-binary-called-kaid-but-the-cli-is-kaid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is the binary called kaid but the CLI is kaid?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-do-i-uninstall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I uninstall?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration &amp; startup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration &amp; startup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#no-valid-llm-endpoint-configured" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        no valid LLM endpoint configured
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kaid-llm-test-shows-the-wrong-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        kaid llm test shows the wrong source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#401-403-from-kaid-llm-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        401 / 403 from kaid llm test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-a-git-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        not a git repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-tool-calls-parsed-local-models-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "No tool calls parsed" (local models / Ollama)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filtering-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering &amp; rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Filtering &amp; rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#my-file-isnt-being-reviewed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        My file isn't being reviewed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#my-custom-rule-isnt-firing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        My custom rule isn't firing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brace-expansion-isnt-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Brace expansion isn't working
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reviews
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reviews">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-file-shows-zero-comments-was-it-actually-reviewed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A file shows zero comments — was it actually reviewed?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comments-have-start_line-0-and-end_line-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comments have start_line: 0 and end_line: 0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-threshold-exceeded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token threshold exceeded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plan-phase-took-forever-and-the-file-is-small" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plan phase took forever and the file is small
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max-tool-requests-reached" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Max tool requests reached"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#some-sub-agents-fail-the-run-still-exits-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Some sub-agents fail; the run still exits 0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ci-run-is-much-slower-than-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI run is much slower than local
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output &amp; integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output &amp; integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-audience-agent-still-has-progress-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --audience agent still has progress lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-output-is-files_reviewed-0-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON output is { "files_reviewed": 0, "comments": [] }
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-do-session-jsonls-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where do session JSONLs live?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance &amp; cost
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance &amp; cost">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-can-i-tell-what-tokens-cost-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How can I tell what tokens cost what?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-are-my-reviews-so-expensive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why are my reviews so expensive?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-do-i-reduce-llm-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I reduce LLM calls?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privacy-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privacy &amp; security
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Privacy &amp; security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#does-kaid-send-my-code-anywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Does kaid send my code anywhere?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-i-redact-secrets-before-theyre-sent-to-the-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can I redact secrets before they're sent to the LLM?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#misc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Misc
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Misc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wheres-the-changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where's the changelog?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#does-kaid-support-non-git-vcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Does kaid support non-Git VCS?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-is-the-binary-called-kaid-but-the-cli-is-kaid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is the binary called kaid but the CLI is kaid?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-do-i-uninstall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I uninstall?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>FAQ</h1>
+
+<p>Common errors, surprises, and "is this supposed to do that?" questions.
+If your problem isn't here, open a
+<a href="https://github.com/CHE3MZ/kaid/issues">GitHub issue</a> with
+the steps you ran and the full output.</p>
+<div class="admonition tip">
+<p class="admonition-title">Search before you scroll</p>
+<p>Use the search box in the header to jump straight to an error string or
+flag name. The page is grouped by symptom, so the fastest path is usually
+to search for the exact message you see in your terminal.</p>
+</div>
+<h2 id="configuration-startup">Configuration &amp; startup<a class="headerlink" href="#configuration-startup" title="Link to this section">&para;</a></h2>
+<h3 id="no-valid-llm-endpoint-configured"><code>no valid LLM endpoint configured</code><a class="headerlink" href="#no-valid-llm-endpoint-configured" title="Link to this section">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>no valid LLM endpoint configured; one of KAID_LLM_URL/KAID_LLM_TOKEN/KAID_LLM_MODEL,
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>~/.kaid/config.json, or ANTHROPIC_BASE_URL/ANTHROPIC_AUTH_TOKEN/
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>ANTHROPIC_MODEL must be set
+</span></code></pre></div>
+<p><abbr title="kaid">kaid</abbr> ran the full endpoint-resolution chain (<a href="../configuration/#reuse-existing-environment-variables">Configuration</a>)
+and didn't find a complete <code>(URL, token, model)</code> triple. Either:</p>
+<ul>
+<li>Run <code>kaid config set llm.url …</code> / <code>llm.auth_token …</code> / <code>llm.model …</code>
+  to populate <code>~/.kaid/config.json</code>, <strong>or</strong></li>
+<li>Export <code>KAID_LLM_URL</code> / <code>KAID_LLM_TOKEN</code> / <code>KAID_LLM_MODEL</code>, <strong>or</strong></li>
+<li>Export <code>ANTHROPIC_BASE_URL</code> / <code>ANTHROPIC_AUTH_TOKEN</code> /
+  <code>ANTHROPIC_MODEL</code> if you already use an Anthropic-compatible client.</li>
+</ul>
+<p>Then <code>kaid llm test</code> to verify connectivity before retrying the review.</p>
+<h3 id="kaid-llm-test-shows-the-wrong-source"><code>kaid llm test</code> shows the wrong source<a class="headerlink" href="#kaid-llm-test-shows-the-wrong-source" title="Link to this section">&para;</a></h3>
+<p><abbr title="kaid">kaid</abbr> uses the <strong>first</strong> complete triple, not the last. So if your
+config file has all three llm.* keys, env vars are ignored. To make
+env wins, either delete the config keys (<code>rm</code> the file or unset by
+hand) or use <code>kaid config set</code> to switch to the new values.</p>
+<h3 id="401-403-from-kaid-llm-test">401 / 403 from <code>kaid llm test</code><a class="headerlink" href="#401-403-from-kaid-llm-test" title="Link to this section">&para;</a></h3>
+<p>The token is missing scope, expired, or wrong vendor. Anthropic and
+OpenAI use different auth headers and different URL shapes — make sure
+<code>llm.use_anthropic</code> matches the URL you're pointing at:</p>
+<ul>
+<li>Anthropic: URL ends <code>/v1/messages</code>, <code>use_anthropic=true</code>.</li>
+<li>OpenAI / OpenAI-compatible: URL ends <code>/v1/chat/completions</code>,
+  <code>use_anthropic=false</code>.</li>
+</ul>
+<h3 id="not-a-git-repository"><code>not a git repository</code><a class="headerlink" href="#not-a-git-repository" title="Link to this section">&para;</a></h3>
+<p><code>kaid review</code> runs <code>git diff</code> (and <code>git ls-files</code> for untracked files)
+against the current directory. If you're not inside a Git working tree,
+it exits early. Either <code>cd</code> into a repo, or pass <code>--repo /path/to/repo</code>.</p>
+<h3 id="no-tool-calls-parsed-local-models-ollama">"No tool calls parsed" (local models / Ollama)<a class="headerlink" href="#no-tool-calls-parsed-local-models-ollama" title="Link to this section">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[kaid] No tool calls parsed for src/foo.go, retrying...
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>[kaid] Max tool requests reached for src/foo.go.
+</span></code></pre></div>
+<p>If every review loops through <code>No tool calls parsed</code> retries and ends
+with "Max tool requests reached" and zero comments, the model — not the
+config — is the problem. <abbr title="kaid">kaid</abbr> drives the review entirely through tool
+calls, so <strong>the model must support native tool calling (function
+calling)</strong>. A model that merely <em>narrates</em> tool calls in its text
+output (or inside <code>&lt;think&gt;</code> blocks) can never work with <abbr title="kaid">kaid</abbr>, no matter
+how the prompt is tuned — <code>deepseek-r1</code> is a common example. Models
+with native tool support, such as <code>qwen3</code>, work fine. For Ollama, pick
+from the models tagged with tools support:
+<a href="https://ollama.com/search?c=tools">https://ollama.com/search?c=tools</a>.</p>
+<p>Verify a local model directly, without <abbr title="kaid">kaid</abbr> in the loop:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>http://127.0.0.1:11434/v1/chat/completions<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s1">  "model": "qwen3:32b",</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s1">  "messages": [{"role": "user", "content": "The code below has a bug, use the report_bug tool to report it.\n\nfunc add(a, b int) int {\n  return a - b\n}"}],</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s1">  "tools": [{"type": "function", "function": {"name": "report_bug", "description": "Report a bug in the code",</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s1">    "parameters": {"type": "object", "properties": {"line": {"type": "integer"}, "description": {"type": "string"}}, "required": ["description"]}}}]</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s1">}'</span>
+</span></code></pre></div>
+<p>Pass: the response contains a structured <code>tool_calls</code> array naming
+<code>report_bug</code>. Fail: the "call" appears as text inside <code>content</code>.</p>
+<p>If the model <em>does</em> support tools but responses are slow on local
+hardware, raise the <abbr title="Large Language Model">LLM</abbr> timeout instead — see
+<a href="../configuration/#timeouts">Timeouts</a>.</p>
+<h2 id="filtering-rules">Filtering &amp; rules<a class="headerlink" href="#filtering-rules" title="Link to this section">&para;</a></h2>
+<h3 id="my-file-isnt-being-reviewed">My file isn't being reviewed<a class="headerlink" href="#my-file-isnt-being-reviewed" title="Link to this section">&para;</a></h3>
+<p>Run <code>kaid review --preview</code> (no <abbr title="Large Language Model">LLM</abbr> cost). The output shows the <strong>reason</strong>
+each candidate file was kept or dropped. Files under provider directories
+such as <code>vendor/</code> and <code>node_modules/</code> collapse into one summary line in the
+terminal; <code>kaid review --preview --format json</code> still lists every entry:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>src/foo.go              modified
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>src/foo_test.go         modified  (excluded: user_exclude)
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>assets/logo.png         binary    (excluded: unsupported_ext)
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>3 file(s) in provider directories (node_modules/) — not reviewable
+</span></code></pre></div>
+<p>The exclusion reasons map to gates in the
+<a href="../review-rules/#how-files-are-filtered">file filter</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Reason</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binary</code></td>
+<td>Nothing to do — binary files have no reviewable text.</td>
+</tr>
+<tr>
+<td><code>user_exclude</code></td>
+<td>Remove the pattern from your <code>exclude</code> list.</td>
+</tr>
+<tr>
+<td><code>unsupported_ext</code></td>
+<td>Add the extension to your <code>include</code> list to bypass the allowlist gate.</td>
+</tr>
+<tr>
+<td><code>default_path</code></td>
+<td>Add the file to <code>include</code> — that overrides built-in test-file exclude patterns.</td>
+</tr>
+<tr>
+<td><code>provider_directory</code></td>
+<td>Nothing to do — provider directories such as <code>vendor/</code> and <code>node_modules/</code> are never reviewable, even when included.</td>
+</tr>
+<tr>
+<td><code>deleted</code></td>
+<td>Nothing to do — there's no new content to review.</td>
+</tr>
+<tr>
+<td><code>too_large</code></td>
+<td>The diff alone exceeds 80% of <code>max_tokens</code>. Raise <code>--max-tokens</code> (or the saved <code>max_tokens</code>), or split the change into smaller commits.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="my-custom-rule-isnt-firing">My custom rule isn't firing<a class="headerlink" href="#my-custom-rule-isnt-firing" title="Link to this section">&para;</a></h3>
+<p>Run <code>kaid rules check &lt;file-path&gt;</code>. It prints the <strong>layer</strong> and
+<strong>glob pattern</strong> that matched, end-to-end:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>File: src/api/UserHandler.go
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Source: Project (.kaid/rule.json)
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Pattern: src/api/**/*.go
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Rule: …
+</span></code></pre></div>
+<p>If the layer is wrong (e.g., showing "System built-in" when you expected
+your project rule), most likely the <strong>declaration order</strong> matters — the
+first matching pattern wins. Move your more-specific rule earlier in the
+<code>rules</code> array, or fix the glob.</p>
+<h3 id="brace-expansion-isnt-working">Brace expansion isn't working<a class="headerlink" href="#brace-expansion-isnt-working" title="Link to this section">&para;</a></h3>
+<p><code>bmatcuk/doublestar/v4</code> supports <code>{ts,tsx}</code> braces. If they're not
+matching, check for stray spaces — <code>{ts, tsx}</code> with a space silently
+fails to match <code>tsx</code>.</p>
+<h2 id="reviews">Reviews<a class="headerlink" href="#reviews" title="Link to this section">&para;</a></h2>
+<h3 id="a-file-shows-zero-comments-was-it-actually-reviewed">A file shows zero comments — was it actually reviewed?<a class="headerlink" href="#a-file-shows-zero-comments-was-it-actually-reviewed" title="Link to this section">&para;</a></h3>
+<p>Open the <a href="../viewer/">Session Viewer</a> (<code>kaid viewer</code>), find the session,
+and look at the <code>main_task</code> lane of the group that contains the file
+(groups are keyed by their file paths, so a file reviewed on its own
+appears under its own path):</p>
+<ul>
+<li>Tool calls present + ends in <code>task_done</code> → reviewed cleanly.</li>
+<li>Tool calls present + ends mid-loop → look for an error card.</li>
+<li>No <code>main_task</code> cards at all → the file was filtered out before review;
+  see <a href="#filtering-rules">Filtering &amp; rules</a> above.</li>
+</ul>
+<h3 id="comments-have-start_line-0-and-end_line-0">Comments have <code>start_line: 0</code> and <code>end_line: 0</code><a class="headerlink" href="#comments-have-start_line-0-and-end_line-0" title="Link to this section">&para;</a></h3>
+<p><abbr title="kaid">kaid</abbr> couldn't anchor the comment to a precise line in the diff. Two
+common causes:</p>
+<ul>
+<li>The model paraphrased <code>existing_code</code> instead of copying it verbatim
+  from the diff. The model is told not to, but it sometimes does.</li>
+<li>The diff had unusual formatting (CRLF, mixed tabs/spaces) that broke
+  the sliding-window match.</li>
+</ul>
+<p>The comment is still real — it just wasn't placed automatically. Most
+agent integrations read the
+<code>existing_code</code> field and locate the spot in the file themselves.</p>
+<h3 id="token-threshold-exceeded">Token threshold exceeded<a class="headerlink" href="#token-threshold-exceeded" title="Link to this section">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>[kaid] WARNING: prompt tokens (240000) exceed 80% of max_tokens(200000) [round 1] for group "src/big.sql"
+</span></code></pre></div>
+<p>The initial prompt for that group (rule + diffs + change-files list) was
+already past 80 % of <code>MAX_TOKENS = 200000</code> before the model could even
+respond. <abbr title="kaid">kaid</abbr> skips the group and continues — you'll see this in
+<code>warnings</code> in JSON mode too.</p>
+<p><code>MAX_TOKENS</code> is the <strong>prompt</strong> ceiling only. The model's output is capped
+independently by <code>MAX_COMPLETION_TOKENS</code> (<code>16384</code>), so this warning is
+always about input size.</p>
+<p>Mitigations:</p>
+<ul>
+<li>Add the file to your <code>exclude</code> list if it's autogenerated.</li>
+<li>Split a large refactor into smaller commits.</li>
+<li>Use <code>--commit</code> mode for a series of small commits rather than
+  reviewing them all at once via workspace mode.</li>
+</ul>
+<h3 id="plan-phase-took-forever-and-the-file-is-small">Plan phase took forever and the file is small<a class="headerlink" href="#plan-phase-took-forever-and-the-file-is-small" title="Link to this section">&para;</a></h3>
+<p>Run <code>kaid review --preview</code> first. The plan phase runs when <strong>either</strong>
+threshold is crossed:</p>
+<ul>
+<li>The largest file in the group changed at least
+  <code>PLAN_MODE_LINE_THRESHOLD</code> lines (default <strong>50</strong>), <strong>or</strong></li>
+<li>The group holds 2+ files and their combined <code>lines.changed</code> reaches
+  <code>PLAN_MODE_GROUP_LINE_THRESHOLD</code> (default <strong>100</strong>).</li>
+</ul>
+<p>So a small file can still get a plan pass if it was grouped with other
+changes that add up. That's by design — large or wide diffs benefit
+from a planning pass. To skip it for a single review, run with a
+smaller diff, or temporarily edit the embedded template (advanced;
+you'll need to override <code>--tools</code>).</p>
+<h3 id="max-tool-requests-reached">"Max tool requests reached"<a class="headerlink" href="#max-tool-requests-reached" title="Link to this section">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>[kaid] Max tool requests reached for src/foo.go.
+</span></code></pre></div>
+<p>The model spent all 100 (<code>MAX_TOOL_REQUEST_TIMES</code>) tool-use rounds
+without calling <code>task_done</code>. Comments emitted up to that point are
+still collected and rendered. If this happens on most groups, the issue
+is usually one of:</p>
+<ul>
+<li>Model isn't great at following the "call <code>task_done</code> when finished"
+  instruction. Switch to a stronger model (e.g., Claude Opus).</li>
+<li>A tool keeps erroring and the model keeps retrying. Look at the
+  session <abbr title="JSON Lines">JSONL</abbr> — if the same tool result repeats, that's why.</li>
+<li>The group is genuinely large or context-heavy and 100 rounds isn't
+  enough. Raise the cap with <code>--max-tools &lt;n&gt;</code> (e.g., <code>--max-tools
+  150</code>). The flag only ever <em>raises</em> the limit — a value below the
+  template default of <code>100</code> is ignored, values 1–49 are clamped up to
+  <code>50</code>, and <code>0</code> keeps the template default.</li>
+<li>The model does not support native tool calling at all (common with
+  local models) — see
+  <a href="#no-tool-calls-parsed-local-models-ollama">"No tool calls parsed" (local models / Ollama)</a>.</li>
+</ul>
+<h3 id="some-sub-agents-fail-the-run-still-exits-0">Some sub-agents fail; the run still exits 0<a class="headerlink" href="#some-sub-agents-fail-the-run-still-exits-0" title="Link to this section">&para;</a></h3>
+<p>By design. <abbr title="kaid">kaid</abbr> isolates per-group failures so one bad group doesn't kill
+a 20-file review. The aggregate exit code is <code>0</code> if <em>anything</em>
+succeeded; only a fully-failed run (zero successful sub-agents) exits
+non-zero. Check the <code>warnings</code> array in JSON mode or stderr in text
+mode to see which groups failed.</p>
+<h3 id="ci-run-is-much-slower-than-local"><abbr title="Continuous Integration">CI</abbr> run is much slower than local<a class="headerlink" href="#ci-run-is-much-slower-than-local" title="Link to this section">&para;</a></h3>
+<p>Two usual suspects:</p>
+<ul>
+<li><strong>Model rate limits</strong> — under throttling, the <abbr title="Large Language Model">LLM</abbr> client backs off
+  and retries. Lower <code>--concurrency</code> (e.g., to <code>4</code>) so you don't hit
+  the limit in the first place.</li>
+<li><strong>Cold cache</strong> — if your provider supports prompt caching, the first
+  run after deploy doesn't benefit from it. Subsequent runs in the
+  same window are faster.</li>
+</ul>
+<h2 id="output-integration">Output &amp; integration<a class="headerlink" href="#output-integration" title="Link to this section">&para;</a></h2>
+<h3 id="-audience-agent-still-has-progress-lines"><code>--audience agent</code> still has progress lines<a class="headerlink" href="#-audience-agent-still-has-progress-lines" title="Link to this section">&para;</a></h3>
+<p>Make sure you're not seeing <strong>stderr</strong>. Progress messages occasionally
+go to stderr (warnings, errors). The clean stdout that <code>--audience
+agent</code> guarantees is <em>parser-friendly</em> — to suppress everything,
+redirect: <code>kaid review --audience agent 2&gt;/dev/null</code>.</p>
+<h3 id="json-output-is-files_reviewed-0-comments">JSON output is <code>{ "files_reviewed": 0, "comments": [] }</code><a class="headerlink" href="#json-output-is-files_reviewed-0-comments" title="Link to this section">&para;</a></h3>
+<p>Nothing was eligible to review. <code>files_reviewed</code> is not a top-level
+field — it sits under <code>summary</code>, where it reads <code>0</code> on this path, while
+<code>comments</code> is the top-level <code>[]</code>. The same object carries
+<code>"status": "skipped"</code>, <code>"message": "Review skipped: no items were
+selected."</code>, and a <code>manifest</code> whose <code>terminal_state</code> is <code>"skipped"</code> with
+every <code>coverage</code> array empty.</p>
+<p>A review that examined files and found nothing also returns <strong>a JSON
+object with <code>comments: []</code></strong>: <code>summary.files_reviewed</code> counts the files
+actually reviewed, <code>status</code> is <code>"complete"</code>, and <code>message</code> reads
+<code>"Review complete: 0 finding(s) across N selected item(s)."</code>. Optional
+top-level fields can differ between runs, so do not distinguish these
+states by object shape or by the presence of an optional key. On
+manifest-backed review output, use <code>summary.files_reviewed</code> or
+<code>manifest.terminal_state</code> instead. Callers must still tolerate both
+<code>summary</code> and <code>manifest</code> being absent on the manifest-less path described
+below. <code>review --format json</code> always writes exactly one JSON object to
+stdout, never a bare array.</p>
+<p>The manifest-less no-files path is leaner: it omits both <code>summary</code> and
+<code>manifest</code>, while still reporting <code>"status": "skipped"</code>, <code>"message": "No
+supported files changed."</code>, and <code>"comments": []</code>. <code>tool_calls</code> is always
+present. <code>kaid scan</code> is always manifest-less; when its no-files guard
+matches it uses this path. <code>kaid review</code> can also reach the same path when
+manifest construction fails and the no-files guard matches. Optional
+metadata such as <code>llm</code> or <code>trace_id</code> may be present.</p>
+<h3 id="where-do-session-jsonls-live">Where do session JSONLs live?<a class="headerlink" href="#where-do-session-jsonls-live" title="Link to this section">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>~/.kaid/sessions/&lt;path-encoded-repo-path&gt;/&lt;session-id&gt;.jsonl
+</span></code></pre></div>
+<p>The repo path is encoded by replacing <code>/</code> and <code>\</code> with <code>-</code> and <code>:</code> with
+<code>_</code> (e.g. <code>/Users/foo/my-repo</code> → <code>Users-foo-my-repo</code>). Browse sessions
+with <code>kaid viewer</code>. Delete the directory to wipe history; <abbr title="kaid">kaid</abbr> regenerates
+the encoded path on the next run.</p>
+<h2 id="performance-cost">Performance &amp; cost<a class="headerlink" href="#performance-cost" title="Link to this section">&para;</a></h2>
+<h3 id="how-can-i-tell-what-tokens-cost-what">How can I tell what tokens cost what?<a class="headerlink" href="#how-can-i-tell-what-tokens-cost-what" title="Link to this section">&para;</a></h3>
+<p>Enable telemetry:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kaid<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>telemetry.enabled<span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>kaid<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>telemetry.exporter<span class="w"> </span>console
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>kaid<span class="w"> </span>review
+</span></code></pre></div>
+<p>In the main review loop, <abbr title="Large Language Model">LLM</abbr> calls produce <code>llm.request</code> spans and are
+also recorded as metrics. Watch <code>kaid.llm.tokens_used</code> (counter, labelled <code>model</code> +
+<code>type</code>), <code>kaid.llm.requests_total</code> (counter, labelled <code>model</code> +
+<code>status</code>), and <code>kaid.llm.request_duration_seconds</code> (histogram, labelled
+<code>model</code>). The console exporter prints these aggregates inline. For
+dashboards, switch to the OTLP exporter and ship to your metrics
+stack — see <a href="../telemetry/">Telemetry</a>.</p>
+<h3 id="why-are-my-reviews-so-expensive">Why are my reviews so expensive?<a class="headerlink" href="#why-are-my-reviews-so-expensive" title="Link to this section">&para;</a></h3>
+<p>Common levers:</p>
+<ul>
+<li>The effort preset controls how many review rounds each group gets:
+  <code>low</code> = 1, <code>medium</code> (the default) = 2, <code>high</code> = 3. Cost scales roughly
+  with the round count, so <code>--effort low</code> is the single biggest lever if
+  you want a cheaper run; <code>--effort high</code> is the most expensive.</li>
+<li>Plan phase is on for groups whose largest file is ≥ 50 lines, or whose
+  2+ files total ≥ 100 lines. It costs an extra <abbr title="Large Language Model">LLM</abbr> call per group, so
+  <strong>raising</strong> those thresholds is what makes a run cheaper; lowering
+  them sends more groups through planning and costs more. The two do not
+  behave alike at zero. <code>PLAN_MODE_LINE_THRESHOLD</code> at <code>0</code> or below means
+  <em>always plan</em> — the dearest setting available — whereas
+  <code>PLAN_MODE_GROUP_LINE_THRESHOLD</code> at <code>0</code> turns the group gate off. That
+  can save the plan call when the group gate would otherwise be the only
+  trigger. See "Plan phase took forever and the file is small" above for
+  the trigger rules.</li>
+<li><code>MAX_TOOL_REQUEST_TIMES = 100</code> is generous. A model that uses every
+  round will produce a longer (more tokens) conversation than one that
+  finishes in 3 rounds. Stronger models tend to finish faster.
+  Conversely, if you raised it with <code>--max-tools</code> to fight "max tool
+  requests reached", expect cost per group to grow roughly linearly.</li>
+<li>Memory compression itself is an <abbr title="Large Language Model">LLM</abbr> call. Long subtasks pay for
+  compression rounds in addition to review rounds.</li>
+<li>Semantic grouping adds one small <abbr title="Large Language Model">LLM</abbr> call per run. It only sees file
+  metadata (paths, status, insertion/deletion counts) — never diff
+  content — so it is cheap, and it usually pays for itself by reviewing
+  related files together instead of once per file.</li>
+</ul>
+<h3 id="how-do-i-reduce-llm-calls">How do I reduce <abbr title="Large Language Model">LLM</abbr> calls?<a class="headerlink" href="#how-do-i-reduce-llm-calls" title="Link to this section">&para;</a></h3>
+<ul>
+<li>Add an <code>include</code> list so <abbr title="kaid">kaid</abbr> doesn't review files you don't care
+  about.</li>
+<li>Set <code>--concurrency</code> lower if your account has burst-mode pricing.</li>
+<li>Pass <code>--background</code> — better context up-front sometimes lets the
+  model finish without <code>file_read</code> / <code>code_search</code> round-trips.</li>
+</ul>
+<h2 id="privacy-security">Privacy &amp; security<a class="headerlink" href="#privacy-security" title="Link to this section">&para;</a></h2>
+<h3 id="does-kaid-send-my-code-anywhere">Does <abbr title="kaid">kaid</abbr> send my code anywhere?<a class="headerlink" href="#does-kaid-send-my-code-anywhere" title="Link to this section">&para;</a></h3>
+<p><abbr title="kaid">kaid</abbr> sends your <strong>diffs</strong> (and optional read-tool snippets) to whatever
+<abbr title="Large Language Model">LLM</abbr> endpoint you configured. Nothing else leaves your machine —
+session JSONLs and rule files are local-only.</p>
+<p>If telemetry is enabled, the <code>content_logging</code> flag is plumbed through
+the config layer but currently gates <strong>no</strong> code path — prompt and
+response content is never exported to your collector regardless of the
+flag's value. Treat it as reserved. Leave it <code>false</code> in production. See
+<a href="../telemetry/#content-logging">Telemetry</a> for details.</p>
+<h3 id="can-i-redact-secrets-before-theyre-sent-to-the-llm">Can I redact secrets before they're sent to the <abbr title="Large Language Model">LLM</abbr>?<a class="headerlink" href="#can-i-redact-secrets-before-theyre-sent-to-the-llm" title="Link to this section">&para;</a></h3>
+<p>Not built-in. The recommended workflow:</p>
+<ol>
+<li>Don't commit secrets to your repo (the usual rule).</li>
+<li>Add files known to contain hash material to <code>exclude</code>.</li>
+<li>Use <code>git diff --no-textconv</code> filters or pre-commit redaction to keep
+   secrets out of diffs.</li>
+</ol>
+<p>A "redaction rule" feature is on the roadmap; track
+<a href="https://github.com/CHE3MZ/kaid/issues">the issue tracker</a>.</p>
+<h2 id="misc">Misc<a class="headerlink" href="#misc" title="Link to this section">&para;</a></h2>
+<h3 id="wheres-the-changelog">Where's the changelog?<a class="headerlink" href="#wheres-the-changelog" title="Link to this section">&para;</a></h3>
+<p><a href="https://github.com/CHE3MZ/kaid/releases">GitHub Releases</a>
+— each release has notes generated from Conventional Commits.</p>
+<h3 id="does-kaid-support-non-git-vcs">Does <abbr title="kaid">kaid</abbr> support non-Git <abbr title="Version Control System">VCS</abbr>?<a class="headerlink" href="#does-kaid-support-non-git-vcs" title="Link to this section">&para;</a></h3>
+<p>No. The diff providers shell out to <code>git</code>. SVN / Mercurial / etc. would
+need new providers; an issue for Hg support is open
+<a href="https://github.com/CHE3MZ/kaid/issues">here</a>.</p>
+<h3 id="why-is-the-binary-called-kaid-but-the-cli-is-kaid">Why is the binary called <code>kaid</code> but the CLI is <code>kaid</code>?<a class="headerlink" href="#why-is-the-binary-called-kaid-but-the-cli-is-kaid" title="Link to this section">&para;</a></h3>
+<p>The static binary published in releases is named after the project
+(<code>kaid</code>); the install script places it as <code>kaid</code> for
+ergonomics. If you build from source you get <code>dist/kaid</code>
+(<code>dist/kaid.exe</code> on Windows) —
+copy it to <code>kaid</code> on your <code>$PATH</code>.</p>
+<h3 id="how-do-i-uninstall">How do I uninstall?<a class="headerlink" href="#how-do-i-uninstall" title="Link to this section">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>rm<span class="w"> </span>-f<span class="w"> </span>/usr/local/bin/kaid
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>rm<span class="w"> </span>-rf<span class="w"> </span>~/.kaid
+</span></code></pre></div>
+<p><abbr title="kaid">kaid</abbr> doesn't write outside <code>~/.kaid</code> (apart from the binary
+download via the install script), so removing that directory wipes history, config,
+and per-user rules.</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Link to this section">&para;</a></h2>
+<ul>
+<li><a href="../configuration/">Configuration</a> - <abbr title="Large Language Model">LLM</abbr> endpoint resolution and config keys.</li>
+<li><a href="../review-rules/">Review Rules</a> - the file filter and rule resolution chain.</li>
+<li><a href="../viewer/">Session Viewer</a> - inspect past review sessions.</li>
+<li><a href="../telemetry/">Telemetry</a> - token usage and <abbr title="Large Language Model">LLM</abbr> metrics.</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../integrations/delegate/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Delegation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Delegation
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/CHE3MZ/kaid" target="_blank" rel="noopener" title="kaid on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.tracking", "navigation.footer", "toc.follow", "content.code.copy", "content.code.select", "content.code.annotate", "content.tabs.link", "content.tooltips", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../javascripts/mermaid.js" type="module"></script>
+      
+    
+  </body>
+</html>

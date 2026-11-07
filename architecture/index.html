@@ -1,0 +1,2218 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open source AI code review agent.">
+      
+      
+        <meta name="author" content="CHE3MZ">
+      
+      
+        <link rel="canonical" href="https://che3mz.github.io/kaid/architecture/">
+      
+      
+        <link rel="prev" href="../configuration/">
+      
+      
+        <link rel="next" href="../tools/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/icon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Architecture - kaid</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#high-level-pipeline" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="kaid" class="md-header__button md-logo" aria-label="kaid" data-md-component="logo">
+      
+  <img src="../assets/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            kaid
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="kaid" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/CHE3MZ/kaid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../cli-reference/" class="md-tabs__link">
+          
+  
+  
+  Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../integrations/ci/" class="md-tabs__link">
+          
+  
+  
+  Integrations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../faq/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FAQ
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="kaid" class="md-nav__button md-logo" aria-label="kaid" data-md-component="logo">
+      
+  <img src="../assets/icon.png" alt="logo">
+
+    </a>
+    kaid
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/CHE3MZ/kaid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#high-level-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-level pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-diff-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The diff provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-five-gate-file-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The five-gate file filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-file-grouping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic file grouping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-group-subtask-plan-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-group subtask: plan + main
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Per-group subtask: plan + main">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-plan-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Plan (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-main-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Main loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#review-rounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review rounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-compression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory compression
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Memory compression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-three-zones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three zones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#async-vs-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Async vs sync
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comment-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comment processing pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#token-budget-guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token budget guards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-template-placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The template &amp; placeholders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persistence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#telemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Telemetry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-not-automated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's not automated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-code-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source-code map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../review-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viewer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session viewer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chatgpt-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ChatGPT preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/ci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/delegate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Delegation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#high-level-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-level pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-diff-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The diff provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-five-gate-file-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The five-gate file filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-file-grouping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic file grouping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-group-subtask-plan-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-group subtask: plan + main
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Per-group subtask: plan + main">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-plan-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Plan (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-main-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Main loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#review-rounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review rounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-compression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory compression
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Memory compression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-three-zones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three zones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#async-vs-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Async vs sync
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comment-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comment processing pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#token-budget-guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token budget guards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-template-placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The template &amp; placeholders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persistence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#telemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Telemetry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-not-automated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's not automated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-code-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source-code map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Architecture</h1>
+
+<p>A walk-through of how <code>kaid review</code> actually works inside, from the moment
+you press Enter to the JSON that lands in your terminal. The goal is to
+give you enough mental model to debug behaviour, tune flags, and read
+the source code with confidence.</p>
+<div class="admonition note">
+<p class="admonition-title">Reading order</p>
+<p>Start with the <a href="#high-level-pipeline">high-level pipeline</a>, then follow
+the sections in order. If you are tuning cost or debugging a skipped
+file, jump straight to <a href="#token-budget-guards">token budget guards</a> and
+<a href="#the-five-gate-file-filter">the five-gate file filter</a>.</p>
+</div>
+<h2 id="high-level-pipeline">High-level pipeline<a class="headerlink" href="#high-level-pipeline" title="Link to this section">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A["&lt;b&gt;kaid review&lt;/b&gt;"]
+    B["&lt;b&gt;bootstrap&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:0.85em'&gt;Resolve LLM endpoint (config → env → rc files)&lt;br/&gt;Load template, tool registry, system rules&lt;/span&gt;"]
+    C["&lt;b&gt;diff provider&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:0.85em'&gt;git diff / ls-files / show — produce []model.Diff&lt;br/&gt;Modes: Workspace · Commit · Range&lt;/span&gt;"]
+    D["&lt;b&gt;filter &amp; rules&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:0.85em'&gt;5-gate filter (selection.go) — drop binaries,&lt;br/&gt;excluded paths, unsupported extensions. Pick rule per file.&lt;/span&gt;"]
+    D2["&lt;b&gt;semantic grouping&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:0.85em'&gt;One LLM call over file metadata — bundle related&lt;br/&gt;files into groups (max 10 files each)&lt;/span&gt;"]
+    E["&lt;b&gt;subtask dispatch&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:0.85em'&gt;For every group in parallel (concurrency=N):&lt;br/&gt;Plan phase (optional) → Main loop × rounds → Comments&lt;/span&gt;"]
+    F["&lt;b&gt;output writer&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:0.85em'&gt;Synchronous line-resolution &amp; review-filter; renders text&lt;br/&gt;or JSON depending on --format / --audience.&lt;/span&gt;"]
+
+    A --&gt; B --&gt; C --&gt; D --&gt; D2 --&gt; E --&gt; F</code></pre>
+<p>The orchestration lives in the
+<a href="https://github.com/CHE3MZ/kaid/blob/master/internal/agent/"><code>internal/agent/</code></a>
+package, whose main files are <code>agent.go</code> (dispatch &amp; per-group
+orchestration), <code>grouping.go</code> (semantic file grouping), <code>selection.go</code>
+(the file filter), <code>preview.go</code> (the <code>--preview</code> report), and <code>util.go</code>
+(helpers); the tool-use loop and memory compression live alongside it in
+<a href="https://github.com/CHE3MZ/kaid/blob/master/internal/llmloop/"><code>internal/llmloop/</code></a>.
+Two entry points matter: <code>Agent.Run</code> (top of pipeline) and
+<code>Agent.dispatchSubtasks</code> (per-group fan-out).</p>
+<h2 id="the-diff-provider">The diff provider<a class="headerlink" href="#the-diff-provider" title="Link to this section">&para;</a></h2>
+<p><code>internal/diff/git.go</code> defines a <code>Provider</code> struct whose unexported
+<code>mode</code> field (of type <code>Mode</code>, an <code>int</code> enum) selects one of three modes
+that mirror the CLI flags:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Triggered by</th>
+<th>What it returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Workspace</code></td>
+<td>no flags</td>
+<td>staged + unstaged + untracked changes</td>
+</tr>
+<tr>
+<td><code>Commit</code></td>
+<td><code>--commit &lt;sha&gt;</code> / <code>-c &lt;sha&gt;</code></td>
+<td>the changes introduced by <code>&lt;sha&gt;</code> (via <code>git show &lt;sha&gt;</code>, equivalent to the <code>&lt;sha&gt;^..&lt;sha&gt;</code> diff)</td>
+</tr>
+<tr>
+<td><code>Range</code></td>
+<td><code>--from &lt;a&gt; --to &lt;b&gt;</code></td>
+<td><code>merge-base(a, b)..b</code></td>
+</tr>
+</tbody>
+</table>
+<p>Each diff carries: old/new path, old/new hunks, insertion/deletion counts,
+binary flag, and rename detection. <code>DiffContextLines</code> is fixed at <strong>3</strong> —
+the same default Git uses.</p>
+<p>Untracked files are read from disk and treated as full-file additions so
+they're reviewed pre-commit.</p>
+<h2 id="the-five-gate-file-filter">The five-gate file filter<a class="headerlink" href="#the-five-gate-file-filter" title="Link to this section">&para;</a></h2>
+<p>Once diffs are loaded, every file passes through
+<a href="https://github.com/CHE3MZ/kaid/blob/master/internal/agent/selection.go"><code>whyExcluded</code></a>.
+The function returns one of:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>binary          — file is binary
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>user_exclude    — matched a pattern in your `exclude` list
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>unsupported_ext — extension is not in supported_file_types.json
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>default_path    — matched a built-in exclude pattern
+</span></code></pre></div>
+<p>…or empty if the file is kept. <code>deleted</code> and <code>too_large</code> are <strong>not</strong>
+returned by <code>whyExcluded</code>; <code>selectFiles</code> applies them after the gates —
+<code>deleted</code> when a kept file's diff reports <code>IsDeleted</code>, <code>too_large</code> when
+its raw diff alone exceeds 80% of <code>max_tokens</code>. The gates run in this
+order:</p>
+<ol>
+<li><code>binary</code> — binary files are dropped first.</li>
+<li><code>user_exclude</code> — your project's <code>exclude</code> always wins.</li>
+<li><code>user_include</code> — if the filter has include patterns <strong>and</strong> the file
+   matches one, it's kept immediately (returns empty), bypassing the
+   <code>unsupported_ext</code> and <code>default_path</code> gates below.</li>
+<li><code>unsupported_ext</code> filters by extension allowlist.</li>
+<li><code>default_path</code> is the last gate: it matches built-in exclude patterns,
+   both test files (<code>**/*_test.go</code>, <code>**/__tests__/**</code>, <code>**/*_spec.rb</code>, …)
+   and dependency or build-output directories (<code>**/node_modules/**</code>,
+   <code>**/vendor/**</code>, <code>**/target/**</code>, <code>**/__pycache__/**</code>, …). Every pattern
+   is rooted with a <code>**/</code> prefix.</li>
+</ol>
+<p>The same noisy directories are also filtered earlier, at the diff-provider
+level, via the <code>providerDirIgnoreDirs</code> list in <code>internal/diff/git.go</code>. That
+list matches by path prefix, so it catches only a directory at the
+<strong>repository root</strong>: <code>vendor/pkg/x.go</code> never reaches the per-file filter,
+while <code>api/vendor/pkg/x.go</code> does and is excluded by <code>default_path</code> instead.</p>
+<p>The difference is user-visible. Preview reports the first as
+<code>provider_directory</code> and an <code>include</code> rule cannot make it reviewable; it
+reports the second as <code>default_path</code>, which an <code>include</code> rule can override.</p>
+<p>Run <code>kaid review --preview</code> to see the full filter result without spending
+a token. See <a href="../review-rules/#how-files-are-filtered">Review Rules</a> for
+the full algorithm.</p>
+<h2 id="semantic-file-grouping">Semantic file grouping<a class="headerlink" href="#semantic-file-grouping" title="Link to this section">&para;</a></h2>
+<p>Files that survive filtering are <strong>not</strong> reviewed one at a time. Before
+dispatch, <code>groupDiffs</code> (in
+<a href="https://github.com/CHE3MZ/kaid/blob/master/internal/agent/grouping.go"><code>grouping.go</code></a>)
+makes a single <code>GROUPING_TASK</code> <abbr title="Large Language Model">LLM</abbr> call carrying only file <em>metadata</em> —
+path, status (<code>ADDED</code> / <code>MODIFIED</code> / <code>DELETED</code> / <code>RENAMED</code>), and
+insertion/deletion counts — never diff content. The model returns a JSON
+array of <code>{label, files}</code> objects, and each group is then reviewed in one
+shared conversation so the agent can reason across related changes
+(handler + service + test, or a rename and its call sites).</p>
+<p>Three guards keep groups sane:</p>
+<table>
+<thead>
+<tr>
+<th>Guard</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maxFilesPerGroup = 10</code></td>
+<td>Oversized groups are split into 10-file chunks.</td>
+</tr>
+<tr>
+<td>Token budget</td>
+<td>A group whose combined diffs exceed the prompt limit is split back into single-file groups.</td>
+</tr>
+<tr>
+<td>Coverage</td>
+<td>Any file the model failed to assign gets its own single-file group.</td>
+</tr>
+</tbody>
+</table>
+<p>Grouping is a best-effort optimisation, never a correctness gate: a
+failed, empty, or unparseable response logs a warning and falls back to
+one-file-per-group dispatch — exactly the old behaviour. The resulting
+grouping is also surfaced in JSON output.</p>
+<h2 id="per-group-subtask-plan-main">Per-group subtask: plan + main<a class="headerlink" href="#per-group-subtask-plan-main" title="Link to this section">&para;</a></h2>
+<p>For every group, kaid fires a sub-agent. Each sub-agent runs in its own
+goroutine, bounded by <code>--concurrency</code> (default <strong>8</strong>), and has its own
+<abbr title="Large Language Model">LLM</abbr> message buffer.</p>
+<p>A subtask has up to <strong>two phases</strong>:</p>
+<h3 id="phase-1-plan-optional">Phase 1 — Plan (optional)<a class="headerlink" href="#phase-1-plan-optional" title="Link to this section">&para;</a></h3>
+<p>The plan phase is gated by <code>Template.PlanRequired</code>, which cooperates two
+thresholds:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// PLAN_MODE_LINE_THRESHOLD = 50, PLAN_MODE_GROUP_LINE_THRESHOLD = 100</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">maxFileChanged</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">PlanModeLineThreshold</span><span class="w">           </span><span class="p">{</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// one big rewrite</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">if</span><span class="w"> </span><span class="nx">fileCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">total</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">PlanModeGroupLineThreshold</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// several moderate files</span>
+</span></code></pre></div>
+<p>The per-file threshold catches a single large rewrite; the group
+threshold catches several moderate files that together warrant
+structured guidance. The group threshold is deliberately the larger of
+the two so the plan phase doesn't become unconditional for multi-file
+groups.</p>
+<p>For small changes the plan adds latency without value, so it's skipped
+silently and the main loop runs straight away. Otherwise kaid
+makes a <strong>single</strong> <code>PLAN_TASK</code> <abbr title="Large Language Model">LLM</abbr> call — no <code>Tools</code> field is sent, so
+the model cannot call tools during planning. The read-only tool subset
+(<code>code_search</code>, <code>file_read_diff</code>, <code>file_find</code> — the three tools whose
+<code>plan_task</code> flag is <code>true</code> in <code>tools.json</code>) is embedded as plain text
+via the <code>{{plan_tools}}</code> placeholder (rendered by
+<code>formatToolDefs</code>) so the model knows what's available later. The model
+returns a checklist that becomes <code>{{plan_guidance}}</code>
+in the main prompt.</p>
+<h3 id="phase-2-main-loop">Phase 2 — Main loop<a class="headerlink" href="#phase-2-main-loop" title="Link to this section">&para;</a></h3>
+<p>The main loop assembles the <code>MAIN_TASK</code> prompt and runs a tool-use
+conversation with the model. The full tool set adds <strong><code>task_done</code></strong>,
+<strong><code>code_comment</code></strong>, and <strong><code>file_read</code></strong> to the plan-phase tools — see
+<a href="../tools/">Tools</a> for the full catalogue.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>loop up to MAX_TOOL_REQUEST_TIMES (default 100):
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    response = llm.complete(messages, tools)
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    if response.toolCalls is empty:
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        nudge model with "You did not successfully call any tools.
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>                          Please try again or use task_done if finished."
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        continue
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    for each call: execute → collect result
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    if any call was task_done: break
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    addNextMessage(...)              # may trigger compression
+</span></code></pre></div>
+<p>The loop has five exit conditions:</p>
+<ol>
+<li><code>task_done</code> was called.</li>
+<li><code>MAX_TOOL_REQUEST_TIMES</code> ran out.</li>
+<li>3 consecutive rounds produced no valid tool results
+   (<code>maxConsecutiveEmptyRounds = 3</code>).</li>
+<li>The context was cancelled.</li>
+<li><code>addNextMessage</code> returned false — compression couldn't bring the
+   message buffer back under the warning threshold.</li>
+</ol>
+<p>In all cases collected <code>code_comment</code> calls become review comments.</p>
+<h3 id="review-rounds">Review rounds<a class="headerlink" href="#review-rounds" title="Link to this section">&para;</a></h3>
+<p>The main loop is not run once but up to <code>MAX_REVIEW_ROUNDS</code> times per
+group, to improve recall on large groups. The round count is set by the
+<code>--effort</code> preset:</p>
+<table>
+<thead>
+<tr>
+<th><code>--effort</code></th>
+<th>Rounds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>low</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>medium</code> (default)</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>high</code></td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>Each round after the first re-runs <code>MAIN_TASK</code> with the findings already
+confirmed by earlier rounds injected as <code>{{confirmed_comments}}</code>, and
+<strong>without</strong> the plan — a plan tends to act as a coverage ceiling once the
+obvious issues are found. Rounds stop early when a round adds no new
+findings, when the confirmed-comment cap is reached, or when the
+aggregate token budget (<code>--max-tokens-budget</code>) is exhausted.</p>
+<h2 id="memory-compression">Memory compression<a class="headerlink" href="#memory-compression" title="Link to this section">&para;</a></h2>
+<p>A long tool-use loop will eventually overflow the context window. kaid
+manages this with a <strong>three-zone partitioning</strong> strategy that triggers
+on the prompt budget defined by <code>MAX_TOKENS = 200000</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Threshold</th>
+<th>Constant</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60 % of MAX_TOKENS</td>
+<td><code>tokenSoftThreshold</code></td>
+<td>Kick off <strong>async</strong> background compression; current loop continues uninterrupted.</td>
+</tr>
+<tr>
+<td>80 % of MAX_TOKENS</td>
+<td><code>tokenWarningThreshold</code></td>
+<td>Run compression <strong>synchronously</strong> before sending the next request.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>MAX_TOKENS</code> is an <em>input</em> ceiling.</strong> It bounds the prompt — the
+context-window budget the message buffer is compressed against — and
+nothing else. The model's <em>output</em> cap is a separate knob,
+<code>MAX_COMPLETION_TOKENS = 16384</code>, sent as <code>max_completion_tokens</code> on
+every request (<code>Template.CompletionTokenLimit()</code>). Keeping them apart
+means raising the prompt ceiling with <code>--max-tokens</code> for a
+large-context model never silently inflates the output budget. When
+<code>MAX_COMPLETION_TOKENS</code> is unset, <code>MAX_TOKENS</code> is used as the output
+cap for backwards compatibility.</p>
+</blockquote>
+<h3 id="the-three-zones">The three zones<a class="headerlink" href="#the-three-zones" title="Link to this section">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    subgraph messages["messages"]
+        direction LR
+        F["&lt;b&gt;frozen&lt;/b&gt;&lt;br/&gt;first 2 msgs&lt;br/&gt;(system +&lt;br/&gt;initial user)"]
+        C["&lt;b&gt;compress&lt;/b&gt;&lt;br/&gt;summarized&lt;br/&gt;into one&lt;br/&gt;user msg"]
+        A["&lt;b&gt;active&lt;/b&gt;&lt;br/&gt;K most recent&lt;br/&gt;complete&lt;br/&gt;rounds"]
+    end
+    F --- C --- A</code></pre>
+<p>A "round" is one assistant message plus the tool result messages that
+followed it. <code>partitionMessages</code> walks rounds from the end, keeping as
+many as fit within <code>(0.80 × MAX_TOKENS) - reservedTokens</code>. Everything
+older becomes the <strong>compress zone</strong>.</p>
+<p>The compress zone is rendered as <abbr title="Extensible Markup Language">XML</abbr> and fed to the model with the
+<code>MEMORY_COMPRESSION_TASK</code> prompt; the returned summary is appended to
+the original user message inside <code>&lt;previous_review_summary&gt;</code> tags.</p>
+<p>After compression: <code>messages = frozen[2] + compressed_user_msg + active</code>.</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// compression.go</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="w"> </span><span class="o">*</span><span class="nx">Agent</span><span class="p">)</span><span class="w"> </span><span class="nx">runCompression</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">msgs</span><span class="w"> </span><span class="p">[]</span><span class="nx">llm</span><span class="p">.</span><span class="nx">Message</span><span class="p">,</span><span class="w"> </span><span class="nx">filePath</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">([]</span><span class="nx">llm</span><span class="p">.</span><span class="nx">Message</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nx">part</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">partitionMessages</span><span class="p">(</span><span class="nx">msgs</span><span class="p">,</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">Template</span><span class="p">.</span><span class="nx">MaxTokens</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nx">contextXML</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">buildMessageXML</span><span class="p">(</span><span class="nx">msgs</span><span class="p">[</span><span class="nx">part</span><span class="p">.</span><span class="nx">frozenEnd</span><span class="p">:</span><span class="nx">part</span><span class="p">.</span><span class="nx">compressEnd</span><span class="p">])</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="c1">// … call MEMORY_COMPRESSION_TASK …</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nx">rebuilt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">llm</span><span class="p">.</span><span class="nx">NewTextMessage</span><span class="p">(</span><span class="nx">role</span><span class="p">,</span><span class="w"> </span><span class="nx">currentText</span><span class="o">+</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="s">"\n\n&lt;previous_review_summary&gt;\n"</span><span class="o">+</span><span class="nx">rawSummary</span><span class="o">+</span><span class="s">"\n&lt;/previous_review_summary&gt;"</span><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">part</span><span class="p">.</span><span class="nx">compressEnd</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">msgs</span><span class="p">);</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="nx">rebuilt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">rebuilt</span><span class="p">,</span><span class="w"> </span><span class="nx">msgs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">rebuilt</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="async-vs-sync">Async vs sync<a class="headerlink" href="#async-vs-sync" title="Link to this section">&para;</a></h3>
+<p>The async path lets the main loop keep emitting tool calls while
+compression runs in the background; when the next token check happens, a
+ready summary is swapped in via <code>tryApplyPendingCompression</code>. If the
+ratio crosses the warning threshold before the async job finishes, the
+loop stalls and runs <code>runCompression</code> synchronously — guaranteeing the
+next request always fits.</p>
+<h2 id="comment-processing-pipeline">Comment processing pipeline<a class="headerlink" href="#comment-processing-pipeline" title="Link to this section">&para;</a></h2>
+<p>Every <code>code_comment</code> tool call produces one or more raw comments. They
+go through a <strong>CommentWorkerPool</strong> (a fixed-size goroutine pool) so the
+main tool-use loop never blocks on post-processing:</p>
+<ol>
+<li><strong>Line resolution</strong> (in-worker) — <code>existing_code</code> is matched against
+   the diff using a sliding-window algorithm to compute precise
+   <code>start_line</code> / <code>end_line</code>. If matching fails, both default to <code>0</code> — a
+   <code>0</code> line range is the implicit signal for an "unanchored" comment the
+   user must locate manually (there is no stored flag; downstream
+   consumers check <code>start_line == 0</code>).</li>
+<li><strong>Re-location task</strong> <em>(optional fallback)</em> — when line resolution
+   fails on a non-trivial diff, kaid runs the <code>RE_LOCATION_TASK</code> prompt
+   asking the model to re-anchor the snippet. Useful for paraphrased
+   <code>existing_code</code> strings.</li>
+<li><strong>Review filter</strong> — after the main loop finishes (and the worker pool
+   drains), the <code>REVIEW_FILTER_TASK</code> <abbr title="Large Language Model">LLM</abbr> call inspects the collected
+   comments against the diff and removes ones that are provably
+   incorrect. Errors here are logged and ignored.</li>
+<li><strong>Second line-resolution pass</strong> — once <code>Agent.Run</code> returns, the
+   top-level command re-runs <code>diff.ResolveLineNumbers</code> over the full
+   comment set (see <code>cmd/kaid/review_cmd.go</code>) to catch
+   comments whose <code>existing_code</code> spans multiple files or was updated by
+   the re-location step.</li>
+<li><strong>Render</strong> — into text or JSON depending on <code>--format</code>.</li>
+</ol>
+<h2 id="token-budget-guards">Token budget guards<a class="headerlink" href="#token-budget-guards" title="Link to this section">&para;</a></h2>
+<p>Before the <abbr title="Large Language Model">LLM</abbr> is even called, kaid runs a fail-fast check:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">tokenLimit</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">MaxTokens</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">5</span><span class="w">     </span><span class="c1">// 80 %</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">countMessagesTokens</span><span class="p">(</span><span class="nx">messages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nx">tokenLimit</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nx">record</span><span class="w"> </span><span class="nx">warning</span><span class="w"> </span><span class="s">"token_threshold_exceeded"</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="w">      </span><span class="c1">// skip this group</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>In other words, the guard trips when the message tokens exceed</p>
+<div class="arithmatex">\[
+\text{tokens} &gt; \frac{4}{5}\,\text{MaxTokens}.
+\]</div>
+<p>This catches monstrous diffs (auto-generated lock files, refactors
+touching thousands of lines) before they cost a request. The skipped
+group is reported as <mark>non-fatal</mark> warning in stdout and added to the JSON
+<code>warnings</code> array.</p>
+<p>A second check runs in <code>selectFiles</code>: if the diff alone exceeds
+80 % of <code>MAX_TOKENS</code> it's filtered out before grouping and dispatch even
+happen, and reported as <code>too_large</code>. A third guard runs inside
+grouping — see <code>enforceGroupTokenBudget</code> above.</p>
+<h2 id="the-template-placeholders">The template &amp; placeholders<a class="headerlink" href="#the-template-placeholders" title="Link to this section">&para;</a></h2>
+<p><code>internal/config/template/task_template.json</code> holds <strong>six prompts</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GROUPING_TASK</code></td>
+<td>Bundles the changed files into semantic groups.</td>
+</tr>
+<tr>
+<td><code>PLAN_TASK</code></td>
+<td>Planning phase — produces a checklist.</td>
+</tr>
+<tr>
+<td><code>MAIN_TASK</code></td>
+<td>Main review loop — emits <code>code_comment</code> calls.</td>
+</tr>
+<tr>
+<td><code>MEMORY_COMPRESSION_TASK</code></td>
+<td>Summarises the compress zone.</td>
+</tr>
+<tr>
+<td><code>REVIEW_FILTER_TASK</code></td>
+<td>Post-loop pass that removes provably-incorrect comments.</td>
+</tr>
+<tr>
+<td><code>RE_LOCATION_TASK</code></td>
+<td>Re-anchors a comment whose <code>existing_code</code> couldn't be matched.</td>
+</tr>
+</tbody>
+</table>
+<p>Each prompt is a list of <code>{role, prompt_file}</code> references that point to
+<code>.md</code> files in the template directory (e.g.
+<code>{"role": "system", "prompt_file": "main_task_system.md"}</code>). At load
+time <code>resolveConversation</code> reads those files into in-memory
+<code>{role, content}</code> messages, and template placeholders are then resolved
+per-group:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Replaced with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{{system_rule}}</code></td>
+<td>The rule bodies resolved from the four-layer chain, merged across the group's files.</td>
+</tr>
+<tr>
+<td><code>{{change_files}}</code></td>
+<td>Status + path of every changed file in the PR <em>outside</em> this group.</td>
+</tr>
+<tr>
+<td><code>{{diffs}}</code></td>
+<td>The group's diffs, one <abbr title="Extensible Markup Language">XML</abbr> element per file.</td>
+</tr>
+<tr>
+<td><code>{{plan_guidance}}</code></td>
+<td>Output of the plan phase, or removed when plan is skipped or on rounds 2+.</td>
+</tr>
+<tr>
+<td><code>{{confirmed_comments}}</code></td>
+<td>Findings confirmed by earlier review rounds (empty on round 1).</td>
+</tr>
+<tr>
+<td><code>{{plan_tools}}</code></td>
+<td>Plan-phase tool definitions as plain text (rendered by <code>formatToolDefs</code>), used in the <code>PLAN_TASK</code> system prompt.</td>
+</tr>
+<tr>
+<td><code>{{requirement_background}}</code></td>
+<td>The effective background from <code>--background</code> or <code>--background-file</code> (file takes precedence).</td>
+</tr>
+<tr>
+<td><code>{{current_system_date_time}}</code></td>
+<td>Local timestamp for the run, formatted <code>YYYY-MM-DD HH:MM</code> (no seconds or timezone).</td>
+</tr>
+<tr>
+<td><code>{{file_list}}</code></td>
+<td>(grouping only) file metadata — path, status, <code>+/-</code> counts.</td>
+</tr>
+<tr>
+<td><code>{{context}}</code></td>
+<td>(compression only) the <abbr title="Extensible Markup Language">XML</abbr>-rendered messages to summarise.</td>
+</tr>
+<tr>
+<td><code>{{path}}</code></td>
+<td>Group key (comma-joined sorted paths), used in <code>REVIEW_FILTER_TASK</code>.</td>
+</tr>
+<tr>
+<td><code>{{comments}}</code></td>
+<td>Accumulated comments (JSON), used in <code>REVIEW_FILTER_TASK</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The placeholder substitution lives in
+<a href="https://github.com/CHE3MZ/kaid/blob/master/internal/agent/agent.go"><code>agent.go</code></a>.
+The template itself isn't a CLI override — to change prompts you edit
+<a href="https://github.com/CHE3MZ/kaid/blob/master/internal/config/template/task_template.json"><code>task_template.json</code></a>
+and rebuild. The <code>--tools</code> flag is a <em>tool-registry</em> override (it
+swaps the JSON consumed by <code>internal/config/toolsconfig</code>), not a
+template override — see <a href="../tools/#customizing-tools">Tools</a>.</p>
+<blockquote>
+<p><strong>Placeholder syntax caveat.</strong> All the placeholders above use
+double-brace <code>{{…}}</code> syntax <em>except</em> <code>RE_LOCATION_TASK</code>, which
+substitutes single-brace <code>{diff}</code>, <code>{existing_code}</code>, and
+<code>{suggestion_content}</code> (see <code>internal/diff/relocation.go</code>).</p>
+</blockquote>
+<h2 id="persistence">Persistence<a class="headerlink" href="#persistence" title="Link to this section">&para;</a></h2>
+<p>Every review is written to disk as <abbr title="JSON Lines">JSONL</abbr>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>~/.kaid/sessions/&lt;encoded-repo-path&gt;/&lt;session-id&gt;.jsonl
+</span></code></pre></div>
+<p>The repo path is <strong>not</strong> base64-encoded; <code>encodeRepoPath</code> (in
+<code>internal/session/persist.go</code>) replaces <code>/</code> and <code>\</code> with <code>-</code> and <code>:</code> with
+<code>_</code> so the path is filesystem-safe.</p>
+<p>Each line is one event: prompt sent, <abbr title="Large Language Model">LLM</abbr> response, tool call, tool
+result, comment emitted, etc. The Web UI (<code>kaid viewer</code>) reads these
+files directly — there's no database, just append-only logs. See
+<a href="../viewer/">Session Viewer</a> for the UI tour and event schema.</p>
+<h2 id="telemetry">Telemetry<a class="headerlink" href="#telemetry" title="Link to this section">&para;</a></h2>
+<p>When telemetry is enabled the agent emits three pipeline-level spans
+(<code>review.run</code> wrapping the whole job, <code>diff.parse</code> wrapping diff
+loading, and one <code>subtask.execute.group.&lt;group-key&gt;</code> per reviewed
+group) plus a
+short-lived <code>event.&lt;name&gt;</code> span at each decision point (<code>plan.skipped</code>,
+<code>token.threshold.exceeded</code>, <code>subtask.error</code>, …). In the main review loop,
+<abbr title="Large Language Model">LLM</abbr> requests and tool calls emit spans and are also recorded in metrics. Prompt and
+response content is <strong>never</strong> attached to telemetry; the
+<code>KAID_CONTENT_LOGGING</code> flag is plumbed but currently dead. See
+<a href="../telemetry/">Telemetry</a> for the full schema.</p>
+<h2 id="whats-not-automated">What's <em>not</em> automated<a class="headerlink" href="#whats-not-automated" title="Link to this section">&para;</a></h2>
+<p>A few decisions are deliberately manual:</p>
+<ul>
+<li><strong>Endpoint discovery has no fallback.</strong> If your config + env + rc
+  files don't yield a complete <code>(URL, token, model)</code> triple, kaid exits
+  with a non-zero code rather than guessing.</li>
+<li><strong>Sub-agent failures are isolated, not retried.</strong> One failing group
+  produces a warning; the rest continue. Retries belong in the wrapping
+  CI pipeline, not the agent.</li>
+<li><strong>Cross-file reasoning is bounded by the group.</strong> Files in the same
+  semantic group share one <abbr title="Large Language Model">LLM</abbr> conversation, so the agent can reason
+  across them directly. Files in <em>other</em> groups are reachable only
+  through <code>file_read_diff</code> / <code>code_search</code> tool calls, not shared
+  context, and findings in them are off-limits as comment targets — the
+  <code>main_task</code> prompt instructs the model to use context tools for
+  understanding only, and to ignore issues that surface outside the
+  diffs it was given.</li>
+</ul>
+<p>These choices keep the run <strong>deterministic per-group</strong> and keep cost
+predictable.</p>
+<h2 id="source-code-map">Source-code map<a class="headerlink" href="#source-code-map" title="Link to this section">&para;</a></h2>
+<p>If you want to read along:</p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Top-level command dispatch</td>
+<td><code>cmd/kaid/main.go</code></td>
+</tr>
+<tr>
+<td><code>review</code> flag parsing</td>
+<td><code>cmd/kaid/shared_flags.go</code></td>
+</tr>
+<tr>
+<td>Agent orchestration</td>
+<td><code>internal/agent/</code> (agent.go, util.go)</td>
+</tr>
+<tr>
+<td>Semantic file grouping</td>
+<td><code>internal/agent/grouping.go</code></td>
+</tr>
+<tr>
+<td>Tool-use loop &amp; memory compression</td>
+<td><code>internal/llmloop/</code> (loop.go, compression.go)</td>
+</tr>
+<tr>
+<td>Effort presets</td>
+<td><code>internal/config/template/effort.go</code></td>
+</tr>
+<tr>
+<td>File filter / preview</td>
+<td><code>internal/agent/selection.go</code>, <code>internal/agent/preview.go</code></td>
+</tr>
+<tr>
+<td>Diff loading (Git modes)</td>
+<td><code>internal/diff/git.go</code></td>
+</tr>
+<tr>
+<td>Rule resolution chain</td>
+<td><code>internal/config/rules/system_rules.go</code></td>
+</tr>
+<tr>
+<td>Tool registry &amp; impls</td>
+<td><code>internal/tool/</code></td>
+</tr>
+<tr>
+<td><abbr title="Large Language Model">LLM</abbr> endpoint resolver</td>
+<td><code>internal/llm/resolver.go</code></td>
+</tr>
+<tr>
+<td>Session <abbr title="JSON Lines">JSONL</abbr> writer</td>
+<td><code>internal/session/persist.go</code></td>
+</tr>
+<tr>
+<td>Web viewer</td>
+<td><code>internal/viewer/server.go</code></td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/CHE3MZ/kaid/blob/master/AGENTS.md">AGENTS.md</a> for build &amp; test instructions.</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Link to this section">&para;</a></h2>
+<ul>
+<li><a href="../tools/">Tools</a> - the six tools the agent loop calls.</li>
+<li><a href="../review-rules/">Review Rules</a> - how per-file rule text is resolved.</li>
+<li><a href="../viewer/">Session Viewer</a> - inspect the transcripts this pipeline writes.</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../configuration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Configuration
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../tools/" class="md-footer__link md-footer__link--next" aria-label="Next: Tools">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Tools
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/CHE3MZ/kaid" target="_blank" rel="noopener" title="kaid on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.tracking", "navigation.footer", "toc.follow", "content.code.copy", "content.code.select", "content.code.annotate", "content.tabs.link", "content.tooltips", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../javascripts/mermaid.js" type="module"></script>
+      
+    
+  </body>
+</html>
