@@ -31,14 +31,14 @@ open-code-review (`ocr`) is an AI-powered code review CLI tool written in Go (mo
 ## License Headers
 
 - Every source file (`.go`, `.js`, `.mjs`, `.ts`, `.tsx`, `.kt`, `.kts`, `.sh`, `.py`, `.css`) must have an SPDX license header.
-- After creating new files, run `make license-add` to add the header automatically. It picks the comment syntax by extension: `//`, `#`, or a `/* */` block for CSS.
+- After creating new files, run `task license-add` to add the header automatically. It picks the comment syntax by extension: `//`, `#`, or a `/* */` block for CSS.
 - An extension belongs on that list once the repository actually holds files of that type and the comment can simply be prepended. `.html` meets neither bar cleanly — its `<!DOCTYPE html>` has to stay on the first line — so it is not covered yet.
 
 ## Code Style
 
 - **Comment sparingly, and only to explain "why".** Do not add comments that restate what the code already says (`// increment i`), narrate the change itself (`// newly added`, `// changed to fix ...` — that belongs in the commit message or PR description), quote pull request or issue numbers from the upstream repository, or leave TODO/placeholder chatter. A comment earns its place only when it captures intent, a non-obvious constraint, or a subtlety the code cannot express on its own.
-- After writing code, run `make check`. It formats and tidies in place, so there is no need to run `gofmt` or `go vet` separately.
-- **Source files are written in English** — comments, identifiers and strings alike. `make english-check` enforces this in CI. It flags any letter outside ASCII, whichever the writing system (Han, kana, Hangul, Cyrillic, and equally the diacritics that spell German or Vietnamese), plus combining accents and fullwidth punctuation (`：`, `（`), which is easy to leave behind in an otherwise English sentence. Symbols and emoji (`─ → ≥ ✅`) pass, since they are not letters. Prose spelled entirely in ASCII (`Loeschen der Datei`, or a romanised transcription) takes a dictionary to spot and stays a matter for review.
+- After writing code, run `task check`. It formats and tidies in place, so there is no need to run `gofmt` or `go vet` separately.
+- **Source files are written in English** — comments, identifiers and strings alike. `task english-check` enforces this in CI. It flags any letter outside ASCII, whichever the writing system (Han, kana, Hangul, Cyrillic, and equally the diacritics that spell German or Vietnamese), plus combining accents and fullwidth punctuation (`：`, `（`), which is easy to leave behind in an otherwise English sentence. Symbols and emoji (`─ → ≥ ✅`) pass, since they are not letters. Prose spelled entirely in ASCII (`Loeschen der Datei`, or a romanised transcription) takes a dictionary to spot and stays a matter for review.
 - **Two escape hatches for the exceptional case, narrower one preferred.** Append an `allow-non-english: <reason>` marker comment to the offending line — the right choice for a handful of lines, such as an encoding fixture, and it leaves the rest of the file protected. Only for a whole tree that is inherently non-English, add a prefix to `allowedPrefixes` in `scripts/verify-english-only.go`; that list records each exemption's reason.
 
 ## Provider Presets
@@ -52,9 +52,9 @@ do not edit it by hand:
 
 ## Testing
 
-- Run unit tests with `make test`, not `go test` directly.
-- `make test` sets `LC_ALL=C` to ensure git outputs English messages.
-- When writing or modifying code, add necessary unit tests to maintain coverage. The project enforces a 90% coverage threshold via `make coverage`.
+- Run unit tests with `task test`, not `go test` directly.
+- `task test` sets `LC_ALL=C` to ensure git outputs English messages.
+- When writing or modifying code, add necessary unit tests to maintain coverage. The project enforces a 90% coverage threshold via `task coverage`.
 
 ## README
 

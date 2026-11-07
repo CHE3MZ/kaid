@@ -1,0 +1,77 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  test:
+    desc: Run the Go tests with the race detector
+    env:
+      LC_ALL: C
+    cmds:
+      - go test -v -race -count=1 ./...
+
+  coverage:
+    desc: Run tests and enforce the 90% coverage threshold
+    cmds:
+      - sh scripts/ops/coverage.sh
+
+  clean:
+    desc: Remove build artifacts and logs
+    cmds:
+      - sh -c "rm -rf ./dist ./logs"
+
+  run:
+    desc: Review staged changes
+    cmds:
+      - go run ./cmd/opencodereview --staged
+
+  help:
+    desc: Show top-level CLI help
+    cmds:
+      - go run ./cmd/opencodereview -h
+
+  fmt:
+    desc: Format Go source
+    cmds:
+      - gofmt -s -w .
+
+  vet:
+    desc: Run go vet
+    env:
+      LC_ALL: C
+    cmds:
+      - go vet ./...
+
+  check:
+    desc: Tidy, format, vet, and run repository checks
+    env:
+      LC_ALL: C
+    cmds:
+      - task: license-check
+      - task: english-check
+      - go mod tidy
+      - gofmt -s -w .
+      - go vet ./...
+      - echo "check passed"
+
+  license-check:
+    desc: Verify SPDX and copyright headers
+    cmds:
+      - bash scripts/verify-license.sh
+    silent: true
+
+  license-add:
+    desc: Add SPDX headers to new source files
+    cmds:
+      - bash scripts/add-license.sh
+    silent: true
+
+  english-check:
+    desc: Verify source files contain only English text
+    cmds:
+      - go run scripts/verify-english-only.go
+    silent: true

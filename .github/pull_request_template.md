@@ -16,7 +16,7 @@
 <!-- Describe the tests you ran to verify your changes. -->
 <!-- Include relevant details about your test configuration. -->
 
-- [ ] `make test` passes locally
+- [ ] `task test` passes locally
 - [ ] Manual testing (describe below)
 
 ## Checklist

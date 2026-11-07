@@ -79,7 +79,7 @@ if [ "${#FAILED[@]}" -gt 0 ]; then
   echo "ERROR: The following files are missing or have invalid license headers:"
   printf '  %s\n' "${FAILED[@]}"
   echo ""
-  echo "Run 'make license-add' to fix."
+  echo "Run 'task license-add' to fix."
   exit 1
 fi
 

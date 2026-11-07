@@ -150,7 +150,7 @@ without a pre-built binary.
 - [Go ≥ 1.26.10](https://go.dev/dl/)
 - [Git](https://git-scm.com/)
 - A POSIX shell such as Bash (on Windows, use Git Bash or WSL)
-- [Make](https://www.gnu.org/software/make/), only for the `make test` and `make check` shortcuts
+- [Task v3](https://taskfile.dev/), only for the `task test` and `task check` shortcuts
 
 #### Build
 
@@ -189,7 +189,7 @@ Official releases are built with GoReleaser in CI.
 #### Run tests
 
 ```bash
-make test               # LC_ALL=C go test -v -race -count=1 ./...
+task test               # LC_ALL=C go test -v -race -count=1 ./...
 ```
 
 ## Verifying the install
